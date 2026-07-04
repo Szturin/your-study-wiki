@@ -122,17 +122,21 @@ const MINDMAP_CANVAS_PADDING = {
 };
 
 const MINDMAP_FRAME_LAYOUT = {
-  rootGap: 150,
-  frameGap: 52,
-  frameWidth: 920,
-  frameHeaderHeight: 92,
-  framePaddingX: 30,
-  framePaddingBottom: 28,
-  groupGap: 20,
-  knowledgeQuestionGap: 32,
-  questionGap: 12,
-  questionWidth: 300,
-  questionHeight: 102,
+  rootWidth: 1540,
+  rootHeaderHeight: 104,
+  rootPadding: 34,
+  chapterColumns: 2,
+  chapterGap: 28,
+  chapterHeaderHeight: 84,
+  chapterPadding: 22,
+  chapterMinHeight: 220,
+  knowledgeColumns: 2,
+  knowledgeGap: 16,
+  knowledgeHeaderHeight: 62,
+  knowledgePadding: 16,
+  knowledgeMinHeight: 138,
+  questionGap: 10,
+  questionHeight: 92,
 };
 
 const MINDMAP_LOD_THRESHOLD = {
@@ -247,7 +251,7 @@ function getNextMindMapQuestionRenderMode(
 }
 
 function getMindMapInitialOffset(layoutMode: MindMapLayoutMode) {
-  return layoutMode === "framework" ? { x: 48, y: 80 } : { x: 120, y: 80 };
+  return layoutMode === "framework" ? { x: 46, y: 58 } : { x: 120, y: 80 };
 }
 
 function buildMindMapRenderTree(
@@ -497,6 +501,29 @@ function buildMindMapFrameworkTree(
   questionCount: number,
   collapsedNodeMap: Record<string, boolean>,
 ): MindMapRenderNode {
+  const chapterWidth =
+    (MINDMAP_FRAME_LAYOUT.rootWidth -
+      MINDMAP_FRAME_LAYOUT.rootPadding * 2 -
+      MINDMAP_FRAME_LAYOUT.chapterGap * (MINDMAP_FRAME_LAYOUT.chapterColumns - 1)) /
+    MINDMAP_FRAME_LAYOUT.chapterColumns;
+  const knowledgeWidth =
+    (chapterWidth -
+      MINDMAP_FRAME_LAYOUT.chapterPadding * 2 -
+      MINDMAP_FRAME_LAYOUT.knowledgeGap * (MINDMAP_FRAME_LAYOUT.knowledgeColumns - 1)) /
+    MINDMAP_FRAME_LAYOUT.knowledgeColumns;
+  const questionWidth = knowledgeWidth - MINDMAP_FRAME_LAYOUT.knowledgePadding * 2;
+  const rootContentTop = MINDMAP_FRAME_LAYOUT.rootHeaderHeight + MINDMAP_FRAME_LAYOUT.rootPadding;
+  const chapterColumnHeights = Array.from({ length: MINDMAP_FRAME_LAYOUT.chapterColumns }, () => 0);
+
+  function offsetNodeTree(node: MindMapRenderNode, deltaX: number, deltaY: number) {
+    node.x += deltaX;
+    node.y += deltaY;
+
+    for (const child of node.children) {
+      offsetNodeTree(child, deltaX, deltaY);
+    }
+  }
+
   const rootNode: MindMapRenderNode = {
     id: `${collectionMindMap.mode}-${collectionMindMap.subjectId}`,
     kind: "root",
@@ -506,30 +533,38 @@ function buildMindMapFrameworkTree(
     subtitle: `${collectionMindMap.mode === "favorite" ? "收藏本" : "错题本"} · ${questionCount} 道题`,
     x: 0,
     y: 0,
-    width: MINDMAP_NODE_SIZE.root.width,
-    height: MINDMAP_NODE_SIZE.root.height,
-    subtreeHeight: MINDMAP_NODE_SIZE.root.height,
+    width: MINDMAP_FRAME_LAYOUT.rootWidth,
+    height: MINDMAP_FRAME_LAYOUT.rootHeaderHeight + MINDMAP_FRAME_LAYOUT.rootPadding * 2,
+    subtreeHeight: MINDMAP_FRAME_LAYOUT.rootHeaderHeight,
     depth: 0,
     questionCount,
     leafCount: Math.max(collectionMindMap.chapters.length, 1),
+    framed: true,
     children: [],
   };
 
-  const frameX = rootNode.width + MINDMAP_FRAME_LAYOUT.rootGap;
-  let frameCursorY = 0;
-
   rootNode.children = collectionMindMap.chapters.map((chapterNode) => {
-    const frameCollapsed = collapsedNodeMap[chapterNode.id] === true;
+    const chapterCollapsed = collapsedNodeMap[chapterNode.id] === true;
     const chapterQuestionCount = chapterNode.knowledges.reduce(
       (sum, knowledgeNode) => sum + knowledgeNode.questions.length,
       0,
     );
-    const chapterChildren: MindMapRenderNode[] = [];
-    let groupCursorY = frameCursorY + MINDMAP_FRAME_LAYOUT.frameHeaderHeight;
+    const knowledgeColumnHeights = Array.from({ length: MINDMAP_FRAME_LAYOUT.knowledgeColumns }, () => 0);
+    const knowledgeChildren: MindMapRenderNode[] = [];
 
-    if (!frameCollapsed) {
+    if (!chapterCollapsed) {
       for (const knowledgeNode of chapterNode.knowledges) {
         const knowledgeCollapsed = collapsedNodeMap[knowledgeNode.id] === true;
+        const knowledgeColumnIndex = knowledgeColumnHeights.indexOf(Math.min(...knowledgeColumnHeights));
+        const knowledgeX =
+          MINDMAP_FRAME_LAYOUT.chapterPadding +
+          knowledgeColumnIndex * (knowledgeWidth + MINDMAP_FRAME_LAYOUT.knowledgeGap);
+        const knowledgeY =
+          MINDMAP_FRAME_LAYOUT.chapterHeaderHeight +
+          MINDMAP_FRAME_LAYOUT.chapterPadding +
+          knowledgeColumnHeights[knowledgeColumnIndex];
+        const questionStartX = knowledgeX + MINDMAP_FRAME_LAYOUT.knowledgePadding;
+        const questionStartY = knowledgeY + MINDMAP_FRAME_LAYOUT.knowledgeHeaderHeight;
         const questionChildren: MindMapRenderNode[] = knowledgeCollapsed
           ? []
           : knowledgeNode.questions.map((questionNode, questionIndex) => ({
@@ -545,13 +580,9 @@ function buildMindMapFrameworkTree(
               detail: questionNode.promptDetail,
               previewText: questionNode.promptPreviewText,
               detailText: questionNode.promptDetailText,
-              x:
-                frameX +
-                MINDMAP_FRAME_LAYOUT.framePaddingX +
-                MINDMAP_NODE_SIZE.knowledge.width +
-                MINDMAP_FRAME_LAYOUT.knowledgeQuestionGap,
-              y: groupCursorY + questionIndex * (MINDMAP_FRAME_LAYOUT.questionHeight + MINDMAP_FRAME_LAYOUT.questionGap),
-              width: MINDMAP_FRAME_LAYOUT.questionWidth,
+              x: questionStartX,
+              y: questionStartY + questionIndex * (MINDMAP_FRAME_LAYOUT.questionHeight + MINDMAP_FRAME_LAYOUT.questionGap),
+              width: questionWidth,
               height: MINDMAP_FRAME_LAYOUT.questionHeight,
               subtreeHeight: MINDMAP_FRAME_LAYOUT.questionHeight,
               depth: 3,
@@ -561,12 +592,18 @@ function buildMindMapFrameworkTree(
               children: [],
             }));
 
-        const groupHeight = Math.max(
-          MINDMAP_NODE_SIZE.knowledge.height,
+        const questionStackHeight =
           questionChildren.length > 0
             ? questionChildren.length * MINDMAP_FRAME_LAYOUT.questionHeight +
-                (questionChildren.length - 1) * MINDMAP_FRAME_LAYOUT.questionGap
-            : MINDMAP_NODE_SIZE.knowledge.height,
+              (questionChildren.length - 1) * MINDMAP_FRAME_LAYOUT.questionGap
+            : 0;
+        const knowledgeHeight = Math.max(
+          MINDMAP_FRAME_LAYOUT.knowledgeMinHeight,
+          questionChildren.length > 0
+            ? MINDMAP_FRAME_LAYOUT.knowledgeHeaderHeight +
+                questionStackHeight +
+                MINDMAP_FRAME_LAYOUT.knowledgePadding
+            : MINDMAP_FRAME_LAYOUT.knowledgeMinHeight,
         );
 
         const knowledgeRenderNode: MindMapRenderNode = {
@@ -576,11 +613,11 @@ function buildMindMapFrameworkTree(
           dirty: false,
           title: knowledgeNode.name,
           subtitle: `${knowledgeNode.questions.length} 道题`,
-          x: frameX + MINDMAP_FRAME_LAYOUT.framePaddingX,
-          y: groupCursorY + groupHeight / 2 - MINDMAP_NODE_SIZE.knowledge.height / 2,
-          width: MINDMAP_NODE_SIZE.knowledge.width,
-          height: MINDMAP_NODE_SIZE.knowledge.height,
-          subtreeHeight: groupHeight,
+          x: knowledgeX,
+          y: knowledgeY,
+          width: knowledgeWidth,
+          height: knowledgeHeight,
+          subtreeHeight: knowledgeHeight,
           depth: 2,
           questionCount: knowledgeNode.questions.length,
           leafCount: Math.max(knowledgeNode.questions.length, 1),
@@ -590,45 +627,61 @@ function buildMindMapFrameworkTree(
           children: questionChildren,
         };
 
-        chapterChildren.push(knowledgeRenderNode);
-        groupCursorY += groupHeight + MINDMAP_FRAME_LAYOUT.groupGap;
+        knowledgeChildren.push(knowledgeRenderNode);
+        knowledgeColumnHeights[knowledgeColumnIndex] += knowledgeHeight + MINDMAP_FRAME_LAYOUT.knowledgeGap;
       }
     }
 
-    const contentHeight =
-      chapterChildren.length > 0
-        ? groupCursorY - frameCursorY - MINDMAP_FRAME_LAYOUT.groupGap + MINDMAP_FRAME_LAYOUT.framePaddingBottom
-        : MINDMAP_FRAME_LAYOUT.frameHeaderHeight + MINDMAP_FRAME_LAYOUT.framePaddingBottom;
-    const frameHeight = Math.max(168, contentHeight);
+    const knowledgeAreaHeight =
+      knowledgeChildren.length > 0 ? Math.max(...knowledgeColumnHeights) - MINDMAP_FRAME_LAYOUT.knowledgeGap : 0;
+    const chapterHeight = Math.max(
+      MINDMAP_FRAME_LAYOUT.chapterMinHeight,
+      MINDMAP_FRAME_LAYOUT.chapterHeaderHeight +
+        MINDMAP_FRAME_LAYOUT.chapterPadding +
+        knowledgeAreaHeight +
+        MINDMAP_FRAME_LAYOUT.chapterPadding,
+    );
+    const chapterColumnIndex = chapterColumnHeights.indexOf(Math.min(...chapterColumnHeights));
+    const chapterX =
+      MINDMAP_FRAME_LAYOUT.rootPadding +
+      chapterColumnIndex * (chapterWidth + MINDMAP_FRAME_LAYOUT.chapterGap);
+    const chapterY = rootContentTop + chapterColumnHeights[chapterColumnIndex];
 
     const chapterRenderNode: MindMapRenderNode = {
       id: chapterNode.id,
       kind: "chapter",
-      signature: `framework-chapter:${chapterNode.id}:${frameCollapsed ? "closed" : "open"}:${chapterQuestionCount}`,
+      signature: `framework-chapter:${chapterNode.id}:${chapterCollapsed ? "closed" : "open"}:${chapterQuestionCount}`,
       dirty: false,
       title: chapterNode.name,
       subtitle: `${chapterQuestionCount} 道题 · ${chapterNode.knowledges.length} 个知识点`,
-      x: frameX,
-      y: frameCursorY,
-      width: MINDMAP_FRAME_LAYOUT.frameWidth,
-      height: frameHeight,
-      subtreeHeight: frameHeight,
+      x: chapterX,
+      y: chapterY,
+      width: chapterWidth,
+      height: chapterHeight,
+      subtreeHeight: chapterHeight,
       depth: 1,
       questionCount: chapterQuestionCount,
       leafCount: Math.max(chapterNode.knowledges.length, 1),
-      collapsed: frameCollapsed,
+      collapsed: chapterCollapsed,
       expandable: chapterNode.knowledges.length > 0,
       framed: true,
-      children: chapterChildren,
+      children: knowledgeChildren,
     };
 
-    frameCursorY += frameHeight + MINDMAP_FRAME_LAYOUT.frameGap;
+    for (const child of knowledgeChildren) {
+      offsetNodeTree(child, chapterX, chapterY);
+    }
+
+    chapterColumnHeights[chapterColumnIndex] += chapterHeight + MINDMAP_FRAME_LAYOUT.chapterGap;
     return chapterRenderNode;
   });
 
-  const totalFrameHeight = Math.max(frameCursorY - MINDMAP_FRAME_LAYOUT.frameGap, rootNode.height);
-  rootNode.y = 24;
-  rootNode.subtreeHeight = totalFrameHeight;
+  const contentHeight = Math.max(...chapterColumnHeights) - MINDMAP_FRAME_LAYOUT.chapterGap;
+  rootNode.height = Math.max(
+    MINDMAP_FRAME_LAYOUT.rootHeaderHeight + MINDMAP_FRAME_LAYOUT.rootPadding * 2,
+    rootContentTop + contentHeight + MINDMAP_FRAME_LAYOUT.rootPadding,
+  );
+  rootNode.subtreeHeight = rootNode.height;
 
   return rootNode;
 }
@@ -636,30 +689,31 @@ function buildMindMapFrameworkTree(
 function collectMindMapNodes(rootNode: MindMapRenderNode) {
   const nodes: MindMapRenderNode[] = [];
   const connectors: Array<{ id: string; path: string; fromId: string; toId: string }> = [];
+  const shouldDrawConnectors = rootNode.framed !== true;
 
   function walk(node: MindMapRenderNode) {
     nodes.push(node);
 
     for (const child of node.children) {
-      const childIsInsideFrame = node.framed === true && node.kind === "chapter" && child.x < node.x + node.width;
-      const childIsFrameworkFrame = node.kind === "root" && child.framed === true && child.kind === "chapter";
-      const startX = childIsInsideFrame ? node.x + MINDMAP_FRAME_LAYOUT.framePaddingX * 0.52 : node.x + node.width;
-      const startY = childIsInsideFrame ? child.y + child.height / 2 : node.y + node.height / 2;
-      const endX = childIsInsideFrame ? child.x - 8 : child.x;
-      const endY = childIsFrameworkFrame ? child.y + 56 : child.y + child.height / 2;
-      const deltaX = endX - startX;
-      const controlA = startX + clampNumber(deltaX * 0.36, childIsInsideFrame ? 16 : 42, childIsInsideFrame ? 42 : 96);
-      const controlB = endX - clampNumber(deltaX * 0.28, childIsInsideFrame ? 14 : 30, childIsInsideFrame ? 38 : 82);
+      if (shouldDrawConnectors) {
+        const startX = node.x + node.width;
+        const startY = node.y + node.height / 2;
+        const endX = child.x;
+        const endY = child.y + child.height / 2;
+        const deltaX = endX - startX;
+        const controlA = startX + clampNumber(deltaX * 0.36, 42, 96);
+        const controlB = endX - clampNumber(deltaX * 0.28, 30, 82);
 
-      connectors.push({
-        id: `${node.id}-${child.id}`,
-        fromId: node.id,
-        toId: child.id,
-        path: [
-          `M ${startX} ${startY}`,
-          `C ${controlA} ${startY}, ${controlB} ${endY}, ${endX} ${endY}`,
-        ].join(" "),
-      });
+        connectors.push({
+          id: `${node.id}-${child.id}`,
+          fromId: node.id,
+          toId: child.id,
+          path: [
+            `M ${startX} ${startY}`,
+            `C ${controlA} ${startY}, ${controlB} ${endY}, ${endX} ${endY}`,
+          ].join(" "),
+        });
+      }
 
       walk(child);
     }
@@ -1977,6 +2031,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                       style={{
                         width: `${node.width}px`,
                         minHeight: `${node.height}px`,
+                        height: node.framed ? `${node.height}px` : undefined,
                         left: `${node.x}px`,
                         top: `${node.y}px`,
                       }}
@@ -2056,12 +2111,16 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                 }
 
                 const cardClassName =
-                  node.kind === "root"
+                  node.kind === "root" && node.framed
+                    ? "wiki-mindmap-root-frame-card"
+                    : node.kind === "root"
                     ? "wiki-mindmap-root-card"
                     : node.kind === "chapter" && node.framed
                       ? "wiki-mindmap-frame-card"
                     : node.kind === "chapter"
                       ? "wiki-mindmap-chapter-card"
+                    : node.kind === "knowledge" && node.framed
+                      ? "wiki-mindmap-knowledge-frame-card"
                       : "wiki-mindmap-knowledge-card";
 
                 return (
@@ -2071,6 +2130,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                     style={{
                       width: `${node.width}px`,
                       minHeight: `${node.height}px`,
+                      height: node.framed ? `${node.height}px` : undefined,
                       left: `${node.x}px`,
                       top: `${node.y}px`,
                     }}

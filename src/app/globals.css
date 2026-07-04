@@ -1051,9 +1051,11 @@ textarea {
 }
 
 .wiki-mindmap-root-card,
+.wiki-mindmap-root-frame-card,
 .wiki-mindmap-chapter-card,
 .wiki-mindmap-frame-card,
 .wiki-mindmap-knowledge-card,
+.wiki-mindmap-knowledge-frame-card,
 .wiki-mindmap-question-card {
   border: 1px solid var(--wiki-border);
   box-shadow:
@@ -1068,6 +1070,30 @@ textarea {
   border-color: #e3d4a6;
 }
 
+.wiki-mindmap-root-frame-card {
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 1.65rem;
+  padding: 1.45rem 1.6rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.68), transparent 30%),
+    linear-gradient(180deg, rgba(255, 252, 246, 0.78), rgba(243, 248, 250, 0.7)),
+    #f4f7f8;
+  border-color: #d2dce4;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.82) inset,
+    0 18px 44px rgba(89, 103, 128, 0.11);
+}
+
+.wiki-mindmap-root-frame-card::after {
+  content: "";
+  position: absolute;
+  inset: 6.1rem 1.55rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--wiki-border) 62%, transparent);
+  border-radius: 1.2rem;
+  pointer-events: none;
+}
+
 .wiki-mindmap-chapter-card {
   border-radius: 1.35rem;
   padding: 1rem 1.1rem;
@@ -1076,22 +1102,23 @@ textarea {
 }
 
 .wiki-mindmap-frame-card {
-  z-index: 0;
-  border-radius: 1.45rem;
-  padding: 1.25rem 1.3rem;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  padding: 1.15rem 1.2rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(247, 250, 253, 0.62)),
-    linear-gradient(180deg, #f7f9fc, #eef3f7);
-  border-color: #d5dde8;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 250, 253, 0.74)),
+    linear-gradient(180deg, #f7f9fc, #eef4f8);
+  border-color: #d3dde8;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.78) inset,
-    0 14px 34px rgba(89, 103, 128, 0.09);
+    0 12px 28px rgba(89, 103, 128, 0.09);
 }
 
 .wiki-mindmap-frame-card::after {
   content: "";
   position: absolute;
-  inset: 4.65rem 1.25rem 1.1rem;
+  inset: 5.1rem 1.15rem 1.05rem;
   border: 1px dashed color-mix(in srgb, var(--wiki-border) 76%, transparent);
   border-radius: 1.05rem;
   pointer-events: none;
@@ -1102,6 +1129,29 @@ textarea {
   padding: 0.95rem 1rem;
   background: linear-gradient(180deg, #f9fbfd, #f0f5f7);
   border-color: #d8e2e6;
+}
+
+.wiki-mindmap-knowledge-frame-card {
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 1.05rem;
+  padding: 0.85rem 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 251, 0.9)),
+    #f8fafb;
+  border-color: #d9e3e7;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.76) inset,
+    0 8px 20px rgba(88, 101, 122, 0.07);
+}
+
+.wiki-mindmap-knowledge-frame-card::after {
+  content: "";
+  position: absolute;
+  inset: 3.85rem 0.8rem 0.72rem;
+  border: 1px dashed color-mix(in srgb, var(--wiki-border) 62%, transparent);
+  border-radius: 0.82rem;
+  pointer-events: none;
 }
 
 .wiki-mindmap-question-card {
@@ -1129,6 +1179,7 @@ textarea {
 }
 
 .wiki-mindmap-question-card-framed {
+  overflow: hidden;
   border-radius: 1.05rem;
   padding: 0.85rem 0.95rem;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 250, 0.95));
@@ -1355,6 +1406,21 @@ textarea {
   border-color: #5a4a2d;
 }
 
+.wiki-dark .wiki-mindmap-root-frame-card {
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent 28%),
+    linear-gradient(180deg, rgba(28, 37, 49, 0.92), rgba(17, 25, 35, 0.95)),
+    #111923;
+  border-color: #34445b;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 22px 52px rgba(3, 7, 14, 0.42);
+}
+
+.wiki-dark .wiki-mindmap-root-frame-card::after {
+  border-color: color-mix(in srgb, #50627a 52%, transparent);
+}
+
 .wiki-dark .wiki-mindmap-chapter-card {
   background: linear-gradient(180deg, #1e2835, #18212c);
   border-color: #35465c;
@@ -1362,7 +1428,7 @@ textarea {
 
 .wiki-dark .wiki-mindmap-frame-card {
   background:
-    linear-gradient(180deg, rgba(30, 40, 53, 0.84), rgba(24, 33, 44, 0.9)),
+    linear-gradient(180deg, rgba(30, 40, 53, 0.9), rgba(24, 33, 44, 0.94)),
     linear-gradient(180deg, #182231, #141c27);
   border-color: #34445b;
   box-shadow:
@@ -1377,6 +1443,20 @@ textarea {
 .wiki-dark .wiki-mindmap-knowledge-card {
   background: linear-gradient(180deg, #182126, #131b20);
   border-color: #304047;
+}
+
+.wiki-dark .wiki-mindmap-knowledge-frame-card {
+  background:
+    linear-gradient(180deg, rgba(28, 37, 47, 0.96), rgba(20, 29, 38, 0.96)),
+    #151e29;
+  border-color: #304355;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 10px 22px rgba(3, 7, 14, 0.26);
+}
+
+.wiki-dark .wiki-mindmap-knowledge-frame-card::after {
+  border-color: color-mix(in srgb, #4c5f76 58%, transparent);
 }
 
 .wiki-dark .wiki-mindmap-question-card {
