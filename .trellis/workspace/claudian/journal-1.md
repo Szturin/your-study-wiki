@@ -161,3 +161,35 @@ Reduced oscilloscope signal stroke/glow weight and moved the scan band to full-s
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: Framework mind map layout
+
+**Date**: 2026-07-04
+**Task**: Framework mind map layout
+
+### Summary
+
+Added a switchable framework-style mind map layout inspired by MarginNote-style grouped branches, with compact framed question cards and light/dark styling.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3c8058a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
