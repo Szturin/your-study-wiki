@@ -193,3 +193,35 @@ Added a switchable framework-style mind map layout inspired by MarginNote-style 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Nested framework mind map
+
+**Date**: 2026-07-04
+**Task**: Nested framework mind map
+
+### Summary
+
+Reworked framework mind map into true nested containment: subject frame, chapter frames, knowledge frames, compact question cards, with no tree connectors.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4d2bd14` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
