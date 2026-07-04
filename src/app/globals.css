@@ -407,7 +407,7 @@ textarea {
   width: 100%;
   height: auto;
   min-height: clamp(210px, 36vw, 360px);
-  filter: drop-shadow(0 0 30px rgba(62, 245, 224, 0.18));
+  filter: drop-shadow(0 0 12px rgba(62, 245, 224, 0.14));
 }
 
 .wiki-startup-wave-axis,
@@ -426,14 +426,14 @@ textarea {
 }
 
 .wiki-startup-wave-shadow {
-  stroke: rgba(84, 240, 209, 0.2);
-  stroke-width: 22;
+  stroke: rgba(84, 240, 209, 0.14);
+  stroke-width: 7.5;
   filter: url("#startupWaveGlow");
 }
 
 .wiki-startup-wave-line {
   stroke: url("#startupWaveGradient");
-  stroke-width: 6;
+  stroke-width: 2.6;
   stroke-dasharray: 1040;
   stroke-dashoffset: 1040;
   filter: url("#startupWaveGlow");
@@ -442,19 +442,25 @@ textarea {
 
 .wiki-startup-wave-dc {
   stroke: rgba(215, 255, 255, 0.8);
-  stroke-width: 2.4;
+  stroke-width: 1.4;
   stroke-dasharray: 10 16;
   animation: wikiStartupDcPulse 680ms ease-in-out 1450ms infinite alternate;
 }
 
 .wiki-startup-loader-scan {
   position: absolute;
-  top: 2%;
-  bottom: 2%;
+  top: 0;
+  bottom: 0;
   left: 0;
-  width: 22%;
-  background: linear-gradient(90deg, transparent, rgba(151, 255, 255, 0.18), transparent);
-  filter: blur(0.3px);
+  z-index: 2;
+  width: min(24vw, 18rem);
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(151, 255, 255, 0.05) 38%, rgba(151, 255, 255, 0.16) 50%, rgba(151, 255, 255, 0.05) 62%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, rgba(84, 240, 209, 0.06) 48%, transparent 100%);
+  filter: blur(0.4px);
+  opacity: 0.82;
+  mix-blend-mode: screen;
+  pointer-events: none;
   transform: translateX(-120%);
   animation: wikiStartupScan 1850ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
 }

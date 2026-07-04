@@ -726,7 +726,7 @@ function StartupSignalLoader({ phase }: StartupSignalLoaderProps) {
               <stop offset="100%" stopColor="#ecffff" stopOpacity="0.82" />
             </linearGradient>
             <filter id="startupWaveGlow" x="-12%" y="-80%" width="124%" height="260%">
-              <feGaussianBlur stdDeviation="7" result="blur" />
+              <feGaussianBlur stdDeviation="3.2" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -744,8 +744,8 @@ function StartupSignalLoader({ phase }: StartupSignalLoaderProps) {
           />
           <path className="wiki-startup-wave-dc" d="M754 132 C800 132 832 132 874 132 H928" />
         </svg>
-        <div className="wiki-startup-loader-scan" />
       </div>
+      <div className="wiki-startup-loader-scan" />
       <div className="wiki-startup-pixels">
         {STARTUP_PIXEL_INDICES.map((pixelIndex) => {
           const rowIndex = Math.floor(pixelIndex / STARTUP_PIXEL_COLUMNS);
