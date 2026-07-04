@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 2
-- **Last Active**: 2026-04-25
+- **Total Sessions**: 3
+- **Last Active**: 2026-07-04
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~92 | Active |
+| `journal-1.md` | ~131 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits |
 |---|------|-------|---------|
+| 3 | 2026-07-04 | Pixel reveal startup transition | `12ee037` |
 | 2 | 2026-04-25 | UI interaction refinement and deployment planning docs | - |
 | 1 | 2026-04-21 | Project wrap-up and docs refresh | - |
 <!-- @@@/auto:session-history -->

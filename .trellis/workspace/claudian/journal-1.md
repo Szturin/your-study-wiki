@@ -97,3 +97,35 @@ Refined the current study workbench UI and interaction behavior, then refreshed 
 - Persist user learning state to storage.
 - Split formal question-bank entities from front-end projection types.
 - Land a first deployable Cloudflare environment.
+
+
+## Session 3: Pixel reveal startup transition
+
+**Date**: 2026-07-04
+**Task**: Pixel reveal startup transition
+
+### Summary
+
+Added a cyberpunk-style black pixel reveal phase after the signal boot loader, verified lint/typecheck/build, and synced static export for GitHub Pages.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `12ee037` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
