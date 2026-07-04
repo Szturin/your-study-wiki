@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,79306,e=>{"use strict";var r=e.i(71645);let t="/your-study-wiki";e.s(["PwaRegister",0,function(){return(0,r.useEffect)(()=>{"serviceWorker"in navigator&&navigator.serviceWorker.register(`${t}/sw.js`,{scope:`${t}/`}).catch(()=>{})},[]),null}])}]);
