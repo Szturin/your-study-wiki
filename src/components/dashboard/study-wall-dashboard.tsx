@@ -14,6 +14,10 @@ type DashboardMode = "home" | "wrongbook" | "favorite";
 type ThemeMode = "light" | "dark";
 type CollectionViewMode = "list" | "mindmap";
 
+type StartupSignalLoaderProps = {
+  visible: boolean;
+};
+
 type NavItemProps = {
   active: boolean;
   label: string;
@@ -696,6 +700,44 @@ function NavItem({ active, label, icon, onClick }: NavItemProps) {
   );
 }
 
+function StartupSignalLoader({ visible }: StartupSignalLoaderProps) {
+  return (
+    <div className={`wiki-startup-loader ${visible ? "wiki-startup-loader-visible" : ""}`} aria-hidden={!visible}>
+      <div className="wiki-startup-loader-grid" />
+      <div className="wiki-startup-scope">
+        <svg className="wiki-startup-wave" viewBox="0 0 960 260" role="img" aria-label="衰减信号加载进度">
+          <defs>
+            <linearGradient id="startupWaveGradient" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stopColor="#a8fbff" stopOpacity="0.12" />
+              <stop offset="22%" stopColor="#8df7ff" stopOpacity="0.98" />
+              <stop offset="66%" stopColor="#54f0d1" stopOpacity="0.96" />
+              <stop offset="100%" stopColor="#ecffff" stopOpacity="0.82" />
+            </linearGradient>
+            <filter id="startupWaveGlow" x="-12%" y="-80%" width="124%" height="260%">
+              <feGaussianBlur stdDeviation="7" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <path className="wiki-startup-wave-axis" d="M32 132 H928" />
+          <path
+            className="wiki-startup-wave-shadow"
+            d="M32 132 C58 35 92 220 124 132 S186 56 218 132 S280 78 314 132 S378 99 414 132 S480 113 520 132 S592 123 636 132 S708 128 754 132 S830 132 874 132 H928"
+          />
+          <path
+            className="wiki-startup-wave-line"
+            d="M32 132 C58 35 92 220 124 132 S186 56 218 132 S280 78 314 132 S378 99 414 132 S480 113 520 132 S592 123 636 132 S708 128 754 132 S830 132 874 132 H928"
+          />
+          <path className="wiki-startup-wave-dc" d="M754 132 C800 132 832 132 874 132 H928" />
+        </svg>
+        <div className="wiki-startup-loader-scan" />
+      </div>
+    </div>
+  );
+}
+
 function QuestionAction({
   icon,
   label,
@@ -820,6 +862,7 @@ function StatCard({
 }
 
 export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
+  const [showStartupLoader, setShowStartupLoader] = useState(true);
   const [dashboardMode, setDashboardMode] = useState<DashboardMode>("home");
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [collectionViewMode, setCollectionViewMode] = useState<CollectionViewMode>("list");
@@ -866,6 +909,16 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   const pendingOffsetRef = useRef<{ x: number; y: number } | null>(null);
   const liveOffsetRef = useRef({ x: 120, y: 80 });
   const liveScaleRef = useRef(1);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setShowStartupLoader(false);
+    }, 2300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   const {
     selectedSubject,
@@ -1940,6 +1993,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
 
   return (
     <div className={`wiki-shell ${isDark ? "wiki-dark" : "wiki-light"}`}>
+      <StartupSignalLoader visible={showStartupLoader} />
       <div className="grid h-screen grid-cols-1 overflow-hidden xl:grid-cols-[306px_minmax(0,1fr)]">
         <aside className="flex min-h-0 flex-col border-r border-[var(--wiki-border)] bg-[var(--wiki-panel)]">
           <div className="flex h-[92px] items-center border-b border-[var(--wiki-border)] px-7">

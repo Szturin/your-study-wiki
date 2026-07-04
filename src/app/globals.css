@@ -312,6 +312,175 @@ textarea {
   --wiki-motion-press: cubic-bezier(0.32, 0, 0.2, 1);
 }
 
+.wiki-startup-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(31, 240, 215, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(3, 9, 13, 0.98), rgba(4, 12, 17, 0.96)),
+    #050a0e;
+  color: #d9fdff;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 520ms ease,
+    visibility 520ms ease;
+}
+
+.wiki-startup-loader-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.wiki-startup-loader-grid {
+  position: absolute;
+  inset: -8%;
+  background:
+    linear-gradient(rgba(104, 244, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 244, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(104, 244, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104, 244, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(180deg, transparent 0%, rgba(68, 240, 216, 0.12) 50%, transparent 100%);
+  background-size:
+    48px 48px,
+    48px 48px,
+    240px 240px,
+    240px 240px,
+    100% 220%;
+  opacity: 0.86;
+  mask-image: radial-gradient(ellipse at center, #000 0%, #000 54%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, #000 54%, transparent 78%);
+  animation: wikiStartupGridScan 2300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.wiki-startup-scope {
+  position: relative;
+  width: min(1180px, calc(100vw - 28px));
+  overflow: hidden;
+  transform: translateY(8px) scale(0.985);
+  animation: wikiStartupScopeEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.wiki-startup-wave {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: clamp(210px, 36vw, 360px);
+  filter: drop-shadow(0 0 30px rgba(62, 245, 224, 0.18));
+}
+
+.wiki-startup-wave-axis,
+.wiki-startup-wave-shadow,
+.wiki-startup-wave-line,
+.wiki-startup-wave-dc {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wiki-startup-wave-axis {
+  stroke: rgba(127, 247, 255, 0.18);
+  stroke-width: 1.4;
+  stroke-dasharray: 10 16;
+}
+
+.wiki-startup-wave-shadow {
+  stroke: rgba(84, 240, 209, 0.2);
+  stroke-width: 22;
+  filter: url("#startupWaveGlow");
+}
+
+.wiki-startup-wave-line {
+  stroke: url("#startupWaveGradient");
+  stroke-width: 6;
+  stroke-dasharray: 1040;
+  stroke-dashoffset: 1040;
+  filter: url("#startupWaveGlow");
+  animation: wikiStartupWaveDraw 1850ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+}
+
+.wiki-startup-wave-dc {
+  stroke: rgba(215, 255, 255, 0.8);
+  stroke-width: 2.4;
+  stroke-dasharray: 10 16;
+  animation: wikiStartupDcPulse 680ms ease-in-out 1450ms infinite alternate;
+}
+
+.wiki-startup-loader-scan {
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  left: 0;
+  width: 22%;
+  background: linear-gradient(90deg, transparent, rgba(151, 255, 255, 0.18), transparent);
+  filter: blur(0.3px);
+  transform: translateX(-120%);
+  animation: wikiStartupScan 1850ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+}
+
+@keyframes wikiStartupScopeEnter {
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes wikiStartupWaveDraw {
+  72% {
+    stroke-dashoffset: 126;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wikiStartupScan {
+  to {
+    transform: translateX(320%);
+  }
+}
+
+@keyframes wikiStartupGridScan {
+  from {
+    background-position:
+      0 0,
+      0 0,
+      0 110%;
+  }
+  to {
+    background-position:
+      0 0,
+      0 0,
+      0 -70%;
+  }
+}
+
+@keyframes wikiStartupDcPulse {
+  from {
+    opacity: 0.46;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wiki-startup-loader,
+  .wiki-startup-loader-grid,
+  .wiki-startup-scope,
+  .wiki-startup-wave-line,
+  .wiki-startup-wave-dc,
+  .wiki-startup-loader-scan {
+    animation-duration: 1ms;
+    transition-duration: 1ms;
+  }
+}
+
 .wiki-nav-item:hover {
   transform: translateY(-1px);
   border-color: var(--wiki-border);
