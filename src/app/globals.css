@@ -989,6 +989,38 @@ textarea {
   box-shadow: 0 14px 28px rgba(64, 78, 108, 0.14);
 }
 
+.wiki-mindmap-layout-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--wiki-border);
+  border-radius: 1.05rem;
+  background: color-mix(in srgb, var(--wiki-panel) 86%, var(--wiki-subtle));
+  padding: 0.25rem;
+}
+
+.wiki-mindmap-layout-button {
+  border-radius: 0.82rem;
+  padding: 0.62rem 0.9rem;
+  color: var(--wiki-muted);
+  font-size: 14px;
+  font-weight: 700;
+  transition:
+    background-color var(--wiki-motion-fast) var(--wiki-motion-ease),
+    color var(--wiki-motion-fast) var(--wiki-motion-ease),
+    box-shadow var(--wiki-motion-fast) var(--wiki-motion-ease);
+}
+
+.wiki-mindmap-layout-button:hover {
+  color: var(--wiki-text);
+}
+
+.wiki-mindmap-layout-button-active {
+  background: var(--wiki-panel);
+  color: var(--wiki-text);
+  box-shadow: 0 6px 16px rgba(64, 78, 108, 0.08);
+}
+
 .wiki-mindmap-canvas {
   position: absolute;
   inset: 0 auto auto 0;
@@ -1020,6 +1052,7 @@ textarea {
 
 .wiki-mindmap-root-card,
 .wiki-mindmap-chapter-card,
+.wiki-mindmap-frame-card,
 .wiki-mindmap-knowledge-card,
 .wiki-mindmap-question-card {
   border: 1px solid var(--wiki-border);
@@ -1040,6 +1073,28 @@ textarea {
   padding: 1rem 1.1rem;
   background: linear-gradient(180deg, #f6f8fb, #ecf1f8);
   border-color: #d4ddea;
+}
+
+.wiki-mindmap-frame-card {
+  z-index: 0;
+  border-radius: 1.45rem;
+  padding: 1.25rem 1.3rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(247, 250, 253, 0.62)),
+    linear-gradient(180deg, #f7f9fc, #eef3f7);
+  border-color: #d5dde8;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.78) inset,
+    0 14px 34px rgba(89, 103, 128, 0.09);
+}
+
+.wiki-mindmap-frame-card::after {
+  content: "";
+  position: absolute;
+  inset: 4.65rem 1.25rem 1.1rem;
+  border: 1px dashed color-mix(in srgb, var(--wiki-border) 76%, transparent);
+  border-radius: 1.05rem;
+  pointer-events: none;
 }
 
 .wiki-mindmap-knowledge-card {
@@ -1071,6 +1126,19 @@ textarea {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
     0 16px 32px rgba(84, 96, 118, 0.14);
+}
+
+.wiki-mindmap-question-card-framed {
+  border-radius: 1.05rem;
+  padding: 0.85rem 0.95rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 250, 0.95));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.74) inset,
+    0 8px 18px rgba(88, 101, 122, 0.08);
+}
+
+.wiki-mindmap-question-card-framed:hover {
+  transform: translateY(-2px);
 }
 
 .wiki-mindmap-question-excerpt {
@@ -1267,6 +1335,17 @@ textarea {
   box-shadow: 0 14px 28px rgba(4, 8, 14, 0.32);
 }
 
+.wiki-dark .wiki-mindmap-layout-toggle {
+  border-color: #34445b;
+  background: color-mix(in srgb, #17202b 88%, transparent);
+}
+
+.wiki-dark .wiki-mindmap-layout-button-active {
+  background: #263246;
+  color: #e8eef8;
+  box-shadow: 0 8px 18px rgba(4, 8, 14, 0.3);
+}
+
 .wiki-dark .wiki-mindmap-path {
   stroke: color-mix(in srgb, #5e6f91 68%, #31405a);
 }
@@ -1281,6 +1360,20 @@ textarea {
   border-color: #35465c;
 }
 
+.wiki-dark .wiki-mindmap-frame-card {
+  background:
+    linear-gradient(180deg, rgba(30, 40, 53, 0.84), rgba(24, 33, 44, 0.9)),
+    linear-gradient(180deg, #182231, #141c27);
+  border-color: #34445b;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 18px 42px rgba(3, 7, 14, 0.34);
+}
+
+.wiki-dark .wiki-mindmap-frame-card::after {
+  border-color: color-mix(in srgb, #4b5d76 68%, transparent);
+}
+
 .wiki-dark .wiki-mindmap-knowledge-card {
   background: linear-gradient(180deg, #182126, #131b20);
   border-color: #304047;
@@ -1289,6 +1382,13 @@ textarea {
 .wiki-dark .wiki-mindmap-question-card {
   background: linear-gradient(180deg, rgba(28, 35, 45, 0.98), rgba(21, 27, 36, 0.96));
   border-color: #2e3a4d;
+}
+
+.wiki-dark .wiki-mindmap-question-card-framed {
+  background: linear-gradient(180deg, rgba(28, 36, 48, 0.98), rgba(21, 29, 39, 0.96));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 10px 22px rgba(3, 7, 14, 0.26);
 }
 
 .wiki-dark .wiki-mindmap-inline-button,

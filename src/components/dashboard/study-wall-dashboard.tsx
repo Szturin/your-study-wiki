@@ -13,6 +13,7 @@ type StudyWallDashboardProps = {
 type DashboardMode = "home" | "wrongbook" | "favorite";
 type ThemeMode = "light" | "dark";
 type CollectionViewMode = "list" | "mindmap";
+type MindMapLayoutMode = "tree" | "framework";
 type StartupLoaderPhase = "boot" | "reveal" | "hidden";
 
 type StartupSignalLoaderProps = {
@@ -104,6 +105,7 @@ type MindMapRenderNode = {
   collapsed?: boolean;
   expandable?: boolean;
   expanded?: boolean;
+  framed?: boolean;
   children: MindMapRenderNode[];
 };
 
@@ -117,6 +119,20 @@ const MINDMAP_NODE_SIZE: Record<MindMapRenderKind, { width: number; height: numb
 const MINDMAP_CANVAS_PADDING = {
   x: 96,
   y: 72,
+};
+
+const MINDMAP_FRAME_LAYOUT = {
+  rootGap: 150,
+  frameGap: 52,
+  frameWidth: 920,
+  frameHeaderHeight: 92,
+  framePaddingX: 30,
+  framePaddingBottom: 28,
+  groupGap: 20,
+  knowledgeQuestionGap: 32,
+  questionGap: 12,
+  questionWidth: 300,
+  questionHeight: 102,
 };
 
 const MINDMAP_LOD_THRESHOLD = {
@@ -228,6 +244,10 @@ function getNextMindMapQuestionRenderMode(
   }
 
   return scale <= MINDMAP_LOD_THRESHOLD.math - MINDMAP_LOD_HYSTERESIS ? "summary" : "math";
+}
+
+function getMindMapInitialOffset(layoutMode: MindMapLayoutMode) {
+  return layoutMode === "framework" ? { x: 48, y: 80 } : { x: 120, y: 80 };
 }
 
 function buildMindMapRenderTree(
@@ -472,6 +492,147 @@ function buildMindMapRenderTree(
   return rootNode;
 }
 
+function buildMindMapFrameworkTree(
+  collectionMindMap: MindMapRootNode,
+  questionCount: number,
+  collapsedNodeMap: Record<string, boolean>,
+): MindMapRenderNode {
+  const rootNode: MindMapRenderNode = {
+    id: `${collectionMindMap.mode}-${collectionMindMap.subjectId}`,
+    kind: "root",
+    signature: `framework-root:${collectionMindMap.mode}:${collectionMindMap.subjectId}:${questionCount}`,
+    dirty: false,
+    title: collectionMindMap.subjectName,
+    subtitle: `${collectionMindMap.mode === "favorite" ? "收藏本" : "错题本"} · ${questionCount} 道题`,
+    x: 0,
+    y: 0,
+    width: MINDMAP_NODE_SIZE.root.width,
+    height: MINDMAP_NODE_SIZE.root.height,
+    subtreeHeight: MINDMAP_NODE_SIZE.root.height,
+    depth: 0,
+    questionCount,
+    leafCount: Math.max(collectionMindMap.chapters.length, 1),
+    children: [],
+  };
+
+  const frameX = rootNode.width + MINDMAP_FRAME_LAYOUT.rootGap;
+  let frameCursorY = 0;
+
+  rootNode.children = collectionMindMap.chapters.map((chapterNode) => {
+    const frameCollapsed = collapsedNodeMap[chapterNode.id] === true;
+    const chapterQuestionCount = chapterNode.knowledges.reduce(
+      (sum, knowledgeNode) => sum + knowledgeNode.questions.length,
+      0,
+    );
+    const chapterChildren: MindMapRenderNode[] = [];
+    let groupCursorY = frameCursorY + MINDMAP_FRAME_LAYOUT.frameHeaderHeight;
+
+    if (!frameCollapsed) {
+      for (const knowledgeNode of chapterNode.knowledges) {
+        const knowledgeCollapsed = collapsedNodeMap[knowledgeNode.id] === true;
+        const questionChildren: MindMapRenderNode[] = knowledgeCollapsed
+          ? []
+          : knowledgeNode.questions.map((questionNode, questionIndex) => ({
+              id: questionNode.id,
+              kind: "question",
+              signature: `framework-question:${questionNode.id}:${questionNode.promptPreviewText.length}`,
+              dirty: false,
+              questionId: questionNode.questionId,
+              title: questionNode.title,
+              subtitle: questionNode.title,
+              meta: `${questionNode.year} · ${questionNode.source} · ${questionNode.typeGroupName}`,
+              preview: questionNode.promptPreview,
+              detail: questionNode.promptDetail,
+              previewText: questionNode.promptPreviewText,
+              detailText: questionNode.promptDetailText,
+              x:
+                frameX +
+                MINDMAP_FRAME_LAYOUT.framePaddingX +
+                MINDMAP_NODE_SIZE.knowledge.width +
+                MINDMAP_FRAME_LAYOUT.knowledgeQuestionGap,
+              y: groupCursorY + questionIndex * (MINDMAP_FRAME_LAYOUT.questionHeight + MINDMAP_FRAME_LAYOUT.questionGap),
+              width: MINDMAP_FRAME_LAYOUT.questionWidth,
+              height: MINDMAP_FRAME_LAYOUT.questionHeight,
+              subtreeHeight: MINDMAP_FRAME_LAYOUT.questionHeight,
+              depth: 3,
+              questionCount: 1,
+              leafCount: 1,
+              framed: true,
+              children: [],
+            }));
+
+        const groupHeight = Math.max(
+          MINDMAP_NODE_SIZE.knowledge.height,
+          questionChildren.length > 0
+            ? questionChildren.length * MINDMAP_FRAME_LAYOUT.questionHeight +
+                (questionChildren.length - 1) * MINDMAP_FRAME_LAYOUT.questionGap
+            : MINDMAP_NODE_SIZE.knowledge.height,
+        );
+
+        const knowledgeRenderNode: MindMapRenderNode = {
+          id: knowledgeNode.id,
+          kind: "knowledge",
+          signature: `framework-knowledge:${knowledgeNode.id}:${knowledgeCollapsed ? "closed" : "open"}:${knowledgeNode.questions.length}`,
+          dirty: false,
+          title: knowledgeNode.name,
+          subtitle: `${knowledgeNode.questions.length} 道题`,
+          x: frameX + MINDMAP_FRAME_LAYOUT.framePaddingX,
+          y: groupCursorY + groupHeight / 2 - MINDMAP_NODE_SIZE.knowledge.height / 2,
+          width: MINDMAP_NODE_SIZE.knowledge.width,
+          height: MINDMAP_NODE_SIZE.knowledge.height,
+          subtreeHeight: groupHeight,
+          depth: 2,
+          questionCount: knowledgeNode.questions.length,
+          leafCount: Math.max(knowledgeNode.questions.length, 1),
+          collapsed: knowledgeCollapsed,
+          expandable: knowledgeNode.questions.length > 0,
+          framed: true,
+          children: questionChildren,
+        };
+
+        chapterChildren.push(knowledgeRenderNode);
+        groupCursorY += groupHeight + MINDMAP_FRAME_LAYOUT.groupGap;
+      }
+    }
+
+    const contentHeight =
+      chapterChildren.length > 0
+        ? groupCursorY - frameCursorY - MINDMAP_FRAME_LAYOUT.groupGap + MINDMAP_FRAME_LAYOUT.framePaddingBottom
+        : MINDMAP_FRAME_LAYOUT.frameHeaderHeight + MINDMAP_FRAME_LAYOUT.framePaddingBottom;
+    const frameHeight = Math.max(168, contentHeight);
+
+    const chapterRenderNode: MindMapRenderNode = {
+      id: chapterNode.id,
+      kind: "chapter",
+      signature: `framework-chapter:${chapterNode.id}:${frameCollapsed ? "closed" : "open"}:${chapterQuestionCount}`,
+      dirty: false,
+      title: chapterNode.name,
+      subtitle: `${chapterQuestionCount} 道题 · ${chapterNode.knowledges.length} 个知识点`,
+      x: frameX,
+      y: frameCursorY,
+      width: MINDMAP_FRAME_LAYOUT.frameWidth,
+      height: frameHeight,
+      subtreeHeight: frameHeight,
+      depth: 1,
+      questionCount: chapterQuestionCount,
+      leafCount: Math.max(chapterNode.knowledges.length, 1),
+      collapsed: frameCollapsed,
+      expandable: chapterNode.knowledges.length > 0,
+      framed: true,
+      children: chapterChildren,
+    };
+
+    frameCursorY += frameHeight + MINDMAP_FRAME_LAYOUT.frameGap;
+    return chapterRenderNode;
+  });
+
+  const totalFrameHeight = Math.max(frameCursorY - MINDMAP_FRAME_LAYOUT.frameGap, rootNode.height);
+  rootNode.y = 24;
+  rootNode.subtreeHeight = totalFrameHeight;
+
+  return rootNode;
+}
+
 function collectMindMapNodes(rootNode: MindMapRenderNode) {
   const nodes: MindMapRenderNode[] = [];
   const connectors: Array<{ id: string; path: string; fromId: string; toId: string }> = [];
@@ -480,13 +641,15 @@ function collectMindMapNodes(rootNode: MindMapRenderNode) {
     nodes.push(node);
 
     for (const child of node.children) {
-      const startX = node.x + node.width;
-      const startY = node.y + node.height / 2;
-      const endX = child.x;
-      const endY = child.y + child.height / 2;
+      const childIsInsideFrame = node.framed === true && node.kind === "chapter" && child.x < node.x + node.width;
+      const childIsFrameworkFrame = node.kind === "root" && child.framed === true && child.kind === "chapter";
+      const startX = childIsInsideFrame ? node.x + MINDMAP_FRAME_LAYOUT.framePaddingX * 0.52 : node.x + node.width;
+      const startY = childIsInsideFrame ? child.y + child.height / 2 : node.y + node.height / 2;
+      const endX = childIsInsideFrame ? child.x - 8 : child.x;
+      const endY = childIsFrameworkFrame ? child.y + 56 : child.y + child.height / 2;
       const deltaX = endX - startX;
-      const controlA = startX + clampNumber(deltaX * 0.36, 42, 96);
-      const controlB = endX - clampNumber(deltaX * 0.28, 30, 82);
+      const controlA = startX + clampNumber(deltaX * 0.36, childIsInsideFrame ? 16 : 42, childIsInsideFrame ? 42 : 96);
+      const controlB = endX - clampNumber(deltaX * 0.28, childIsInsideFrame ? 14 : 30, childIsInsideFrame ? 38 : 82);
 
       connectors.push({
         id: `${node.id}-${child.id}`,
@@ -893,6 +1056,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   const [dashboardMode, setDashboardMode] = useState<DashboardMode>("home");
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [collectionViewMode, setCollectionViewMode] = useState<CollectionViewMode>("list");
+  const [mindMapLayoutMode, setMindMapLayoutMode] = useState<MindMapLayoutMode>("tree");
   const [homeView, setHomeView] = useState(true);
   const [expandedAnswers, setExpandedAnswers] = useState<Record<string, boolean>>({});
   const [expandedAnalysis, setExpandedAnalysis] = useState<Record<string, boolean>>({});
@@ -1147,19 +1311,23 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
       return null;
     }
 
-    return collectMindMapNodes(
-      buildMindMapRenderTree(
-        collectionMindMap,
-        visibleQuestionRows.length,
-        collapsedMindMapNodes,
-        expandedMindMapQuestions,
-        previousMindMapTreeRef.current,
-      ),
-    );
+    const renderTree =
+      mindMapLayoutMode === "framework"
+        ? buildMindMapFrameworkTree(collectionMindMap, visibleQuestionRows.length, collapsedMindMapNodes)
+        : buildMindMapRenderTree(
+            collectionMindMap,
+            visibleQuestionRows.length,
+            collapsedMindMapNodes,
+            expandedMindMapQuestions,
+            previousMindMapTreeRef.current,
+          );
+
+    return collectMindMapNodes(renderTree);
   }, [
     collapsedMindMapNodes,
     collectionMindMap,
     expandedMindMapQuestions,
+    mindMapLayoutMode,
     visibleQuestionRows.length,
   ]);
 
@@ -1582,8 +1750,23 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   }
 
   function resetMindMapViewport() {
-    liveOffsetRef.current = { x: 120, y: 80 };
-    setMindMapOffset({ x: 120, y: 80 });
+    const nextOffset = getMindMapInitialOffset(mindMapLayoutMode);
+    liveOffsetRef.current = nextOffset;
+    setMindMapOffset(nextOffset);
+    commitMindMapScale(1);
+  }
+
+  function switchMindMapLayout(nextLayoutMode: MindMapLayoutMode) {
+    if (nextLayoutMode === mindMapLayoutMode) {
+      return;
+    }
+
+    previousMindMapTreeRef.current = null;
+    mindMapAnchorRef.current = null;
+    setMindMapLayoutMode(nextLayoutMode);
+    const nextOffset = getMindMapInitialOffset(nextLayoutMode);
+    liveOffsetRef.current = nextOffset;
+    setMindMapOffset(nextOffset);
     commitMindMapScale(1);
   }
 
@@ -1683,6 +1866,24 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
               >
                 列表视图
               </button>
+              <div className="wiki-mindmap-layout-toggle" aria-label="导图布局">
+                <button
+                  type="button"
+                  onClick={() => switchMindMapLayout("tree")}
+                  className={`wiki-mindmap-layout-button ${mindMapLayoutMode === "tree" ? "wiki-mindmap-layout-button-active" : ""}`}
+                  aria-pressed={mindMapLayoutMode === "tree"}
+                >
+                  树形
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchMindMapLayout("framework")}
+                  className={`wiki-mindmap-layout-button ${mindMapLayoutMode === "framework" ? "wiki-mindmap-layout-button-active" : ""}`}
+                  aria-pressed={mindMapLayoutMode === "framework"}
+                >
+                  框架
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -1772,7 +1973,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                   return (
                     <div
                       key={node.id}
-                      className="wiki-mindmap-node wiki-mindmap-question-card"
+                      className={`wiki-mindmap-node wiki-mindmap-question-card ${node.framed ? "wiki-mindmap-question-card-framed" : ""}`}
                       style={{
                         width: `${node.width}px`,
                         minHeight: `${node.height}px`,
@@ -1793,7 +1994,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                       >
                         <div className="text-[15px] font-semibold leading-6 text-[var(--wiki-text)]">{node.title}</div>
                         <div className="mt-2 text-[12px] text-[var(--wiki-muted)]">{node.meta}</div>
-                        {mindMapZoomSnapshot ? (
+                        {node.framed ? null : mindMapZoomSnapshot ? (
                           <div className={`${contentClassName} wiki-mindmap-snapshot-preview`} aria-hidden="true">
                             <div className="wiki-mindmap-snapshot-chip" />
                             <div className="wiki-mindmap-snapshot-line wiki-mindmap-snapshot-line-wide" />
@@ -1833,7 +2034,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                         )}
                       </button>
 
-                      {node.expandable ? (
+                      {node.expandable && !node.framed ? (
                         <div className="mt-4 flex items-center justify-start gap-3">
                           <button
                             type="button"
@@ -1857,6 +2058,8 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                 const cardClassName =
                   node.kind === "root"
                     ? "wiki-mindmap-root-card"
+                    : node.kind === "chapter" && node.framed
+                      ? "wiki-mindmap-frame-card"
                     : node.kind === "chapter"
                       ? "wiki-mindmap-chapter-card"
                       : "wiki-mindmap-knowledge-card";
