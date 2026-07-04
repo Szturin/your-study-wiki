@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "My Wiki墙",
     short_name: "My Wiki墙",
-    description: "面向数学与信号与系统的题型分类 Wiki 墙。",
+    description: "面向信号与系统的题型分类 Wiki 墙。",
     start_url: `${basePath}/`,
     display: "standalone",
     background_color: "#f8fafc",

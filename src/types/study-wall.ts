@@ -1,4 +1,4 @@
-export type SubjectId = "math" | "signal-system";
+export type SubjectId = "signal-system";
 export type TypeDifficulty = "基础" | "综合" | "提高";
 export type MasteryState = "mastered" | "blurred" | "unknown";
 

@@ -19,7 +19,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const metadata: Metadata = {
   title: "My 0854 WIKI墙",
   description:
-    "面向数学与信号与系统的题型分类 Wiki 墙，支持科目、章节、知识点与题目视图切换。",
+    "面向信号与系统的题型分类 Wiki 墙，支持章节、知识点与题目视图切换。",
   manifest: `${basePath}/manifest.webmanifest`,
 };
 

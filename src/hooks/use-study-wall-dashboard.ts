@@ -54,11 +54,11 @@ function sanitizePersistedState(
 }
 
 export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
-  const preferredSubject = subjects.find((subject) => subject.id === "math") ?? subjects[0];
+  const preferredSubject = subjects.find((subject) => subject.id === "signal-system") ?? subjects[0];
   const preferredChapterId = preferredSubject?.chapters[0]?.id ?? "";
 
   const [selectedSubjectId, setSelectedSubjectId] = useState<SubjectId>(
-    preferredSubject?.id ?? "math",
+    preferredSubject?.id ?? "signal-system",
   );
   const [selectedChapterId, setSelectedChapterId] = useState(preferredChapterId);
   const [selectedKnowledgeId, setSelectedKnowledgeId] = useState("");
@@ -327,7 +327,7 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
     const nextSubject = subjects.find((subject) => subject.id === subjectId) ?? subjects[0] ?? null;
     const nextChapterId = nextSubject?.chapters[0]?.id ?? "";
 
-    setSelectedSubjectId(subjectId);
+    setSelectedSubjectId(nextSubject?.id ?? "signal-system");
     setSelectedChapterId(nextChapterId);
     setExpandedChapterId(nextChapterId);
     setSelectedKnowledgeId("");

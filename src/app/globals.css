@@ -635,6 +635,10 @@ textarea {
   line-height: 2.2rem;
 }
 
+.wiki-collection-panel {
+  isolation: isolate;
+}
+
 .wiki-mindmap-viewport {
   --wiki-mindmap-grid-size: 28px;
   --wiki-mindmap-grid-offset-x: 0px;
@@ -664,6 +668,7 @@ textarea {
   cursor: grab;
   touch-action: none;
   overscroll-behavior: contain;
+  contain: layout paint;
 }
 
 .wiki-mindmap-viewport:active {

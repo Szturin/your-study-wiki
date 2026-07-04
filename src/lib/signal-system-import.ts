@@ -94,13 +94,6 @@ const chapter5KnowledgeNodes: KnowledgeNode[] = [
   { id: "ss-ch5-ssb-hilbert", name: "单边带与希尔伯特变换", summary: "单边带信号构造、解析信号以及希尔伯特变换的证明与应用。" },
 ];
 
-const chapter6KnowledgeNodes: KnowledgeNode[] = [
-  { id: "ss-ch6-orthogonal-basis", name: "正交函数集与勒让德展开", summary: "正交性、规范化、完备性以及用勒让德多项式展开信号。" },
-  { id: "ss-ch6-least-square", name: "最小均方逼近", summary: "在给定区间内用低阶多项式逼近函数并最小化均方误差。" },
-  { id: "ss-ch6-walsh-haar", name: "Walsh / Haar 基函数", summary: "Walsh、Haar 与相关正交基函数的三角定义、波形和展开问题。" },
-  { id: "ss-ch6-energy-correlation", name: "能量与相关分析", summary: "信号正交性、能量叠加、自相关与互相关及 CDMA 码组判定。" },
-];
-
 const chapter1Questions: RawQuestion[] = [
   {
     id: "ss-zj-1-1",
@@ -536,76 +529,6 @@ const chapter5Questions: RawQuestion[] = [
     title: "题 5.24：余弦信号冲激抽样的波形与频谱",
     knowledgePoint: "时频域系统分析",
     prompt: "若 $x(t)=\\cos(\\omega_m t)$，$\\delta_T(t)=\\sum_{n=-\\infty}^{\\infty}\\delta(t-nT)$，$T=\\dfrac{2\\pi}{\\omega_s}$，分别画出以下情况 $x(t)\\cdot\\delta_T(t)$ 的波形及其频谱 $\\mathcal{F}[x(t)\\delta_T(t)]$ 图形。讨论从 $x(t)\\delta_T(t)$ 能否恢复 $x(t)$。注意比较 (1) 和 (4) 的结果（建议画波形时保持 $T$ 不变）：(1) $\\omega_m=\\dfrac{\\omega_s}{8}=\\dfrac{\\pi}{4T}$；(2) $\\omega_m=\\dfrac{\\omega_s}{4}=\\dfrac{\\pi}{2T}$；(3) $\\omega_m=\\dfrac{\\omega_s}{2}=\\dfrac{\\pi}{T}$；(4) $\\omega_m=\\dfrac{9}{8}\\omega_s=\\dfrac{9\\pi}{4T}$。",
-  },
-];
-
-const chapter6Questions: RawQuestion[] = [
-  {
-    id: "ss-zj-6-7",
-    num: "6.7",
-    page: 211,
-    title: "题 6.7：前四个勒让德多项式的正交性与规范化",
-    knowledgePoint: "正交函数集与勒让德展开",
-    prompt: "试证明前四个勒让德多项式在 $(-1,1)$ 内是正交函数集。它是否规格化？",
-  },
-  {
-    id: "ss-zj-6-8",
-    num: "6.8",
-    page: 212,
-    title: "题 6.8：矩形波的勒让德级数展开系数",
-    knowledgePoint: "正交函数集与勒让德展开",
-    prompt: "一矩形波如题图 6-8 所示，将此函数用勒让德（傅里叶）级数表示 $f(t)=c_0p_0(t)+c_1p_1(t)+\\cdots+c_np_n(t)$，试求系数 $c_0,c_1,c_2,c_3,c_4$。图见教材（原 PDF 第212页）。",
-  },
-  {
-    id: "ss-zj-6-9",
-    num: "6.9",
-    page: 213,
-    title: "题 6.9：指数函数的二次最小均方逼近",
-    knowledgePoint: "最小均方逼近",
-    prompt: "用二次方程 $at^2+bt+c$ 来近似表示函数 $e^t$，区间在 $(-1,1)$，使方均误差最小，求系数 $a,b,c$。",
-  },
-  {
-    id: "ss-zj-6-10",
-    num: "6.10",
-    page: 214,
-    title: "题 6.10：拉德马赫函数集的完备性讨论",
-    knowledgePoint: "Walsh / Haar 基函数",
-    prompt: "试讨论图 6-6 所示拉德马赫函数集是否为完备的正交函数集。",
-  },
-  {
-    id: "ss-zj-6-11",
-    num: "6.11",
-    page: 215,
-    title: "题 6.11：两信号同时作用时的能量叠加",
-    knowledgePoint: "能量与相关分析",
-    prompt: "若信号 $f_1(t)=\\cos(\\omega t)$，$f_2(t)=\\sin(\\omega t)$，试证明当两信号同时作用于单位电阻时所产生的能量等于 $f_1(t)$ 和 $f_2(t)$ 分别作用时产生的能量之和。如果改为 $f_1(t)=\\cos(\\omega t)$，$f_2(t)=\\cos(\\omega t+45^\\circ)$，上述结论是否成立？",
-  },
-  {
-    id: "ss-zj-6-12",
-    num: "6.12",
-    page: 216,
-    title: "题 6.12：7 至 15 序次尔什函数的三角形式与波形",
-    knowledgePoint: "Walsh / Haar 基函数",
-    prompt: "以三角函数形式的定义写出序号 $k$ 从 7 至 15 的次尔什函数表示式，并画出它们的波形。",
-  },
-  {
-    id: "ss-zj-6-16",
-    num: "6.16",
-    page: 220,
-    title: "题 6.16：典型信号的自相关函数",
-    knowledgePoint: "能量与相关分析",
-    prompt: `求下列信号的自相关函数：
-
-(1) $f(t)=e^{-at}u(t)$（$a>0$）；
-(2) $f(t)=E\\cos(\\omega_0 t)u(t)$。`,
-  },
-  {
-    id: "ss-zj-6-24",
-    num: "6.24",
-    page: 230,
-    title: "题 6.24：Walsh 地址码的自相关、互相关与可用性",
-    knowledgePoint: "能量与相关分析",
-    prompt: "以题图 6-24 所示 $k=1,2,3$ 的三个 Walsh 函数作为 CDMA 系统的地址码，$c_1(t)=\\overline{\\operatorname{Wal}(1,t)}$，$c_2(t)=\\overline{\\operatorname{Wal}(2,t)}$，$c_3(t)=\\overline{\\operatorname{Wal}(3,t)}$。分别求它们的自相关函数 $R_{11}(\\tau)$、$R_{22}(\\tau)$、$R_{33}(\\tau)$ 以及互相关函数 $R_{12}(\\tau)$、$R_{21}(\\tau)$、$R_{13}(\\tau)$、$R_{31}(\\tau)$、$R_{23}(\\tau)$、$R_{32}(\\tau)$（粗略画图形即可），并由所得结果讨论此码组是否能用作地址码。图见教材（原 PDF 第230页）。",
   },
 ];
 

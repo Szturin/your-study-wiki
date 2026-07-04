@@ -22,12 +22,14 @@ type NavItemProps = {
 };
 
 type QuestionRow = {
+  rowId: string;
   subjectId: SubjectId;
   subjectName: string;
   chapterId: string;
   chapterName: string;
   knowledgeId: string;
   knowledgeName: string;
+  typeGroupId: string;
   typeGroupName: string;
   questionId: string;
   title: string;
@@ -41,6 +43,7 @@ type QuestionRow = {
 
 type MindMapQuestionNode = {
   id: string;
+  questionId: string;
   title: string;
   year: string;
   source: string;
@@ -287,7 +290,7 @@ function buildMindMapRenderTree(
       kind: "question",
       signature,
       dirty: true,
-      questionId: questionNode.id,
+      questionId: questionNode.questionId,
       title: questionNode.title,
       subtitle: questionNode.title,
       meta: `${questionNode.year} · ${questionNode.source} · ${questionNode.typeGroupName}`,
@@ -858,6 +861,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   const mindMapAnchorRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const dragFrameRef = useRef<number | null>(null);
   const zoomFrameRef = useRef<number | null>(null);
+  const wheelCommitTimerRef = useRef<number | null>(null);
   const zoomSnapshotTimerRef = useRef<number | null>(null);
   const pendingOffsetRef = useRef<{ x: number; y: number } | null>(null);
   const liveOffsetRef = useRef({ x: 120, y: 80 });
@@ -888,12 +892,14 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   } = useStudyWallDashboard(subjects);
 
   const isDark = themeMode === "dark";
+  const hasMultipleSubjects = subjects.length > 1;
 
   const allQuestionRows = useMemo<QuestionRow[]>(() => {
     return subjects.flatMap((subject) =>
       subject.chapters.flatMap((chapter) =>
         chapter.typeGroups.flatMap((typeGroup) =>
           typeGroup.questions.map((question) => ({
+            rowId: `${subject.id}:${chapter.id}:${typeGroup.id}:${question.id}`,
             subjectId: subject.id,
             subjectName: subject.name,
             chapterId: chapter.id,
@@ -901,6 +907,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
             knowledgeId:
               chapter.knowledgeNodes.find((node) => node.name === question.knowledgePoint)?.id ?? "",
             knowledgeName: question.knowledgePoint,
+            typeGroupId: typeGroup.id,
             typeGroupName: typeGroup.name,
             questionId: question.id,
             title: question.title,
@@ -932,6 +939,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
     }
 
     return overviewQuestions.map((item) => ({
+      rowId: `${selectedSubject?.id ?? selectedSubjectId}:${selectedChapter?.id ?? ""}:${item.typeGroup.id}:${item.question.id}`,
       subjectId: selectedSubject?.id ?? selectedSubjectId,
       subjectName: selectedSubject?.name ?? "",
       chapterId: selectedChapter?.id ?? "",
@@ -939,6 +947,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
       knowledgeId:
         selectedChapter?.knowledgeNodes.find((node) => node.name === item.question.knowledgePoint)?.id ?? "",
       knowledgeName: item.question.knowledgePoint,
+      typeGroupId: item.typeGroup.id,
       typeGroupName: item.typeGroup.name,
       questionId: item.question.id,
       title: item.question.title,
@@ -1013,7 +1022,8 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
       }
 
       knowledgeNode.questions.push({
-        id: row.questionId,
+        id: row.rowId,
+        questionId: row.questionId,
         title: row.title,
         year: row.year,
         source: row.source,
@@ -1231,6 +1241,10 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
         window.cancelAnimationFrame(zoomFrameRef.current);
       }
 
+      if (wheelCommitTimerRef.current !== null) {
+        window.clearTimeout(wheelCommitTimerRef.current);
+      }
+
       if (zoomSnapshotTimerRef.current !== null) {
         window.clearTimeout(zoomSnapshotTimerRef.current);
       }
@@ -1282,7 +1296,11 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
       return false;
     }
 
-    return window.localStorage.getItem(FAVORITE_REMINDER_STORAGE_KEY) === getTodayKey();
+    try {
+      return window.localStorage.getItem(FAVORITE_REMINDER_STORAGE_KEY) === getTodayKey();
+    } catch {
+      return false;
+    }
   }
 
   function handleFavoriteAction(questionId: string, questionTitle: string, favorite: boolean) {
@@ -1309,7 +1327,11 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
     }
 
     if (favoriteRemovalConfirm.skipToday && typeof window !== "undefined") {
-      window.localStorage.setItem(FAVORITE_REMINDER_STORAGE_KEY, getTodayKey());
+      try {
+        window.localStorage.setItem(FAVORITE_REMINDER_STORAGE_KEY, getTodayKey());
+      } catch {
+        // The removal itself should still succeed when browser storage is unavailable.
+      }
     }
 
     toggleQuestionFavorite(favoriteRemovalConfirm.questionId);
@@ -1399,10 +1421,14 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
       });
     }
 
-    window.clearTimeout((handleMindMapWheel as typeof handleMindMapWheel & { commitTimer?: number }).commitTimer);
-    (handleMindMapWheel as typeof handleMindMapWheel & { commitTimer?: number }).commitTimer = window.setTimeout(() => {
+    if (wheelCommitTimerRef.current !== null) {
+      window.clearTimeout(wheelCommitTimerRef.current);
+    }
+
+    wheelCommitTimerRef.current = window.setTimeout(() => {
       setMindMapOffset(liveOffsetRef.current);
       commitMindMapScale(liveScaleRef.current);
+      wheelCommitTimerRef.current = null;
     }, 110);
   }
 
@@ -1462,7 +1488,9 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
         pendingOffsetRef.current = null;
       }
 
-      event.currentTarget.releasePointerCapture(event.pointerId);
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
     }
   }
 
@@ -1547,14 +1575,25 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
 
     if (collectionViewMode === "mindmap" && collectionMindMap && collectionMindMapLayout && visibleMindMapScene) {
       return (
-        <section className="wiki-panel">
+        <section
+          key={`collection-${dashboardMode}-mindmap`}
+          className="wiki-panel wiki-collection-panel wiki-collection-panel-mindmap"
+          data-view-mode="mindmap"
+        >
           <div className="wiki-toolbar">
             <div>
               <div className="text-[22px] font-semibold text-[var(--wiki-text)]">{title}导图</div>
               <div className="mt-2 text-[15px] text-[var(--wiki-muted)]">{subtitle}，按章节与知识点自动聚合</div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <button type="button" onClick={() => setCollectionViewMode("list")} className="wiki-pill-button">
+              <button
+                type="button"
+                onClick={() => {
+                  setCollectionViewMode("list");
+                  setMindMapFullscreen(false);
+                }}
+                className="wiki-pill-button"
+              >
                 列表视图
               </button>
               <button
@@ -1791,14 +1830,25 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
     }
 
     return (
-      <section className="wiki-panel">
+      <section
+        key={`collection-${dashboardMode}-list`}
+        className="wiki-panel wiki-collection-panel wiki-collection-panel-list"
+        data-view-mode="list"
+      >
         <div className="wiki-toolbar">
           <div>
             <div className="text-[22px] font-semibold text-[var(--wiki-text)]">{title}</div>
             <div className="mt-2 text-[15px] text-[var(--wiki-muted)]">{subtitle}</div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" onClick={() => setCollectionViewMode("mindmap")} className="wiki-pill-button">
+            <button
+              type="button"
+              onClick={() => {
+                setCollectionViewMode("mindmap");
+                setMindMapFullscreen(false);
+              }}
+              className="wiki-pill-button"
+            >
               导图视图
             </button>
             <div className="rounded-full bg-[var(--wiki-chip-bg)] px-4 py-2 text-[15px] font-semibold text-[var(--wiki-text)]">
@@ -1807,7 +1857,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
           </div>
         </div>
 
-        <div className="space-y-6 p-6">
+        <div key={`collection-${dashboardMode}-list-items`} className="space-y-6 p-6">
           {visibleQuestionRows.map((row, index) => {
             const mastery = questionMasteryMap[row.questionId] ?? row.mastery;
             const favorite = questionFavoriteMap[row.questionId] === true;
@@ -1817,7 +1867,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
 
             return (
               <article
-                key={row.questionId}
+                key={row.rowId}
                 ref={(node) => {
                   questionCardRefs.current[row.questionId] = node;
                 }}
@@ -2033,11 +2083,23 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
               </button>
               <button
                 type="button"
-                onClick={() => switchSubject(selectedSubjectId === "math" ? "signal-system" : "math")}
+                onClick={() => {
+                  if (!hasMultipleSubjects) {
+                    return;
+                  }
+
+                  const currentIndex = subjects.findIndex((subject) => subject.id === selectedSubjectId);
+                  const nextSubject = subjects[(currentIndex + 1) % subjects.length] ?? subjects[0];
+
+                  if (nextSubject) {
+                    switchSubject(nextSubject.id);
+                  }
+                }}
                 className="flex items-center gap-3 text-[18px] font-medium text-[var(--wiki-text)]"
+                aria-disabled={!hasMultipleSubjects}
               >
                 <span>{selectedSubject?.shortName ?? "Conv"}</span>
-                <ChevronIcon expanded={false} />
+                {hasMultipleSubjects ? <ChevronIcon expanded={false} /> : null}
               </button>
             </div>
           </header>
@@ -2222,7 +2284,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
 
                     return (
                       <article
-                        key={row.questionId}
+                        key={row.rowId}
                         ref={(node) => {
                           questionCardRefs.current[row.questionId] = node;
                         }}
