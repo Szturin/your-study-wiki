@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-04-20T13:53:26.244Z",
+  "pageUrl": "https://zhentiqiang.com/kaoyan/math",
+  "savedAssets": [
+    {
+      "relativePath": "assets/index.js",
+      "url": "https://zhentiqiang.com/static/js/index.js?v=c6913d88"
+    },
+    {
+      "relativePath": "assets/login.js",
+      "url": "https://zhentiqiang.com/static/js/login.js?v=c6913d88?v=force_update_20260417_1"
+    },
+    {
+      "relativePath": "assets/index.css",
+      "url": "https://zhentiqiang.com/static/css/index.css?v=c6913d88"
+    }
+  ],
+  "savedApis": [
+    "api/bootstrap.json",
+    "api/papers-group-8.json",
+    "api/knowledge-tree-group-8.json",
+    "api/question-info-665.json",
+    "api/papergroup-stats-8.json",
+    "api/question-stats-665.json",
+    "api/videos-665.json",
+    "api/comments-665.json",
+    "api/questions-batch-sample.json"
+  ],
+  "note": "Public-surface research snapshot only. Do not treat this folder as product source code."
+}

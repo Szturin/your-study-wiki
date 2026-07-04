@@ -1,0 +1,190 @@
+{
+  "data": {
+    "group_id": 8,
+    "knowledge_point_stats": [
+      {
+        "id": 2,
+        "name": "函数、极限、连续",
+        "percentage": 5.1,
+        "total_score": 130,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 8,
+        "name": "一元函数微分学",
+        "percentage": 10.4,
+        "total_score": 265,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 18,
+        "name": "一元函数积分学",
+        "percentage": 6.7,
+        "total_score": 170,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 25,
+        "name": "多元函数微分学",
+        "percentage": 8.7,
+        "total_score": 221,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 31,
+        "name": "多元函数积分学",
+        "percentage": 12.9,
+        "total_score": 328,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 41,
+        "name": "无穷级数",
+        "percentage": 6,
+        "total_score": 153,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 46,
+        "name": "常微分方程",
+        "percentage": 5.8,
+        "total_score": 147,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 55,
+        "name": "行列式",
+        "percentage": 0.8,
+        "total_score": 21,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 56,
+        "name": "矩阵",
+        "percentage": 2.5,
+        "total_score": 64,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 60,
+        "name": "向量",
+        "percentage": 3.6,
+        "total_score": 93,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 64,
+        "name": "线性方程组",
+        "percentage": 4.3,
+        "total_score": 109,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 65,
+        "name": "矩阵的特征值与特征向量",
+        "percentage": 5.2,
+        "total_score": 133,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 68,
+        "name": "二次型",
+        "percentage": 5.8,
+        "total_score": 148,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 70,
+        "name": "随机事件和概率",
+        "percentage": 1.7,
+        "total_score": 43,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 71,
+        "name": "随机变量及其分布",
+        "percentage": 2.2,
+        "total_score": 56,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 72,
+        "name": "多维随机变量及其分布",
+        "percentage": 3.7,
+        "total_score": 95,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 75,
+        "name": "随机变量的数字特征",
+        "percentage": 6.3,
+        "total_score": 160,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 78,
+        "name": "大数定律和中心极限定理",
+        "percentage": 0.8,
+        "total_score": 20,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 79,
+        "name": "数理统计的基本概念",
+        "percentage": 0.5,
+        "total_score": 13,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      },
+      {
+        "id": 80,
+        "name": "参数估计与假设检验",
+        "percentage": 7.1,
+        "total_score": 181,
+        "user_proficient_score": 0,
+        "user_unfamiliar_score": 0,
+        "user_unknown_score": 0
+      }
+    ],
+    "total_score": 2550,
+    "user_logged_in": false
+  },
+  "success": true
+}

@@ -1,0 +1,53 @@
+{
+  "questions": [
+    {
+      "happy_count": 927,
+      "id": 663,
+      "image_url": "/static/photos/group_8/paper_42/2.png",
+      "knowledge_point_name": "常数项级数敛散性的判定",
+      "knowledge_tags_id": 42,
+      "maybe_count": 825,
+      "paper_name": "2025",
+      "question_id": 663,
+      "question_number": 2,
+      "question_type": 1,
+      "sad_count": 608,
+      "score": 5,
+      "video_url": "https://www.bilibili.com/video/BV1Ut411p7k3?p=87&t=880",
+      "year": "2025"
+    },
+    {
+      "happy_count": 1174,
+      "id": 664,
+      "image_url": "/static/photos/group_8/paper_42/3.png",
+      "knowledge_point_name": "导数与微分的概念",
+      "knowledge_tags_id": 9,
+      "maybe_count": 918,
+      "paper_name": "2025",
+      "question_id": 664,
+      "question_number": 3,
+      "question_type": 1,
+      "sad_count": 657,
+      "score": 5,
+      "video_url": "https://www.bilibili.com/video/BV1Ut411p7k3?p=87&t=1617",
+      "year": "2025"
+    },
+    {
+      "happy_count": 4015,
+      "id": 665,
+      "image_url": "/static/photos/group_8/paper_42/1.png",
+      "knowledge_point_name": "曲线的凹凸性、拐点及渐近线",
+      "knowledge_tags_id": 13,
+      "maybe_count": 893,
+      "paper_name": "2025",
+      "question_id": 665,
+      "question_number": 1,
+      "question_type": 1,
+      "sad_count": 250,
+      "score": 5,
+      "video_url": "https://www.bilibili.com/video/BV1Ut411p7k3?p=87&t=10",
+      "year": "2025"
+    }
+  ],
+  "success": true
+}

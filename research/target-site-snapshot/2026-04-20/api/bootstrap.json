@@ -1,0 +1,20 @@
+{
+  "group_id": null,
+  "knowledge_tree": null,
+  "papergroups": [
+    {
+      "id": 8,
+      "name": "2009-2025历年真题卷（数学一）"
+    },
+    {
+      "id": 9,
+      "name": "2009-2025历年真题卷（数学二）"
+    },
+    {
+      "id": 10,
+      "name": "2009-2025历年真题卷（数学三）"
+    }
+  ],
+  "papers": null,
+  "success": true
+}

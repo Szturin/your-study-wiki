@@ -1,0 +1,2288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="baidu-site-verification" content="codeva-K4YDNarvhn" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <!-- 防缓存meta标签 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>真题墙|考研数学</title>
+    <script>
+        // Inject application root path for JS to use
+        window.APP_ROOT = "";
+        if (window.APP_ROOT === "/") window.APP_ROOT = "";
+        // Ensure no trailing slash unless it's just root
+        if (window.APP_ROOT.endsWith('/') && window.APP_ROOT.length > 1) {
+            window.APP_ROOT = window.APP_ROOT.slice(0, -1);
+        }
+    </script>
+    <style>
+        .header-features {
+            color: #808080;
+            font-size: clamp(8px, 1.2vw, 14px);
+        }
+        .header-features .feature-item {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: none;
+            display: inline-block;
+        }
+        .header-features .feature-icon {
+            margin: 0 2px 0 10px;
+            pointer-events: none;
+            vertical-align: middle;
+        }
+        body.hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body.hide-scrollbar::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        /* 禁用品牌区域悬浮变浅/变色效果 */
+        .navbar .navbar-brand,
+        .navbar .navbar-brand:hover,
+        .navbar .navbar-brand:focus {
+            color: inherit !important;
+            opacity: 1 !important;
+            filter: none !important;
+            background: transparent !important;
+            text-decoration: none !important;
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/img/favicon.png?v=c6913d88">
+    <link rel="apple-touch-icon" href="/static/img/favicon.png?v=c6913d88">
+    <!-- CSS files -->
+    <!-- Tabler CSS local files -->
+    <link href="/static/libs/tabler/css/tabler.min.css?v=c6913d88" rel="stylesheet"/>
+    <link href="/static/libs/tabler/css/tabler-flags.min.css?v=c6913d88" rel="stylesheet"/>
+    <link href="/static/libs/tabler/css/tabler-payments.min.css?v=c6913d88" rel="stylesheet"/>
+    <link href="/static/libs/tabler/css/tabler-vendors.min.css?v=c6913d88" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link href="/static/css/custom.css?v=c6913d88" rel="stylesheet"/>
+    <link href="/static/css/index.css?v=c6913d88" rel="stylesheet"/>
+    <style>
+        #userAvatar {
+            width: 1.67vw; /* 32px at 1920px screen */
+            height: 1.67vw;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+        
+        #userAvatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* 响应式字体样式 */
+        .responsive-nav-text {
+            font-size: 18px;
+        }
+        
+        .responsive-nav-subtext {
+            font-size: 15px;
+        }
+
+        /* 大屏幕 (1920px及以上) */
+        @media (min-width: 1920px) {
+            .responsive-nav-text {
+                font-size: 18px;
+            }
+            .responsive-nav-subtext {
+                font-size: 15px;
+            }
+        }
+
+        /* 中等屏幕 (1200px - 1919px) */
+        @media (max-width: 1919px) and (min-width: 1200px) {
+            .responsive-nav-text {
+                font-size: 16px;
+            }
+            .responsive-nav-subtext {
+                font-size: 13px;
+            }
+        }
+
+        /* 小屏幕 (768px - 1199px) - 平板设备 */
+        @media (max-width: 1199px) and (min-width: 768px) {
+            .responsive-nav-text {
+                font-size: 14px;
+            }
+            .responsive-nav-subtext {
+                font-size: 12px;
+            }
+        }
+
+        /* 超小屏幕 (767px及以下) - 手机设备 */
+        @media (max-width: 767px) {
+            .responsive-nav-text {
+                font-size: 12px;
+            }
+            .responsive-nav-subtext {
+                font-size: 10px;
+            }
+        }
+
+        /* 响应式容器和元素尺寸 */
+        .responsive-logo {
+            height: 2.08vw; /* 40px at 1920px screen */
+            width: auto;
+        }
+
+        .responsive-book-img {
+            height: 2.08vw; /* 40px at 1920px screen */
+            width: auto;
+            margin-right: 0.52vw; /* 10px at 1920px screen */
+            vertical-align: middle;
+        }
+
+        .responsive-alert {
+            max-width: 26.04vw; /* 500px at 1920px screen */
+        }
+
+        /* 在小屏幕上设置最小尺寸，避免过小 */
+        @media (max-width: 767px) {
+            #userAvatar {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .responsive-logo {
+                height: 30px;
+            }
+            
+            .responsive-book-img {
+                height: 30px;
+                margin-right: 8px;
+            }
+            
+            .responsive-alert {
+                max-width: 90vw;
+            }
+        }
+    </style>
+</head>
+
+<body class="hide-scrollbar">
+    <div class="page">
+        <!-- Navbar -->
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl" style="max-width: 100%;">
+                <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3" style="padding: 0px; display: flex; align-items: center;max-width: none; ">
+                    <div>
+                        <img src="/static/img/logo.png" alt="真题研究社" class="responsive-logo">
+                    </div>
+                    <p style=" line-height: 1.2; text-decoration: none; margin-bottom: 2px;">
+                        <!-- <span style="color: #055faef0; font-size: 20px; ">真题研究社</span> -->
+                        <!-- <span style="color: #828282;  font-size: 14px; ">stroke="#1976d2" 好书+大数据，让刷题更高效</span> -->
+                        
+                        
+                        <span class="header-features"> 
+                            <span class="feature-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye feature-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>历年真题，尽收眼底</span>
+                            <span class="feature-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-video feature-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" /><path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" /></svg>名师视频，一题多讲</span>
+                            <span class="feature-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-progress-check feature-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 20.777a8.942 8.942 0 0 1 -2.48 -.969" /><path d="M14 3.223a9.003 9.003 0 0 1 0 17.554" /><path d="M4.579 17.093a8.961 8.961 0 0 1 -1.227 -2.592" /><path d="M3.124 10.5c.16 -.95 .468 -1.85 .9 -2.675l.169 -.305" /><path d="M6.907 4.579a8.954 8.954 0 0 1 3.093 -1.356" /><path d="M9 12l2 2l4 -4" /></svg>刷题记录，一目了然</span>
+                            <span class="feature-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cloud-question feature-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 18.004h-7.843c-2.572 -.004 -4.657 -2.011 -4.657 -4.487c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99" /><path d="M19 22v.01" /><path d="M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></svg>评论留言，答疑解难</span>
+                        </span>
+                        
+                    </p>
+
+                </h1>
+                <div class="navbar-nav flex-row order-md-last">
+                    <!-- 用户登录状态 -->
+                    <div class="nav-item" id="userStatus">
+                        <button class="btn btn-primary" id="loginBtn" onclick="startWechatLoginPreferFast()">
+                            登录/注册
+                        </button>
+                        <div class="dropdown" id="userDropdown" style="display: none;">
+                            <div class="d-flex align-items-center">
+                                <!-- <button type="button" class="btn btn-outline-primary btn-sm me-2" onclick="generateAndShareCoupon()">
+                                    分享优惠码，他省两块，你赚两块
+                                </button> -->
+                                <div class="membership-badge-container me-2" id="membershipBadgeContainer">
+                                    <!-- 会员徽章将通过JavaScript动态添加 -->
+                                </div>
+                                <!-- 分享按钮 -->
+                  
+                                <a class="nav-link d-flex lh-1 text-reset p-0 align-items-center" href="#" data-bs-toggle="dropdown" aria-label="Open user menu" aria-expanded="false">
+                                    <span class="avatar avatar-sm" id="userAvatar"></span>
+                                    <div class="d-xl-block ps-2">
+                                        <div id="userNickname">用户</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="right: 40px; z-index: 9999 !important; position: absolute !important;">
+                                <a href="#" class="dropdown-item" onclick="showSettingsModal()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/>
+                                        <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>
+                                    </svg>
+                                    设置
+                                </a>
+                                <!-- <a href="#" class="dropdown-item" onclick="showCommissionsModal()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                        <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+                                        <path d="M12 6v2m0 8v2" />
+                                    </svg>
+                                    我的佣金
+                                </a> -->
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-item" onclick="logout()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
+                                        <path d="M9 12h12l-3 -3"/>
+                                        <path d="M18 15l3 -3"/>
+                                    </svg>
+                                    退出登录
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+
+
+            
+            
+<!-- 第二层导航栏 -->
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+    <div class="container-xl" style="max-width: 100%;">
+        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3"
+            style="padding: 0px; display: flex; align-items: center;max-width: none; ">
+            <!-- 根据不同路径显示不同内容 -->
+            <div>
+                <p
+                    style="margin: 3px 0.6vw; color: #000000; font-size: clamp(10px, 1.2vw, 18px); line-height: 1.2; text-decoration: none; text-align: center;">
+                    考研数学历年真题 + B站名师视频汇编
+                </p>
+            </div>
+        </h1>
+        <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item dropdown me-3">
+                <select class="form-select" id="papergroupSelect" onchange="loadPaperGroup(this.value)">
+                </select>
+            </div>
+            <div class="card-actions" style="margin:0 1vw 0 1vw;">
+
+
+                <label class="form-check form-switch form-switch-2">
+                    <input class="form-check-input" type="checkbox" id="showQuestionNumbersSwitch">
+                    <span class="form-check-label">显示题号</span>
+                </label>
+                <label class="form-check form-switch form-switch-2">
+                    <input class="form-check-input" type="checkbox" id="showDifficultySwitch">
+                    <span class="form-check-label">显示难度</span>
+                </label>
+                <label class="form-check form-switch form-switch-2">
+                    <input class="form-check-input" type="checkbox" id="showMyRecordsSwitch">
+                    <span class="form-check-label">我刷的题</span>
+                </label>
+                <label class="form-check form-switch form-switch-2">
+                    <!-- <input class="form-check-input" type="checkbox" id="showMyRecordsSwitch">  -->
+                    <span class="form-check-label" onclick="showAnnouncementModal()"
+                        style="cursor: pointer;color: #eb793f;border: 1px solid #eb793f;border-radius: 4px;padding: 2px 20px 2px 8px;position: relative;display: inline-block;">
+                        公告栏
+                        <span
+                            style="position: absolute;right: 6px;top: 50%;transform: translateY(-50%);pointer-events: none;">▼</span>
+                    </span>
+                </label>
+
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <div class="page-body">
+        <!-- 左侧知识点标签面板 -->
+        <div id="sidebar" class="sidebar-panel">
+                <h1 style="margin: 0;padding:0 0.5vw ;">
+                    <span style="color: #000000; font-size: min(1.1vw, 15px); display: flex;  gap: 8px;">
+                        <!-- <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-category"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4h6v6h-6z" /><path d="M14 4h6v6h-6z" /><path d="M4 14h6v6h-6z" /><path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /></svg> -->
+                        考点目录
+                        <!-- <span style="color: #8a8a8a; font-size: min(0.8vw, 10px); ">
+                    单击查看，再单击进入
+                    </span> -->
+                    </span>
+                </h1>
+                <div id="knowledgeTreeContent">
+                    <p class="text-muted">请先选择试卷组</p>
+                </div>
+            </div>
+            <!-- 主内容区域 -->
+            <div id="mainContent">
+                <div class="container-xl" id="paperListContainer">
+                <div class="row row-deck row-cards">
+                    <div class="col-12" style="margin: 0;padding: 0;">
+                        <div class="card" style="background: transparent; border: none; box-shadow: none;">
+                            <div class="card-body" style="padding: 0;">
+                                <!-- 试卷列表 -->
+                                <div id="paperListContent">
+                                    <p class="text-muted">请先选择试卷组</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计图表区域 -->
+            <div class="container-xl" id="knowledgeStatsContainer" style="">
+                <div id="knowledgeStatsSection" class="row row-deck row-cards mt-4" style="display: block;">
+                    <div class="col-12" style="padding: 0;margin: 0;width: 81.6vw;">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="paperGroupChartContainer" class="row" style="padding: 0;margin: 0;">
+                                    <div class="col-12">
+                                        <!-- 自定义标题和图例容器 -->
+                                        <div id="chartTitleContainer"
+                                            style="display: flex; align-items: center; justify-content: space-between; margin-bottom:0; padding: 0;">
+                                            <div
+                                                style="display: flex; align-items: center; gap: 10px;font-size: 1.2vw;line-height: 1.5;">
+                                                <h4 id="chartTitle" style="margin: 0; font-weight: bold;  color: #333;">
+                                                </h4>
+                                                <button id="refreshChartBtn" type="button"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    style="display: none; padding: 0 8px; border: none;"
+                                                    onclick="refreshChart()" title="刷新图表">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8">
+                                                        </path>
+                                                        <path d="M21 3v5h-5"></path>
+                                                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16">
+                                                        </path>
+                                                        <path d="M3 21v-5h5"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div id="chartLegendContainer"
+                                                style="display: flex; align-items: center; gap: 15px;">
+                                                <!-- 图例将通过JavaScript动态生成 -->
+                                            </div>
+                                        </div>
+                                        <div class="chart-container" style="width: 100%; height: 450px;">
+                                            <canvas id="paperGroupChart" style="width: 100%; height: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 题目模态框 -->
+        <div id="questionModal" class="question-modal">
+            <div class="question-modal-backdrop" onclick="closeQuestionModal()"></div>
+            <div class="question-modal-content">
+                <div class="question-modal-header">
+                    <h5 class="modal-title">相关题目</h5>
+                    <button type="button" class="btn-close" onclick="closeQuestionModal()">&times;</button>
+                </div>
+                <div class="question-modal-body">
+                    <div id="questionModalContent" class="row">
+                        <!-- 题目内容将在这里动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 试卷模态框 -->
+        <div id="paperModal" class="paper-modal">
+            <div class="paper-modal-backdrop" onclick="closePaperModal()"></div>
+            <div class="paper-modal-content">
+                <div class="paper-modal-header">
+                    <h5 class="modal-title" id="paperModalTitle">试卷详情</h5>
+                    <button type="button" class="btn-close" onclick="closePaperModal()">&times;</button>
+                </div>
+                <div class="paper-modal-body">
+                    <div id="paperModalBody">
+                        <!-- 试卷内容将在这里动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+<!-- 题目卡片模板 -->
+<template id="questionCardTemplate">
+    <div class="card question-card mb-3">
+        <div class="card-body p-0 position-relative">
+    <img class="question-image" src="" alt="题目图片" style="width: 100%; height: auto; display: block;">
+    <!-- 右上角知识点名称（现在具有按钮功能） -->
+    <div class="position-absolute" style="top: 0px; right: 8px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+        <span class="knowledge-point-name badge text-dark" style="font-size: 12px; padding: 4px 8px; display: none;background-color: rgba(184 ,217 ,244, 0.9);"></span>
+    </div>
+    <div class="question-info position-absolute rounded" style="bottom: 2px;right: 2px; font-size: 12px; padding: 0 0 0 10px !important;margin: 0 !important; color: #6c757d; background-color: rgba(255, 255, 255, 0.9);">
+        <span class="question-year"></span><span class="year-separator"> . </span><span class="question-score"></span>分
+    </div>
+</div>
+        <div class="card-footer">
+            <div class="row align-items-center">
+
+                <div class="col">
+                    <div class="question-card-buttons d-flex gap-2 justify-content-between align-items-center">
+
+                        <!-- 中央按钮组 -->
+                        <div class="d-flex gap-2 " style="width: 33.33%;">
+                            <button type="button" class="btn btn-link text-secondary answer-btn position-relative d-flex flex-column align-items-center" title="查看答案">
+                                <div class="position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye-closed answer-icon-closed">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4" />
+                                        <path d="M3 15l2.5 -3.8" />
+                                        <path d="M21 14.976l-2.492 -3.776" />
+                                        <path d="M9 17l.5 -4" />
+                                        <path d="M15 17l-.5 -4" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-eye answer-icon-open" style="display: none;">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 4c4.29 0 7.863 2.429 10.665 7.154l.22 .379l.045 .1l.03 .083l.014 .055l.014 .082l.011 .1v.11l-.014 .111a.992 .992 0 0 1 -.026 .11l-.039 .108l-.036 .075l-.016 .03c-2.764 4.836 -6.3 7.38 -10.555 7.499l-.313 .004c-4.396 0 -8.037 -2.549 -10.868 -7.504a1 1 0 0 1 0 -.992c2.831 -4.955 6.472 -7.504 10.868 -7.504zm0 5a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
+                                    </svg>
+                                </div>
+                                <span class="btn-label answer-label">看答案</span>
+                            </button>
+                            <button type="button" class="btn btn-link text-secondary analysis-btn position-relative d-flex flex-column align-items-center" title="查看解析">
+                                <div class="position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sun-high analysis-closed-icon">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" />
+                                        <path d="M6.343 17.657l-1.414 1.414" />
+                                        <path d="M6.343 6.343l-1.414 -1.414" />
+                                        <path d="M17.657 6.343l1.414 -1.414" />
+                                        <path d="M17.657 17.657l1.414 1.414" />
+                                        <path d="M4 12h-2" />
+                                        <path d="M12 4v-2" />
+                                        <path d="M20 12h2" />
+                                        <path d="M12 20v2" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-sun-high analysis-open-icon" style="display: none;">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 19a1 1 0 0 1 1 1v2a1 1 0 0 1 -2 0v-2a1 1 0 0 1 1 -1m-4.95 -2.05a1 1 0 0 1 0 1.414l-1.414 1.414a1 1 0 1 1 -1.414 -1.414l1.414 -1.414a1 1 0 0 1 1.414 0m11.314 0l1.414 1.414a1 1 0 0 1 -1.414 1.414l-1.414 -1.414a1 1 0 0 1 1.414 -1.414m-5.049 -9.836a5 5 0 1 1 -2.532 9.674a5 5 0 0 1 2.532 -9.674m-9.315 3.886a1 1 0 0 1 0 2h-2a1 1 0 0 1 0 -2zm18 0a1 1 0 0 1 0 2h-2a1 1 0 0 1 0 -2zm-16.364 -6.778l1.414 1.414a1 1 0 0 1 -1.414 1.414l-1.414 -1.414a1 1 0 0 1 1.414 -1.414m14.142 0a1 1 0 0 1 0 1.414l-1.414 1.414a1 1 0 0 1 -1.414 -1.414l1.414 -1.414a1 1 0 0 1 1.414 0m-7.778 -3.222a1 1 0 0 1 1 1v2a1 1 0 0 1 -2 0v-2a1 1 0 0 1 1 -1" />
+                                    </svg>
+                                </div>
+                                <span class="btn-label analysis-label">看解析</span>
+                            </button>
+                            <!-- 隐藏的链接，用于改善用户体验 -->
+                            <a href="#" class="video-link" target="_blank" rel="noopener noreferrer" style="display: none;"></a>
+                            <button type="button" class="btn btn-link text-muted video-btn position-relative d-flex flex-column align-items-center" title="看视频">
+                                <div class="position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-tv-old video-icon-closed">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                        <path d="M16 3l-4 4l-4 -4" />
+                                        <path d="M15 7v13" />
+                                        <path d="M18 15v.01" />
+                                        <path d="M18 12v.01" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-device-tv-old video-icon-open" style="display: none;">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M8.707 2.293l3.293 3.292l3.293 -3.292a1 1 0 0 1 1.32 -.083l.094 .083a1 1 0 0 1 0 1.414l-2.293 2.293h4.586a3 3 0 0 1 3 3v9a3 3 0 0 1 -3 3h-14a3 3 0 0 1 -3 -3v-9a3 3 0 0 1 3 -3h4.585l-2.292 -2.293a1 1 0 0 1 1.414 -1.414m10.293 5.707h-2a1 1 0 0 0 -1 1v9a1 1 0 0 0 1 1h2a1 1 0 0 0 1 -1v-9a1 1 0 0 0 -1 -1" />
+                                        <path d="M18 14a1 1 0 0 1 .993 .883l.007 .127a1 1 0 0 1 -1.993 .117l-.007 -.127a1 1 0 0 1 1 -1" />
+                                        <path d="M18 11a1 1 0 0 1 .993 .883l.007 .127a1 1 0 0 1 -1.993 .117l-.007 -.127a1 1 0 0 1 1 -1" />
+                                    </svg>
+                                </div>
+                                <span class="btn-label video-label">看视频</span>
+                            </button>
+                            <button type="button" class="btn btn-link text-muted comment-btn position-relative d-flex flex-column align-items-center" title="评论">
+                                <div class="position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message comment-icon-closed">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M8 9h8" />
+                                        <path d="M8 13h6" />
+                                        <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-message comment-icon-open" style="display: none;">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M18 3a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-4.724l-4.762 2.857a1 1 0 0 1 -1.508 -.743l-.006 -.114v-2h-1a4 4 0 0 1 -3.995 -3.8l-.005 -.2v-8a4 4 0 0 1 4 -4zm-4 9h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2m2 -4h-8a1 1 0 1 0 0 2h8a1 1 0 0 0 0 -2" />
+                                    </svg>
+                                    <span class="comment-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="display: none; font-size: 10px;">0</span>
+                                </div>
+                                <span class="btn-label comment-label">评论</span>
+                            </button>
+                        </div>
+
+                        <!-- 左侧按钮组 -->
+                        <div class="d-flex gap-2 justify-content-start" style="width: 33.33%;">
+                            <!-- 计时器和统计功能已删除 -->
+<!-- 
+                            <div class="choice-options d-none justify-content-center gap-2" style=" flex: 1;background: #ffffff;border-radius: 15px;">
+                                <div class="btn-group" role="group" style="gap:30px; align-items: center;">
+                                    <button type="button" class="icon btn btn-outline-primary choice-btn" data-choice="A">A</button>
+                                    <button type="button" class="icon btn btn-outline-primary choice-btn" data-choice="B">B</button>
+                                    <button type="button" class="icon btn btn-outline-primary choice-btn" data-choice="C">C</button>
+                                    <button type="button" class="icon btn btn-outline-primary choice-btn" data-choice="D">D</button>
+                                </div>
+                            </div> -->
+
+                        </div>
+
+                        <!-- 右侧按钮组 -->
+                        <div class="d-flex gap-2 justify-content-end" style="width: 33.33%;">
+                        <button type="button" class="btn btn-link text-muted mood-happy position-relative d-flex flex-column align-items-center" >
+                            <div class="position-relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mood-smile mood-icon-outline">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path d="M9 10l.01 0" />
+                                    <path d="M15 10l.01 0" />
+                                    <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-mood-smile mood-icon-filled" style="display: none;">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.8 10.946a1 1 0 0 0 -1.414 .014a2.5 2.5 0 0 1 -3.572 0a1 1 0 0 0 -1.428 1.4a4.5 4.5 0 0 0 6.428 0a1 1 0 0 0 -.014 -1.414zm-6.19 -5.286l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993zm6 0l-.127 .007a1 1 0 0 0 .117 1.993l.127 -.007a1 1 0 0 0 -.117 -1.993z" />
+                                </svg>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success mood-happy-count">15</span>
+                            </div>
+                            <span class="btn-label">熟练</span>
+                        </button>
+                        <button type="button" class="btn btn-link text-muted mood-maybe position-relative d-flex flex-column align-items-center" >
+                            <div class="position-relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mood-maybe mood-icon-outline">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path d="M9 10l.01 0" />
+                                    <path d="M15 10l.01 0" />
+                                    <path d="M9 15l6 0" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-mood-maybe mood-icon-filled" style="display: none;">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-2 10.66h-6l-.117 .007a1 1 0 0 0 0 1.986l.117 .007h6l.117 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-5.99 -5l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm6 0l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" />
+                                </svg>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning mood-maybe-count">5</span>
+                            </div>
+                            <span class="btn-label">不熟</span>
+                        </button>
+                        <button type="button" class="btn btn-link text-muted mood-sad position-relative d-flex flex-column align-items-center" >
+                            <div class="position-relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mood-sad mood-icon-outline">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path d="M9 10l.01 0" />
+                                    <path d="M15 10l.01 0" />
+                                    <path d="M9.5 15.25a3.5 3.5 0 0 1 5 0" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-mood-sad mood-icon-filled" style="display: none;">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 9.86a4.5 4.5 0 0 0 -3.214 1.35a1 1 0 1 0 1.428 1.4a2.5 2.5 0 0 1 3.572 0a1 1 0 0 0 1.428 -1.4a4.5 4.5 0 0 0 -3.214 -1.35zm-2.99 -4.2l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm6 0l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" />
+                                </svg>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger mood-sad-count">28</span>
+                            </div>
+                            <span class="btn-label">不会</span>
+                        </button>
+                        </div>
+
+
+                    </div>
+                    <!-- 答案显示区域 -->
+                    <div class="answer-display mt-3" style="display: none;">
+                        <div class="border-top pt-3">
+                            <!-- <h6 class="text-muted mb-2">答案解析</h6> -->
+                            <div class="answer-content">
+                                <!-- 答案内容将在这里显示 -->
+                                <p class="text-muted">答案内容加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 解析图片显示区域 -->
+                    <div class="analysis-display mt-3" style="display: none;">
+                            <!-- 购买链接 -->
+                            <div class="mb-2" style="font-size: 1.3vw;color: #bc0000;font-weight: bold;">
+                                <a href="#" target="_blank" style="text-decoration: none;" onclick="updateBookLinkAndRecordClick(event, this);">
+                                    <span>本解析节选自《李艳芳真题及解析》，详尽知识总结，点此前往官方店购买实体书👉</span>
+                                    <img src="/static/img/TBlogo.png" alt="天猫" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px;">
+                                </a>
+                            </div>
+                        <div class="border-top pt-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <!-- <h6 class="text-muted mb-0" style="font-size: 1em;">解析</h6>
+                                <button class="btn btn-sm btn-outline-primary upload-analysis-btn" title="上传解析图片">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 5l0 14" />
+                                        <path d="M5 12l14 0" />
+                                    </svg>
+                                    上传解析图片
+                                </button> -->
+                            </div>
+                            <div class="analysis-content">
+                                <!-- 解析图片内容将在这里显示 -->
+                                <p class="text-muted">解析图片加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 解析图片显示区域 -->
+                    <!-- <div class="analysis-display mt-3" style="display: none;">
+                        <div class="border-top pt-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+           
+                            </div>
+                            <div class="analysis-content">
+                                <p class="text-muted">解析图片加载中...</p>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="video-display mt-3" style="display: none;">
+                        <div class="border-top pt-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <!-- <h6 class="text-muted mb-0" style="font-size: 1em;">视频讲解
+                                    <span style="font-size: 0.8em;margin-left: 10px;font-style: italic;">注：整理自B站优秀考研数学UP主，侵删</span>
+                                </h6>
+                                <button class="btn btn-sm btn-outline-primary upload-video-btn" title="上传解析视频">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 5l0 14" />
+                                        <path d="M5 12l14 0" />
+                                    </svg>
+                                    上传讲解视频
+                                </button> -->
+                            </div>
+                            <div class="video-content">
+                                <!-- 视频内容将在这里显示 -->
+                                <p class="text-muted">视频内容加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 评论区 -->
+                    <div class="comment-section mt-3" style="display: none;">
+                        <div class="border-top pt-3">
+                            <div class="comment-header d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center">
+                                    <h6 class="text-muted mb-0 me-3" style="font-size: 1em;">评论区</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input show-only-my-comments" type="checkbox" style="cursor: pointer;">
+                                        <label class="form-check-label small text-muted" style="cursor: pointer;">只看自己</label>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary close-comment-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <!-- 评论输入框 -->
+                            <div class="comment-input-section mb-3">
+                                <div class="input-group">
+                                    <textarea class="form-control comment-input" placeholder="写下你对题目、解析或视频的评论吧~" rows="3" maxlength="500"></textarea>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <small class="text-muted char-count">0/500</small>
+                                    <button class="btn btn-primary btn-sm submit-comment-btn">发表评论</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 评论列表 -->
+                            <div class="comment-list">
+                                <div class="no-comments text-center py-4" style="display: none;">
+                                    <p class="text-muted mb-0">暂无评论，快来抢沙发吧！</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 统计面板已删除 - 计时功能已被移除 -->
+                </div>
+            </div>
+        </div>
+        <!-- 虚拟div，用于看答案功能 -->
+        <div></div>
+    </div>
+</template>
+    </div>
+</div>
+
+
+        
+        <!-- 备案信息 -->
+        <footer style="text-align: center; padding: 20px 0; background-color: transparent;">
+            <div style="color: white; font-size: min(0.8vw, 14px);">
+                © 2025 亿声有你（北京）科技有限公司 版权所有 
+                <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" style="color: white; text-decoration: none;">
+                    京ICP备2025133885-3号 京ICP证B2-20200369号
+                </a>
+                <a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" style="color: white; text-decoration: none;">
+                    京公网安备11010802046510号
+                </a>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="/static/js/jquery.min.js?v=c6913d88"></script>
+    <script src="/static/libs/bootstrap/dist/js/bootstrap.bundle.min.js?v=c6913d88"></script>
+    <script src="/static/libs/tabler/js/tabler.min.js?v=c6913d88"></script>
+
+    <div class="modal fade" id="featureInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" style="margin-top:50px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="featureInfoModalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="featureInfoModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const fallback = {
+                trend: { title: '历年考情、词汇一目了然', desc: '点击页面左栏目录主题名称，可自动高亮每年考题，点“刷题”可集中训练该主题；点击页面右栏各试卷即可进入该试卷刷题界面' },
+                ai: { title: 'AI批阅作文翻译、算总分', desc: '刷题页面点“AI批改”，即可自动批改写译题，点“一键批改本卷”即可计算总报道分' },
+                sentence: { title: '每词每句都可一键翻译', desc: '长按查整句，单击查单词，自动加入个人生词本' },
+            };
+
+            function openFeatureModal(el) {
+                const key = (el && el.getAttribute('data-feature-key')) || '';
+                const cfg = fallback[key] || {};
+                const title = (el && el.getAttribute('data-feature-title')) || cfg.title || '功能说明';
+                const desc = (el && el.getAttribute('data-feature-desc')) || cfg.desc || '说明待补充';
+                const titleEl = document.getElementById('featureInfoModalTitle');
+                const bodyEl = document.getElementById('featureInfoModalBody');
+                const modalEl = document.getElementById('featureInfoModal');
+                if (!titleEl || !bodyEl || !modalEl || typeof bootstrap === 'undefined') return;
+                titleEl.textContent = title;
+                bodyEl.textContent = desc;
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+
+            function bind() {
+                const items = Array.from(document.querySelectorAll('.header-features .feature-item[data-feature-key]'));
+                items.forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openFeatureModal(el);
+                    });
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openFeatureModal(el);
+                        }
+                    });
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bind);
+            } else {
+                bind();
+            }
+        })();
+    </script>
+    <script src="/static/libs/chart.min.js?v=c6913d88"></script>
+    <script src="/static/js/chartjs-plugin-datalabels.min.js?v=c6913d88"></script>
+    <script src="/static/js/avatar-generator.js?v=c6913d88"></script>
+    <script src="/static/js/custom.js?v=c6913d88"></script>
+    <script src="/static/js/marketing.js?v=c6913d88"></script>
+    <script src="/static/libs/qrcode.min.js?v=c6913d88"></script>
+
+    <!-- 用户设置和其他功能 -->
+    <script>
+        
+        // 全局变量用于防抖和状态管理
+        let currentTooltipType = null;
+        let hideTooltipTimeout = null;
+        
+        // 页面加载时检查登录状态并控制刷题记录checkbox的显示
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch(window.APP_ROOT + '/api/check_login')
+                .then(response => response.json())
+                .then(data => {
+                    const showMyRecordsLabel = document.querySelector('label:has(#showMyRecordsSwitch)');
+                    if (showMyRecordsLabel) {
+                        if (data.logged_in) {
+                            // 用户已登录，显示刷题记录checkbox
+                            showMyRecordsLabel.style.display = '';
+                        } else {
+                            // 用户未登录，隐藏刷题记录checkbox
+                            showMyRecordsLabel.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('检查登录状态失败:', error);
+                    // 出错时默认隐藏刷题记录checkbox
+                    const showMyRecordsLabel = document.querySelector('label:has(#showMyRecordsSwitch)');
+                    if (showMyRecordsLabel) {
+                        showMyRecordsLabel.style.display = 'none';
+                    }
+                });
+        });
+        
+        // Slogan点击提示函数
+        function showSloganTip(type, isHover = false) {
+            // 如果是悬浮事件且当前已显示相同类型的提示框，则不重复创建
+            if (isHover && currentTooltipType === type) {
+                return;
+            }
+            
+            // 清除隐藏定时器
+            if (hideTooltipTimeout) {
+                clearTimeout(hideTooltipTimeout);
+                hideTooltipTimeout = null;
+            }
+            
+            let title = '';
+            let content = '';
+            
+            switch(type) {
+                case 'exam':
+                    content = '点击左侧知识点可看到历年考查分布，点击“刷题”按钮可查看专题；点击顶部年份可进入整张试卷';
+                    break;
+                case 'video':
+                    content = '点击右上角"显示题号"可快速定位某个题目，点击题目位置可进入题目卡片，查看详情、答案、视频等，视频直接定位到该题的时间戳';
+                    break;
+                case 'progress':
+                    content = '登录后点击右上角"刷题记录"，不同色块显示自己做每道题时点击的"熟练"、"不熟"、"不会"记录';
+                    break;
+                case 'discussion':
+                    content = '点击题目卡片底部的评论按钮，可就题目、解析、视频发表评论';
+                    break;
+            }
+            
+            // 使用Bootstrap的alert样式创建提示框
+            const alertHtml = `
+                <div class="alert alert-info alert-dismissible fade show responsive-alert" role="alert" data-tooltip-type="${type}" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <h5 class="alert-heading mb-2">${title}</h5>
+                    <p class="mb-0">${content}</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // 移除已存在的提示框
+            const existingAlert = document.querySelector('.alert[role="alert"]');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // 添加新的提示框
+            document.body.insertAdjacentHTML('afterbegin', alertHtml);
+            currentTooltipType = type;
+            
+            // 如果不是悬浮事件（即点击事件），10秒后自动消失
+            if (!isHover) {
+                setTimeout(() => {
+                    const alert = document.querySelector('.alert[role="alert"]');
+                    if (alert && alert.getAttribute('data-tooltip-type') === type) {
+                        alert.remove();
+                        currentTooltipType = null;
+                    }
+                }, 20000);
+            }
+        }
+        
+        // 隐藏Slogan提示框函数
+        function hideSloganTip() {
+            // 设置延迟隐藏，避免鼠标快速移动时的闪烁
+            hideTooltipTimeout = setTimeout(() => {
+                const existingAlert = document.querySelector('.alert[role="alert"]');
+                if (existingAlert) {
+                    existingAlert.remove();
+                    currentTooltipType = null;
+                }
+            }, 100); // 100ms延迟
+        }
+        
+        // 全局登出函数
+        function logout() {
+            fetch(window.APP_ROOT + '/api/logout', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 清除前端的用户状态
+                        if (typeof currentStudent !== 'undefined') {
+                            currentStudent = null;
+                        }
+                        // 清理localStorage中的用户选择信息
+                        localStorage.removeItem('user_selection_group_id');
+                        localStorage.removeItem('user_selection_knowledge_point_id');
+                        localStorage.removeItem('user_selection_paper_id');
+                        localStorage.removeItem('user_selection_show_my_records');
+                        localStorage.removeItem('user_selection_show_question_numbers');
+                        localStorage.removeItem('user_selection_show_only_my_comments');
+                        // 退出登录成功后刷新整个页面
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('登出失败:', error);
+                });
+        }
+        
+        // 显示设置模态框
+        function showSettingsModal() {
+            // 检查登录状态
+            fetch(window.APP_ROOT + '/api/check_login')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.logged_in) {
+                        // 加载用户信息到设置表单
+                        loadUserSettingsData(data.user);
+                        // 显示模态框
+                        const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+                        settingsModal.show();
+                    } else {
+                        alert('请先登录');
+                    }
+                })
+                .catch(error => {
+                    console.error('检查登录状态失败:', error);
+                    alert('检查登录状态失败，请重试');
+                });
+        }
+        
+        // 加载用户设置数据
+        async function loadUserSettingsData(user) {
+            // 设置当前头像（支持生成头像）
+            const currentAvatar = document.getElementById('currentAvatar');
+            await displayAvatar(currentAvatar, user.avatar, user.id, user.phone, 64);
+            
+            // 设置昵称
+            document.getElementById('nicknameInput').value = user.nickname || '';
+            
+            // 设置手机号（只读）
+            document.getElementById('phoneDisplay').value = user.phone || '';
+        }
+        
+        // 头像上传处理
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 头像文件选择事件
+            document.getElementById('avatarUpload').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 验证文件类型
+                    if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+                        alert('请选择 JPG 或 PNG 格式的图片');
+                        return;
+                    }
+                    
+                    // 验证文件大小（2MB）
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('图片大小不能超过 2MB');
+                        return;
+                    }
+                    
+                    // 预览图片
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const currentAvatar = document.getElementById('currentAvatar');
+                        // 清空原有内容（包括几何图形头像）
+                        currentAvatar.innerHTML = '';
+                        // 清除原有的背景样式
+                        currentAvatar.style.backgroundImage = '';
+                        currentAvatar.style.backgroundSize = '';
+                        currentAvatar.style.backgroundPosition = '';
+                        
+                        // 创建新的img元素显示预览
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '50%';
+                        currentAvatar.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 保存设置按钮事件
+            document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+                saveUserSettings();
+            });
+            
+            checkGlobalLoginStatus();
+            
+            // 手动处理下拉菜单点击事件
+            setTimeout(function() {
+                const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"]');
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                
+                if (dropdownToggle && dropdownMenu) {
+                    
+                    // 移除Bootstrap的自动处理，手动控制
+                    dropdownToggle.removeAttribute('data-bs-toggle');
+                    
+                    // 添加点击事件监听器
+                    dropdownToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        
+                        // 切换下拉菜单显示状态
+                        if (dropdownMenu.classList.contains('show')) {
+                            dropdownMenu.classList.remove('show');
+                            dropdownToggle.setAttribute('aria-expanded', 'false');
+                        } else {
+                            dropdownMenu.classList.add('show');
+                            dropdownToggle.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+                    
+                    // 点击其他地方关闭下拉菜单
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                            dropdownToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            }, 1000);
+        });
+        
+        // 保存用户设置
+        function saveUserSettings() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            const avatarFile = document.getElementById('avatarUpload').files[0];
+            
+            // 验证昵称
+            if (!nickname) {
+                alert('请输入昵称');
+                return;
+            }
+            
+            if (nickname.length > 20) {
+                alert('昵称长度不能超过20个字符');
+                return;
+            }
+            
+            // 创建FormData对象
+            const formData = new FormData();
+            formData.append('nickname', nickname);
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
+            }
+            
+            // 显示加载状态
+            const saveBtn = document.getElementById('saveSettingsBtn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '保存中...';
+            saveBtn.disabled = true;
+            
+            // 发送请求
+            fetch(window.APP_ROOT + '/api/update_user_settings', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('设置保存成功');
+                    // 关闭模态框
+                    bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+                    // 刷新页面以更新头像和昵称显示
+                    window.location.reload();
+                } else {
+                    alert(data.message || '保存失败，请重试');
+                }
+            })
+            .catch(error => {
+                console.error('保存设置失败:', error);
+                alert('保存失败，请重试');
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+            });
+        }
+        
+        // 显示会员充值模态框
+        function showMembershipModal() {
+            // 先检查会员状态，然后根据状态设置标题
+            fetch(window.APP_ROOT + '/api/membership/status')
+                .then(response => {
+                    if (response.status === 401) {
+                        // 用户未登录，显示登录模态框而不是会员模态框
+                        if (typeof startWechatLoginPreferFast === 'function') {
+                            startWechatLoginPreferFast();
+                        } else {
+                            showLoginModal();
+                        }
+                        return null; // 返回null阻止后续then执行
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data) return; // 如果用户未登录，直接返回
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('membershipModal'));
+                    
+                    // 根据会员状态设置标题
+                    const modalTitle = document.querySelector('#membershipModal .modal-title');
+                    if (data.is_member) {
+                        modalTitle.textContent = '💎 续费会员';
+                    } else {
+                        modalTitle.textContent = '💎 开通会员';
+                    }
+                    
+                    modal.show();
+                    
+                    // 重置模态框状态
+                    resetMembershipModal();
+                    
+                    // 加载会员套餐
+                    loadMembershipPlans();
+                })
+                .catch(error => {
+                    console.error('检查会员状态失败:', error);
+                    // 如果检查失败，使用默认标题
+                    const modal = new bootstrap.Modal(document.getElementById('membershipModal'));
+                    modal.show();
+                    resetMembershipModal();
+                    loadMembershipPlans();
+                });
+        }
+        
+        function isMockEnvironment() {
+            const host = window.location.hostname;
+            return host === '127.0.0.1' || host === 'localhost';
+        }
+        
+        // 重置会员充值模态框状态
+        function resetMembershipModal() {
+            const paymentQrCode = document.getElementById('paymentQrCode');
+            const paymentStatus = document.getElementById('paymentStatus');
+            const paymentSuccess = document.getElementById('paymentSuccess');
+            const createPaymentBtn = document.getElementById('createPaymentBtn');
+            const membershipSelectionArea = document.getElementById('membershipSelectionArea');
+            const mockPayArea = document.getElementById('mockPayArea');
+            if (paymentQrCode) paymentQrCode.style.display = 'none';
+            if (paymentStatus) paymentStatus.style.display = 'none';
+            if (paymentSuccess) paymentSuccess.style.display = 'none';
+            if (membershipSelectionArea) membershipSelectionArea.style.display = 'block';
+            if (mockPayArea) mockPayArea.style.display = 'none';
+            if (createPaymentBtn) {
+                createPaymentBtn.disabled = false;
+                createPaymentBtn.textContent = '微信支付';
+                createPaymentBtn.style.display = 'inline-block';
+            }
+            if (typeof stopPaymentPolling === 'function') {
+                stopPaymentPolling();
+            }
+            window.currentMembershipOrderId = null;
+            window.currentMembershipPlan = null;
+        }
+        
+        // 加载会员套餐
+        function loadMembershipPlans() {
+            fetch(window.APP_ROOT + '/api/membership/plans')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.plans) {
+                        updateMembershipPlansUI(data.plans);
+                        // loadRecentCouponForModal();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载会员套餐失败:', error);
+                });
+        }
+
+        function loadRecentCouponForModal() {
+            const couponInput = document.getElementById('couponCode');
+            if (!couponInput || couponInput.value) return;
+            fetch(window.APP_ROOT + '/api/marketing/recent_coupon')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.success && data.code) {
+                        couponInput.value = data.code;
+                        if (typeof triggerCouponValidation === 'function') {
+                            triggerCouponValidation();
+                        }
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function handleMiniProgramFeatureClick() {
+            const apiRoot = window.APP_ROOT || '';
+            fetch(apiRoot + '/api/check_login')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.logged_in) {
+                        if (typeof startWechatLoginPreferFast === 'function') {
+                            startWechatLoginPreferFast();
+                        } else if (typeof showLoginModal === 'function') {
+                            showLoginModal();
+                            if (typeof startWechatLogin === 'function') startWechatLogin();
+                        }
+                        return;
+                    }
+                    fetch(apiRoot + '/api/marketing/check_bind_status')
+                        .then(response => response.json())
+                        .then(bindData => {
+                            if (bindData && bindData.success && (bindData.bound || bindData.has_unionid)) {
+                                if (typeof showBindModalLoading === 'function') {
+                                    showBindModalLoading({ title: '小程序二维码', message: '请使用微信扫码打开小程序' });
+                                }
+                                fetch(apiRoot + '/api/marketing/get_miniprogram_qrcode')
+                                    .then(response => response.json())
+                                    .then(qrData => {
+                                        if (qrData && qrData.success && qrData.url && typeof showBindModal === 'function') {
+                                            showBindModal(qrData.url, { retryWithdraw: false, poll: false, title: '小程序二维码', message: '请使用微信扫码打开小程序' });
+                                        } else {
+                                            alert((qrData && qrData.message) || '获取小程序二维码失败');
+                                        }
+                                    });
+                                return;
+                            }
+                            if (typeof showBindModalLoading === 'function') {
+                                showBindModalLoading({ title: '绑定小程序账户', message: '请扫码登录小程序，登录后将自动完成绑定' });
+                            }
+                            fetch(apiRoot + '/api/marketing/get_bind_qrcode')
+                                .then(response => response.json())
+                                .then(qrData => {
+                                    if (qrData && qrData.success && qrData.url && typeof showBindModal === 'function') {
+                                        showBindModal(qrData.url, { retryWithdraw: false, title: '绑定小程序账户', message: '请扫码登录小程序，登录后将自动完成绑定' });
+                                    } else {
+                                        alert((qrData && qrData.message) || '获取绑定二维码失败');
+                                    }
+                                });
+                        });
+                })
+                .catch(() => {
+                    if (typeof startWechatLoginPreferFast === 'function') {
+                        startWechatLoginPreferFast();
+                    } else if (typeof showLoginModal === 'function') {
+                        showLoginModal();
+                        if (typeof startWechatLogin === 'function') startWechatLogin();
+                    }
+                });
+        }
+        
+        // 更新会员套餐UI
+        function updateMembershipPlansUI(plans) {
+            const plansContainer = document.getElementById('membershipPlans');
+            plansContainer.innerHTML = '';
+            
+            // 存储套餐信息供后续使用
+            window.membershipPlans = plans;
+            
+            plans.forEach((plan, index) => {
+                const isSelected = index === 0;
+                const planElement = `
+                    <div class="col-md-6 mb-3">
+                        <div class="card card-sm ${isSelected ? 'card-selected' : ''}" data-plan-id="${plan.id}">
+                            <div class="card-body text-center">
+                                <div class="h3 text-primary mb-2">${plan.name}</div>
+                                <div class="h4 text-dark mb-3">¥${plan.price}</div>
+                                ${plan.saving ? `<div class="text-success small mb-2">${plan.saving}</div>` : ''}
+                                <ul class="list-unstyled text-muted mb-3">
+                                    ${plan.features.map(feature => `<li>✔️ ${feature}</li>`).join('')}
+                                </ul>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="membershipPlan" 
+                                           value="${plan.id}" ${isSelected ? 'checked' : ''}>
+                                    <label class="form-check-label">选择此套餐</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                plansContainer.innerHTML += planElement;
+            });
+            
+            // 添加套餐选择事件
+            addPlanSelectionEvents();
+        }
+        
+        // 添加套餐选择事件
+        function addPlanSelectionEvents() {
+            const planCards = document.querySelectorAll('[data-plan-id]');
+            planCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // 移除所有选中状态
+                    planCards.forEach(c => c.classList.remove('card-selected'));
+                    // 添加当前选中状态
+                    this.classList.add('card-selected');
+                    // 选中对应的radio按钮
+                    const planId = this.getAttribute('data-plan-id');
+                    const radio = document.querySelector(`input[name="membershipPlan"][value="${planId}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        // Manually trigger change event for radio button to notify listeners (e.g., marketing.js)
+                        const event = new Event('change', { bubbles: true });
+                        radio.dispatchEvent(event);
+                    }
+                });
+            });
+            
+            // Also listen for radio button changes directly
+            const radios = document.querySelectorAll('input[name="membershipPlan"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Update card selection style
+                    planCards.forEach(c => c.classList.remove('card-selected'));
+                    const card = document.querySelector(`[data-plan-id="${this.value}"]`);
+                    if (card) {
+                        card.classList.add('card-selected');
+                    }
+                });
+            });
+        }
+        
+        // 创建支付订单
+        function createPaymentOrder() {
+            const selectedPlanId = document.querySelector('input[name="membershipPlan"]:checked').value;
+            const paymentMethod = 'wechat'; // 固定为微信支付
+            
+            // 获取选中的套餐信息
+            const selectedPlan = window.membershipPlans.find(plan => plan.id == selectedPlanId);
+            if (!selectedPlan) {
+                handlePaymentError('套餐信息获取失败');
+                return;
+            }
+            window.currentMembershipPlan = selectedPlan;
+
+            // Determine product type
+            let productType = 'kaoyan_math';
+            if (window.location.pathname.includes('/cet/4')) {
+                productType = 'cet4';
+            } else if (window.location.pathname.includes('/cet/6')) {
+                productType = 'cet6';
+            }
+
+            // 显示支付处理状态
+            document.getElementById('paymentStatus').style.display = 'block';
+            document.getElementById('paymentStatusText').textContent = '正在创建支付订单，请稍候';
+            document.getElementById('createPaymentBtn').disabled = true;
+            
+            const payload = {
+                plan_id: selectedPlan.id,
+                amount: selectedPlan.price,
+                duration_days: selectedPlan.duration_days,
+                payment_method: 'wechat',
+                product_type: productType
+            };
+
+            // const couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+            // if (couponCode) {
+            //     payload.coupon_code = couponCode;
+            // }
+
+            fetch(window.APP_ROOT + '/api/membership/create_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    handlePaymentSuccess(data);
+                } else {
+                    handlePaymentError(data.message || '创建订单失败', data);
+                }
+            })
+            .catch(error => {
+                console.error('创建支付订单失败:', error);
+                handlePaymentError('网络错误，请重试');
+            });
+        }
+        
+        // 处理支付成功
+        function handlePaymentSuccess(data) {
+            window.currentMembershipOrderId = data.order_id;
+            if (isMockEnvironment()) {
+                const membershipSelectionArea = document.getElementById('membershipSelectionArea');
+                const mockPayArea = document.getElementById('mockPayArea');
+                const createPaymentBtn = document.getElementById('createPaymentBtn');
+                const paymentStatus = document.getElementById('paymentStatus');
+                if (membershipSelectionArea) membershipSelectionArea.style.display = 'none';
+                if (createPaymentBtn) createPaymentBtn.style.display = 'none';
+                if (paymentStatus) paymentStatus.style.display = 'none';
+                if (mockPayArea) mockPayArea.style.display = 'block';
+                const amountDisplay = document.getElementById('payAmountDisplay');
+                // Use the final amount from marketing state if available, otherwise plan price
+                let finalPrice = window.currentMembershipPlan && window.currentMembershipPlan.price;
+                // if (window.marketingState && window.marketingState.finalAmount) {
+                //     finalPrice = window.marketingState.finalAmount;
+                // }
+                
+                if (amountDisplay && finalPrice != null) {
+                    const price = Number(finalPrice);
+                    amountDisplay.textContent = '支付金额: ¥' + price.toFixed(2);
+                }
+            } else {
+                showWechatQrCode(data.payment_data.code_url);
+                startPaymentStatusPolling(data.order_id);
+            }
+        }
+        
+        // 显示微信支付二维码
+        function showWechatQrCode(codeUrl) {
+            document.getElementById('paymentQrCode').style.display = 'block';
+            const qrCodeImage = document.getElementById('qrCodeImage');
+            
+            // 前端优先生成二维码
+            generateQrCodeFallback(codeUrl, qrCodeImage);
+            
+            document.getElementById('paymentStatusText').textContent = '请使用微信扫描二维码完成支付';
+        }
+        
+        // 备用二维码生成方案
+        function generateQrCodeFallback(codeUrl, qrCodeImage) {
+            // 如果前端有QRCode.js库，可以使用它生成二维码
+            if (typeof QRCode !== 'undefined') {
+                qrCodeImage.innerHTML = '';
+                new QRCode(qrCodeImage, {
+                    text: codeUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            } else {
+                // 最后备用：使用外部API
+                qrCodeImage.innerHTML = `
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(codeUrl)}" 
+                         alt="微信支付二维码" width="200" height="200">
+                `;
+            }
+        }
+        
+        // 全局变量用于存储轮询间隔
+        let pollInterval = null;
+        
+        // 停止支付状态轮询
+        function stopPaymentPolling() {
+            if (pollInterval) {
+                clearInterval(pollInterval);
+                pollInterval = null;
+            }
+            // if (window.marketingState) {
+            //     window.marketingState.finalAmount = null;
+            //     window.marketingState.couponId = null;
+            //     window.marketingState.discount = 0;
+            // }
+        }
+        
+        function mockScan() {
+            if (!window.currentMembershipOrderId) return;
+            fetch(window.APP_ROOT + '/api/membership/mock_pay_success', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ order_id: window.currentMembershipOrderId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const mockPayArea = document.getElementById('mockPayArea');
+                        const paymentSuccess = document.getElementById('paymentSuccess');
+                        if (mockPayArea) mockPayArea.style.display = 'none';
+                        if (paymentSuccess) paymentSuccess.style.display = 'block';
+                        setTimeout(() => {
+                            const modalEl = document.getElementById('membershipModal');
+                            if (modalEl) {
+                                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                modal.hide();
+                            }
+                            if (typeof checkLoginStatus === 'function') {
+                                Promise.resolve(checkLoginStatus()).finally(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                window.location.reload();
+                            }
+                        }, 1500);
+                    } else {
+                        alert('支付回调失败: ' + (data.message || '未知错误'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('支付回调出错');
+                });
+        }
+        
+        // 开始轮询支付状态
+        function startPaymentStatusPolling(orderId) {
+            let pollingCount = 0;
+            const maxPollingCount = 180; // 3分钟
+            
+            // 清除之前的轮询（如果有）
+            if (pollInterval) {
+                clearInterval(pollInterval);
+            }
+            
+            pollInterval = setInterval(() => {
+                pollingCount++;
+                
+                if (pollingCount > maxPollingCount) {
+                    clearInterval(pollInterval);
+                    handlePaymentError('支付超时，请重新尝试');
+                    return;
+                }
+                
+                fetch(window.APP_ROOT + `/api/membership/order_status/${orderId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (data.status === 'completed') {
+                                clearInterval(pollInterval);
+                                completePayment();
+                            } else if (data.status === 'failed') {
+                                clearInterval(pollInterval);
+                                handlePaymentError('支付失败');
+                            }
+                            // 其他状态继续轮询
+                        }
+                    })
+                    .catch(error => {
+                        console.error('轮询支付状态失败:', error);
+                    });
+                    
+            }, 1000); // 每秒轮询一次
+        }
+        
+        // 完成支付
+        function completePayment() {
+            document.getElementById('paymentStatus').style.display = 'none';
+            document.getElementById('paymentSuccess').style.display = 'block';
+            
+            // 3秒后刷新页面
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+        
+        // 处理支付错误
+        function handlePaymentError(message, data = {}) {
+            document.getElementById('paymentStatusText').textContent = message;
+            document.getElementById('createPaymentBtn').disabled = false;
+            document.getElementById('createPaymentBtn').textContent = '重新支付';
+            
+            // 5秒后隐藏错误状态
+            setTimeout(() => {
+                resetMembershipModal();
+            }, 5000);
+        }
+        
+        // 初始化会员套餐选择事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 支付方式固定为微信支付，无需切换事件处理
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const miniprogramFeature = document.getElementById('miniprogramFeatureLink');
+            if (miniprogramFeature) {
+                miniprogramFeature.addEventListener('click', handleMiniProgramFeatureClick);
+            }
+        });
+    </script>
+
+    <!-- 登录模态框 -->
+    <div class="modal modal-blur fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true"
+        style="z-index: 99999;">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">登录/注册</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="nav-tabs-alt mb-3">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a href="#wechat-login" class="nav-link active" data-bs-toggle="tab" role="tab">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M16.5 10c3.038 0 5.5 2.015 5.5 4.5c0 1.397 -.778 2.645 -2 3.47l0 2.03l-1.964 -1.178a6.649 6.649 0 0 1 -1.536 .178c-3.038 0 -5.5 -2.015 -5.5 -4.5s2.462 -4.5 5.5 -4.5z" />
+                                        <path
+                                            d="M11.197 15.698c-.69 .196 -1.43 .302 -2.197 .302a8.008 8.008 0 0 1 -2.612 -.432l-2.388 1.432v-2.801c-1.237 -1.082 -2 -2.564 -2 -4.199c0 -3.314 3.134 -6 7 -6c3.782 0 6.863 2.57 7 5.785l0 .233" />
+                                        <path d="M10 8h.01" />
+                                        <path d="M7 8h.01" />
+                                        <path d="M15 14h.01" />
+                                        <path d="M18 14h.01" />
+                                    </svg>
+                                    微信登录
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#phone-login" class="nav-link" data-bs-toggle="tab" role="tab">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                                    </svg>
+                                    手机登录
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content" style="min-height: 280px;">
+                        <div class="tab-pane active" id="wechat-login" role="tabpanel" style="min-height: 280px;">
+                            <div id="wechatLogin" class="text-center">
+                                <button type="button" onclick="startWechatLoginPreferFast()" class="btn btn-success btn-lg mb-3">微信登录</button>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="phone-login" role="tabpanel" style="min-height: 280px;">
+                            <form id="phoneLoginForm">
+                                <div class="mb-3 text-danger" style="font-size: 13px; line-height: 1.5;">
+                                    建议用微信登录注册，便于微信小程序（开发中）同步做题数据。已经用手机注册的老用户在此用手机号登录，后续可绑定小程序。
+                                    <!-- 本网站已经配套微信小程序，建议用微信登录注册。已经用手机注册的老用户在此用手机号登录后，可点击页面上方“微信小程序”扫码绑定微信。 -->
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">手机号</label>
+                                    <input type="tel" class="form-control" id="loginPhone" placeholder="请输入手机号"
+                                        maxlength="11">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">验证码</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="loginSmsCode"
+                                            placeholder="请输入验证码" maxlength="6">
+                                        <button type="button" class="btn btn-outline-primary" id="sendSmsBtn"
+                                            onclick="sendSmsCode()">获取验证码</button>
+                                    </div>
+                                </div>
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-primary w-100">登录/注册</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/login.js?v=c6913d88?v=force_update_20260417_1"></script>
+
+    
+<script src="/static/js/index.js?v=c6913d88"></script>
+
+
+    <!-- 用户设置模态框 -->
+    <div class="modal modal-blur fade" id="settingsModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">用户设置</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settingsForm">
+                        <!-- 头像设置 -->
+                        <div class="mb-4">
+                            <label class="form-label">头像</label>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-xl me-3" id="currentAvatar" style="background-size: cover; background-position: center;"></div>
+                                <div>
+                                    <input type="file" class="form-control" id="avatarUpload" accept="image/*" style="display: none;">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('avatarUpload').click()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
+                                            <path d="M12 11l0 6"/>
+                                            <path d="M9 14l3 -3l3 3"/>
+                                        </svg>
+                                        上传头像
+                                    </button>
+                                    <div class="form-hint mt-1">支持 JPG、PNG 格式，文件大小不超过 2MB</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 昵称设置 -->
+                        <div class="mb-3">
+                            <label class="form-label">昵称</label>
+                            <input type="text" class="form-control" id="nicknameInput" placeholder="请输入昵称" maxlength="20">
+                            <div class="form-hint">昵称长度不超过20个字符</div>
+                        </div>
+                        
+                        <!-- 手机号显示（只读） -->
+                        <div class="mb-3">
+                            <label class="form-label">手机号</label>
+                            <input type="text" class="form-control" id="phoneDisplay" readonly>
+                            <div class="form-hint">手机号不可修改</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="stopPaymentPolling()">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveSettingsBtn">保存设置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 会员充值模态框 -->
+    <div class="modal modal-blur fade" id="membershipModal" style="z-index: 10000;" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">💎 会员套餐</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="stopPaymentPolling()"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- 会员套餐选择 -->
+                    <div class="mb-4" id="membershipSelectionArea">
+                        <h5 class="mb-3">选择会员套餐</h5>
+                        <div class="row" id="membershipPlans">
+                            <!-- 会员套餐将通过JavaScript动态加载 -->
+                        </div>
+                        
+                        <!-- 优惠码输入区域 -->
+                        <!-- <div class="mb-3">
+                            <label class="form-label">优惠码</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="couponCode" placeholder="如有优惠码，请输入6位代码" maxlength="6" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-hint mt-2 text-muted" id="couponHint">输入优惠码得优惠哟~</div>
+                        </div> -->
+                        
+                        <!-- 生成优惠码按钮 -->
+                        <!-- <div class="mb-3">
+                            <button type="button" class="btn btn-outline-primary w-100" id="generateCouponBtn" onclick="generateAndShareCoupon()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-gift" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M3 8m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"></path>
+                                    <path d="M12 8l0 13"></path>
+                                    <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"></path>
+                                    <path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"></path>
+                                </svg>
+                                生成优惠码，分享得佣金
+                            </button>
+                        </div> -->
+                    </div>
+                    
+                    <div class="text-center mb-3" id="mockPayArea" style="display: none;">
+                        <div class="p-3">
+                            <p class="mb-3">开发环境下，点击下方按钮直接完成支付</p>
+                            <p class="fw-bold text-danger fs-4 mb-3" id="payAmountDisplay"></p>
+                            <button class="btn btn-success w-100" onclick="mockScan()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M5 12l5 5l10 -10"></path>
+                                </svg>
+                                点我模拟支付成功
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付二维码显示区域 -->
+                    <div class="text-center mb-3" id="paymentQrCode" style="display: none;">
+                        <div class="border rounded p-3 d-inline-block">
+                            <div id="qrCodeImage" class="mb-2"></div>
+                            <div class="text-muted small">请使用微信扫描二维码完成支付</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付状态提示 -->
+                    <div class="alert alert-info" id="paymentStatus" style="display: none;">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            <div>
+                                <strong>支付处理中...</strong>
+                                <div class="small" id="paymentStatusText">正在创建支付订单，请稍候</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付成功提示 -->
+                    <div class="alert alert-success" id="paymentSuccess" style="display: none;">
+                        <div class="d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check text-success me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                                <path d="M9 12l2 2l4 -4"/>
+                            </svg>
+                            <div>
+                                <strong>支付成功！</strong>
+                                <div class="small">会员权益已生效，正在刷新页面...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <div class="w-50 text-muted small text-start px-3 pt-2" style="max-width: 50%; word-wrap: break-word;">
+                        如遇支付问题，请将用户名和截图发邮件至ysyn20191128@163.com
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="stopPaymentPolling()">取消</button>
+                    <button type="button" class="btn" id="createPaymentBtn" onclick="createPaymentOrder()" style="background-color: #07C160; border-color: #07C160; color: white;">
+                        微信支付
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 会员套餐卡片样式 */
+        .card-selected {
+            border-color: #206bc4 !important;
+            box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.25);
+        }
+        
+        .card-selected .card-body {
+            background-color: #f8fafc;
+        }
+        
+        /* 会员状态徽章样式 */
+        .membership-badge {
+            top: 80px;
+            left: 20px;
+            z-index: 1000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .membership-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .membership-badge.vip {
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            color: white;
+        }
+        
+        .membership-badge.non-vip {
+            background: linear-gradient(135deg, #adadad, #adadad);
+            color: white;
+        }
+        
+        /* 支付二维码样式 */
+        #qrCodeImage {
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #666;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .membership-badge {
+                top: 80px;
+                right: 10px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            #qrCodeImage {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+
+
+    <!-- 网站公告模态框 -->
+    <div class="modal modal-blur fade" id="announcementModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="ti ti-bell me-2 text-primary"></i>
+                        网站公告
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="announcement-content" style="line-height: 1.6; font-size: 1rem;">
+                        <!-- <p><strong>12/1今日功能更新：</strong></p>
+                        <ol style="padding-left: 1.5rem; margin-bottom: 0;">
+                            <li>上线了重复题自动标注功能。数一数二数三同一年份的重复题，刷题时标注表情（或修改表情）就会自动全部标注上。但之前的大家已经标注的题没有自动修改，因为多个重题都有标注的话系统无法判断以哪个作为标准。大家可以把之前标注过的题快速重新标一下（点击表情取消后再点一次），这样三套重题都可以自动标上了</li>
+                            <li>上线了“查看难度”功能。点击页面右上方“查看难度”按钮即可查看题目难度（即得分率）的大数据统计，方便大家冲刺阶段避雷难题。</li>
+                            <li>更正了部分错题和解析（感谢同学们的积极反馈）</li>
+                        </ol>
+                        <hr style="margin: 1.5rem 0;"> -->
+                        <p><strong>说明：</strong></p>
+                        <ul style="padding-left: 1.5rem; margin-bottom: 0;">
+                            <!-- <li>重复题自动标注功能涉及到对系统的较大修改，又涉及到大量数据录入，花了较长时间才上线，请见谅。</li> -->
+                            <li>欢迎提出宝贵意见和建议至ysyn20191128@163.com</li>
+                        </ul>
+                        <hr style="margin: 1.5rem 0;">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">我知道了</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ 
+    <script>
+        // 显示难度功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const showDifficultySwitch = document.getElementById('showDifficultySwitch');
+            
+            if (showDifficultySwitch) {
+                // 默认不开启，除非localStorage中有保存的状态
+                const showDifficulty = localStorage.getItem('showDifficulty') === 'true';
+                showDifficultySwitch.checked = showDifficulty;
+                
+                // 监听切换事件
+                showDifficultySwitch.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    localStorage.setItem('showDifficulty', isChecked);
+                    
+                    if (isChecked) {
+                        showDifficultyOverlay();
+                    } else {
+                        hideDifficultyOverlay();
+                    }
+                });
+                
+                // 初始状态处理
+                if (showDifficulty) {
+                    // 延迟执行以确保题目卡片已加载
+                    setTimeout(showDifficultyOverlay, 1000);
+                }
+            }
+        });
+        
+        // 显示难度蒙版
+        function showDifficultyOverlay() {
+            
+            // 先移除所有现有的难度蒙版，确保重新显示正确的蒙版
+            hideDifficultyOverlay();
+            
+            const questionCards = document.querySelectorAll('.question-item');
+            
+            // 获取当前选中的知识点ID（从全局变量或DOM中获取）
+            let currentSelectedKnowledgeId = null;
+            const activeKnowledgeHeader = document.querySelector('.knowledge-header.active');
+            if (activeKnowledgeHeader) {
+                currentSelectedKnowledgeId = parseInt(activeKnowledgeHeader.getAttribute('data-knowledge-id'));
+            }
+            
+            // 如果有选中的知识点，获取其所有子节点ID
+            let knowledgeIdsToShow = [];
+            if (currentSelectedKnowledgeId) {
+                // 这里需要调用 getAllChildrenIds 函数，但该函数在 index.js 中定义
+                // 由于我们无法直接调用，这里采用另一种方式：通过检查高亮状态
+                // 实际上，我们可以通过检查题目是否被高亮来判断是否属于选中知识点
+                knowledgeIdsToShow = [currentSelectedKnowledgeId];
+            }
+            
+            questionCards.forEach(card => {
+                // 如果有选中的知识点，只显示属于该知识点的题目的难度蒙版
+                if (currentSelectedKnowledgeId) {
+                    // 检查该题目是否属于选中的知识点（通过检查是否被高亮）
+                    if (!card.classList.contains('highlighted')) {
+                        return; // 不属于选中知识点，跳过
+                    }
+                }
+                
+                const happyCount = parseInt(card.getAttribute('data-happy-count') || 0);
+                const maybeCount = parseInt(card.getAttribute('data-maybe-count') || 0);
+                const sadCount = parseInt(card.getAttribute('data-sad-count') || 0);
+                const total = happyCount + maybeCount + sadCount;
+                
+                if (total > 0) {
+                    const happyRatio = happyCount / total;
+                    const maybeRatio = maybeCount / total;
+                    const sadRatio = sadCount / total;
+                    
+                    // 创建蒙版
+                    const overlay = document.createElement('div');
+                    overlay.className = 'difficulty-overlay';
+                    
+                    // 添加颜色段
+                    if (happyRatio > 0) {
+                        const happySegment = document.createElement('div');
+                        happySegment.className = 'difficulty-segment difficulty-happy';
+                        happySegment.style.width = `${happyRatio * 100}%`;
+                        overlay.appendChild(happySegment);
+                    }
+                    
+                    if (maybeRatio > 0) {
+                        const maybeSegment = document.createElement('div');
+                        maybeSegment.className = 'difficulty-segment difficulty-maybe';
+                        maybeSegment.style.width = `${maybeRatio * 100}%`;
+                        overlay.appendChild(maybeSegment);
+                    }
+                    
+                    if (sadRatio > 0) {
+                        const sadSegment = document.createElement('div');
+                        sadSegment.className = 'difficulty-segment difficulty-sad';
+                        sadSegment.style.width = `${sadRatio * 100}%`;
+                        overlay.appendChild(sadSegment);
+                    }
+                    
+                    // 添加文字显示
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'difficulty-text';
+                    textDiv.innerHTML = `
+                        <div style="text-align: center;">${Math.round(((happyCount + maybeCount * 0.5) / total * 100))}%</div>
+                    `;
+                    
+                    // 添加到卡片
+                    card.classList.add('with-difficulty');
+                    card.appendChild(overlay);
+                    card.appendChild(textDiv);
+                }
+            });
+        }
+        
+        // 隐藏难度蒙版
+        function hideDifficultyOverlay() {
+            // 获取当前选中的知识点ID（从全局变量或DOM中获取）
+            let currentSelectedKnowledgeId = null;
+            const activeKnowledgeHeader = document.querySelector('.knowledge-header.active');
+            if (activeKnowledgeHeader) {
+                currentSelectedKnowledgeId = parseInt(activeKnowledgeHeader.getAttribute('data-knowledge-id'));
+            }
+            
+            if (currentSelectedKnowledgeId) {
+                // 如果有选中的知识点，移除所有难度蒙版（因为我们要重新显示正确的蒙版）
+                const overlays = document.querySelectorAll('.difficulty-overlay');
+                const texts = document.querySelectorAll('.difficulty-text');
+                const cards = document.querySelectorAll('.question-item.with-difficulty');
+                
+                overlays.forEach(overlay => overlay.remove());
+                texts.forEach(text => text.remove());
+                cards.forEach(card => card.classList.remove('with-difficulty'));
+            } else {
+                // 如果没有选中的知识点，移除所有难度蒙版
+                const overlays = document.querySelectorAll('.difficulty-overlay');
+                const texts = document.querySelectorAll('.difficulty-text');
+                const cards = document.querySelectorAll('.question-item.with-difficulty');
+                
+                overlays.forEach(overlay => overlay.remove());
+                texts.forEach(text => text.remove());
+                cards.forEach(card => card.classList.remove('with-difficulty'));
+            }
+        }
+        
+        // 监听题目卡片动态加载
+        let observer = null;
+        
+        function startObservingDifficulty() {
+            if (observer) {
+                observer.disconnect();
+            }
+            
+            observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        // 检查是否添加了题目卡片
+                        let hasQuestionCards = false;
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1) { // Element node
+                                if (node.classList && node.classList.contains('question-item')) {
+                                    hasQuestionCards = true;
+                                } else if (node.querySelector) {
+                                    if (node.querySelector('.question-item')) {
+                                        hasQuestionCards = true;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        if (hasQuestionCards) {
+                            const showDifficulty = localStorage.getItem('showDifficulty') === 'true';
+                            if (showDifficulty) {
+                                // 延迟执行以确保新添加的题目卡片完全渲染
+                                setTimeout(showDifficultyOverlay, 100);
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // 观察整个文档的变化
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+        
+        // 启动观察
+        startObservingDifficulty();
+    </script>
+    <!-- Commissions Modal -->
+    <div class="modal modal-blur fade" id="commissionsModal" tabindex="-1" role="dialog" aria-hidden="true"
+        style="z-index: 10000;">
+        <div class="modal-dialog modal-dialog-centered" role="document"
+            style="max-width: 80vw; width: 80vw; margin-left: auto; margin-right: auto;">
+            <div class="modal-content" style="width: 100%;max-width: none;">
+                <div class="modal-header">
+                    <h5 class="modal-title">我的佣金</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center" style="gap: 20px;">
+                            <div>
+                                <span class="text-muted">可提现：</span>
+                                <span class="fw-bold text-success" id="commissionsPending"></span>
+                            </div>
+                            <div>
+                                <span class="text-muted">已提现：</span>
+                                <span class="fw-bold text-secondary" id="commissionsPaid"></span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="withdrawAll()">全部提现</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table">
+                            <thead>
+                                <tr>
+                                    <th>优惠码</th>
+                                    <th>使用时间</th>
+                                    <th>使用用户</th>
+                                    <th>订单金额</th>
+                                    <th>佣金</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commissionsTableBody">
+                                <!-- Rows will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="commissionsLoading" class="text-center p-3">
+                        <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                    </div>
+                    <div id="commissionsEmpty" class="text-center p-3 text-muted" style="display: none;">
+                        暂无佣金记录
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mt-2" id="commissionsPager"
+                        style="display:none;">
+                        <div>第 <span id="commissionsPage">1</span> / <span id="commissionsPages">1</span> 页</div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="commPrevBtn">上一页</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="commNextBtn">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bind WeChat Modal -->
+    <div class="modal modal-blur fade" id="bindWechatModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 10001;">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bindQrTitle">绑定微信提现账户</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <div id="bindQrLoading" class="text-center text-muted small" style="display: none;">
+                            <div class="spinner-border text-secondary" role="status"></div>
+                            <div class="mt-2">二维码加载中...</div>
+                        </div>
+                        <div id="bindQrCode"></div>
+                    </div>
+                    <p class="text-muted small" id="bindQrHint" data-default="请扫码登录小程序，登录后将自动完成绑定并继续提现。">请扫码登录小程序，登录后将自动完成绑定并继续提现。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal modal-blur fade" id="couponShareModal" tabindex="-1" role="dialog" aria-hidden="true"
+        style="z-index: 100001;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 60vw;;">
+            <div class="modal-content" style="width: 100%;max-width: none;">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="color: #edcd04;" width="30" height="30"
+                            viewBox="0 0 24 24" fill="currentColor"
+                            class="icon-tabler icons-tabler-filled icon-tabler-coin">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 2.66a1 1 0 0 0 -1 1a3 3 0 1 0 0 6v2a1.024 1.024 0 0 1 -.866 -.398l-.068 -.101a1 1 0 0 0 -1.732 .998a3 3 0 0 0 2.505 1.5h.161a1 1 0 0 0 .883 .994l.117 .007a1 1 0 0 0 1 -1l.176 -.005a3 3 0 0 0 -.176 -5.995v-2c.358 -.012 .671 .14 .866 .398l.068 .101a1 1 0 0 0 1.732 -.998a3 3 0 0 0 -2.505 -1.501h-.161a1 1 0 0 0 -1 -1zm1 7a1 1 0 0 1 0 2v-2zm-2 -4v2a1 1 0 0 1 0 -2z" />
+                        </svg>
+                        分享优惠码
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="font-size: 16px; line-height: 1.8; margin: 8px 0;">
+                    <div class="mb-3" style="font-size: 18px;font-weight: bold!important;">
+                        方法1：分享网址。复制以下链接（本站网址，带有你的优惠码<span class="fw-bold" id="shareModalCode"
+                            style="color: #8B5CF6;"></span>）分享给好友即可
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text">本站网址</span>
+                        <input id="shareModalLinkInput" type="text" class="form-control" readonly>
+                        <button id="shareModalCopyBtn" type="button" class="btn btn-outline-primary"
+                            onclick="shareModalCopy()">复制</button>
+                    </div>
+                    <div class="mb-3 d-flex align-items-center" style="gap: 12px; margin-top: 10px;">
+                        <div ><span style="font-size: 18px;font-weight: bold;">方法2：分享小程序首页，效果更佳！</span>
+                            <br>
+                            <span style="font-size: 14px;">微信扫码进入本站配套小程序，分享首页即可，自动带上你的优惠码</span></div>
+                        <img id="shareMiniProgramQr" alt="小程序二维码" style="width: 130px; height: 130px; object-fit: contain; display: none;margin-left: 40px;">
+                    </div>
+                    <div class="mb-3" style="font-size: 14px;margin-top: 5px;">
+                        <div><strong>说明：</strong></div>
+                        <div><strong>1.</strong> 好友点开链接或小程序卡片进入本网站，充值时会自动填入你的专属优惠码（也可手填输入）；</div>
+                        <div><strong>2.</strong> 推广活动期间，此优惠码一直有效；</div>
+                        <div><strong>3.</strong> 优惠码使用后，你可获得与对方优惠额等值的佣金（<span
+                                style="font-weight: bold; color: #ff0000;">季卡2元,月卡1元</span>），直接转到你的微信零钱（目前仅微信注册用户可生成优惠码）；
+                        </div>
+                        <div><strong>4.</strong> 可点击头像在”我的佣金“中查看收益，同一优惠码使用人数、次数无限制，链接多人点击则多赚佣金，无上限；</div>
+                        <div><strong>5.</strong> 你无法使用此优惠码为自己充值；</div>
+                        <div><strong>6.</strong> 如发生恶意使用，我们将暂停优惠码功能，平台保留随时调整优惠金额或终止活动的权利，活动终止后优惠码将无法抵扣。</div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
