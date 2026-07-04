@@ -129,3 +129,35 @@ Added a cyberpunk-style black pixel reveal phase after the signal boot loader, v
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Refine startup signal scan
+
+**Date**: 2026-07-04
+**Task**: Refine startup signal scan
+
+### Summary
+
+Reduced oscilloscope signal stroke/glow weight and moved the scan band to full-screen height so the loader feels less abrupt.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `feb516f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
