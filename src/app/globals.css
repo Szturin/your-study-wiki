@@ -318,11 +318,9 @@ textarea {
   z-index: 90;
   display: grid;
   place-items: center;
+  isolation: isolate;
   overflow: hidden;
-  background:
-    radial-gradient(circle at center, rgba(31, 240, 215, 0.08), transparent 34%),
-    linear-gradient(180deg, rgba(3, 9, 13, 0.98), rgba(4, 12, 17, 0.96)),
-    #050a0e;
+  background: transparent;
   color: #d9fdff;
   opacity: 0;
   visibility: hidden;
@@ -332,15 +330,33 @@ textarea {
     visibility 520ms ease;
 }
 
+.wiki-startup-loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at center, rgba(31, 240, 215, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(3, 9, 13, 0.98), rgba(4, 12, 17, 0.96)),
+    #050a0e;
+  opacity: 1;
+  transition: opacity 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .wiki-startup-loader-visible {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
+.wiki-startup-loader-reveal::before {
+  opacity: 0;
+}
+
 .wiki-startup-loader-grid {
   position: absolute;
   inset: -8%;
+  z-index: 1;
   background:
     linear-gradient(rgba(104, 244, 255, 0.07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(104, 244, 255, 0.07) 1px, transparent 1px),
@@ -357,14 +373,33 @@ textarea {
   mask-image: radial-gradient(ellipse at center, #000 0%, #000 54%, transparent 78%);
   -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, #000 54%, transparent 78%);
   animation: wikiStartupGridScan 2300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wiki-startup-scope {
   position: relative;
+  z-index: 2;
   width: min(1180px, calc(100vw - 28px));
   overflow: hidden;
   transform: translateY(8px) scale(0.985);
   animation: wikiStartupScopeEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    opacity 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wiki-startup-loader-reveal .wiki-startup-loader-grid {
+  opacity: 0;
+  transform: scale(1.045);
+}
+
+.wiki-startup-loader-reveal .wiki-startup-scope {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(-10px) scale(1.025);
 }
 
 .wiki-startup-wave {
@@ -424,6 +459,40 @@ textarea {
   animation: wikiStartupScan 1850ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
 }
 
+.wiki-startup-pixels {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  grid-template-rows: repeat(11, minmax(0, 1fr));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wiki-startup-loader-reveal .wiki-startup-pixels {
+  opacity: 1;
+}
+
+.wiki-startup-pixel {
+  min-width: 0;
+  min-height: 0;
+  background:
+    linear-gradient(135deg, rgba(13, 19, 24, 0.98), rgba(0, 4, 7, 0.98)),
+    #020507;
+  box-shadow:
+    inset 0 0 0 1px rgba(116, 255, 244, 0.035),
+    0 0 18px rgba(64, 255, 235, 0.045);
+  opacity: 0;
+  transform: scale(1.04);
+  transform-origin: center;
+  will-change: opacity, transform, filter;
+}
+
+.wiki-startup-loader-reveal .wiki-startup-pixel {
+  animation: wikiStartupPixelReveal 820ms steps(5, end) both;
+}
+
 @keyframes wikiStartupScopeEnter {
   to {
     transform: translateY(0) scale(1);
@@ -469,14 +538,45 @@ textarea {
   }
 }
 
+@keyframes wikiStartupPixelReveal {
+  0% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: brightness(0.82);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  54% {
+    opacity: 0.66;
+    transform: scale(0.82);
+    filter: brightness(1.22);
+  }
+  82% {
+    opacity: 0.2;
+    transform: scale(0.48);
+    filter: brightness(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.12);
+    filter: brightness(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wiki-startup-loader,
+  .wiki-startup-loader::before,
   .wiki-startup-loader-grid,
   .wiki-startup-scope,
   .wiki-startup-wave-line,
   .wiki-startup-wave-dc,
-  .wiki-startup-loader-scan {
+  .wiki-startup-loader-scan,
+  .wiki-startup-pixel {
     animation-duration: 1ms;
+    animation-delay: 0ms !important;
     transition-duration: 1ms;
   }
 }

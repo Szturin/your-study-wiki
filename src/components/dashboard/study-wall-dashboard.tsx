@@ -13,9 +13,10 @@ type StudyWallDashboardProps = {
 type DashboardMode = "home" | "wrongbook" | "favorite";
 type ThemeMode = "light" | "dark";
 type CollectionViewMode = "list" | "mindmap";
+type StartupLoaderPhase = "boot" | "reveal" | "hidden";
 
 type StartupSignalLoaderProps = {
-  visible: boolean;
+  phase: StartupLoaderPhase;
 };
 
 type NavItemProps = {
@@ -127,6 +128,9 @@ const MINDMAP_LOD_HYSTERESIS = 0.08;
 const MINDMAP_MIN_SCALE = 0.35;
 const MINDMAP_MAX_SCALE = 5;
 const MINDMAP_SCALE_STEP = 0.12;
+const STARTUP_PIXEL_COLUMNS = 16;
+const STARTUP_PIXEL_COUNT = STARTUP_PIXEL_COLUMNS * 11;
+const STARTUP_PIXEL_INDICES = Array.from({ length: STARTUP_PIXEL_COUNT }, (_, index) => index);
 
 type MindMapQuestionRenderMode = "compact" | "summary" | "math";
 
@@ -700,9 +704,17 @@ function NavItem({ active, label, icon, onClick }: NavItemProps) {
   );
 }
 
-function StartupSignalLoader({ visible }: StartupSignalLoaderProps) {
+function StartupSignalLoader({ phase }: StartupSignalLoaderProps) {
+  if (phase === "hidden") {
+    return null;
+  }
+
+  const loaderClassName = ["wiki-startup-loader", "wiki-startup-loader-visible", `wiki-startup-loader-${phase}`].join(
+    " ",
+  );
+
   return (
-    <div className={`wiki-startup-loader ${visible ? "wiki-startup-loader-visible" : ""}`} aria-hidden={!visible}>
+    <div className={loaderClassName} aria-hidden="true">
       <div className="wiki-startup-loader-grid" />
       <div className="wiki-startup-scope">
         <svg className="wiki-startup-wave" viewBox="0 0 960 260" role="img" aria-label="衰减信号加载进度">
@@ -733,6 +745,21 @@ function StartupSignalLoader({ visible }: StartupSignalLoaderProps) {
           <path className="wiki-startup-wave-dc" d="M754 132 C800 132 832 132 874 132 H928" />
         </svg>
         <div className="wiki-startup-loader-scan" />
+      </div>
+      <div className="wiki-startup-pixels">
+        {STARTUP_PIXEL_INDICES.map((pixelIndex) => {
+          const rowIndex = Math.floor(pixelIndex / STARTUP_PIXEL_COLUMNS);
+          const columnIndex = pixelIndex % STARTUP_PIXEL_COLUMNS;
+          const staggerDelay = (columnIndex * 31 + rowIndex * 47 + (pixelIndex % 7) * 29) % 540;
+
+          return (
+            <span
+              key={pixelIndex}
+              className="wiki-startup-pixel"
+              style={{ animationDelay: `${staggerDelay}ms` }}
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -862,7 +889,7 @@ function StatCard({
 }
 
 export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
-  const [showStartupLoader, setShowStartupLoader] = useState(true);
+  const [startupLoaderPhase, setStartupLoaderPhase] = useState<StartupLoaderPhase>("boot");
   const [dashboardMode, setDashboardMode] = useState<DashboardMode>("home");
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [collectionViewMode, setCollectionViewMode] = useState<CollectionViewMode>("list");
@@ -911,12 +938,19 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   const liveScaleRef = useRef(1);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setShowStartupLoader(false);
-    }, 2300);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const revealDelay = prefersReducedMotion ? 160 : 2160;
+    const hiddenDelay = prefersReducedMotion ? 360 : 3340;
+    const revealTimerId = window.setTimeout(() => {
+      setStartupLoaderPhase("reveal");
+    }, revealDelay);
+    const hiddenTimerId = window.setTimeout(() => {
+      setStartupLoaderPhase("hidden");
+    }, hiddenDelay);
 
     return () => {
-      window.clearTimeout(timeoutId);
+      window.clearTimeout(revealTimerId);
+      window.clearTimeout(hiddenTimerId);
     };
   }, []);
 
@@ -1993,7 +2027,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
 
   return (
     <div className={`wiki-shell ${isDark ? "wiki-dark" : "wiki-light"}`}>
-      <StartupSignalLoader visible={showStartupLoader} />
+      <StartupSignalLoader phase={startupLoaderPhase} />
       <div className="grid h-screen grid-cols-1 overflow-hidden xl:grid-cols-[306px_minmax(0,1fr)]">
         <aside className="flex min-h-0 flex-col border-r border-[var(--wiki-border)] bg-[var(--wiki-panel)]">
           <div className="flex h-[92px] items-center border-b border-[var(--wiki-border)] px-7">
