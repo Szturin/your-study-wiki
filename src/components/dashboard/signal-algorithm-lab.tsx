@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { MathMarkdown } from "@/components/ui/math-markdown";
+
 type AlgorithmId = "cfs" | "ctft" | "s" | "z" | "dtft" | "dfs" | "dft" | "fft";
 type FrequencyVisualKind = "bars" | "curve" | "plane" | "butterfly";
 type SignalRenderMode = "continuous" | "stems";
@@ -57,6 +59,10 @@ type LabModel = {
   rocLabel: string;
 };
 
+function displayEquation(formula: string) {
+  return `\\[\n${formula}\n\\]`;
+}
+
 const ALGORITHMS: readonly AlgorithmDefinition[] = [
   {
     id: "cfs",
@@ -65,7 +71,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "周期方波的奇次谐波线谱",
     domain: "周期 x(t)",
     range: "a_k",
-    equation: "x(t)=4/pi sum_{m=0}^M sin((2m+1)t)/(2m+1)",
+    equation: displayEquation(String.raw`x(t)=\frac{4}{\pi}\sum_{m=0}^{M}\frac{\sin((2m+1)t)}{2m+1}`),
     example: "标准 2π 周期奇方波，部分和重建与 Gibbs 现象",
     visualLabel: "复指数系数幅度 |a_k|",
     visualKind: "bars",
@@ -79,7 +85,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "矩形脉冲与 sinc 连续谱",
     domain: "非周期 x(t)",
     range: "X(j omega)",
-    equation: "rect(t/T) <-> T sinc(omega T/2)",
+    equation: displayEquation(String.raw`\operatorname{rect}\left(\frac{t}{T}\right) \leftrightarrow T\operatorname{sinc}\left(\frac{\omega T}{2}\right)`),
     example: "宽度 T=1 的矩形脉冲，零点位于 omega=±2π, ±4π,...",
     visualLabel: "连续频谱 |X(jω)|",
     visualKind: "curve",
@@ -93,7 +99,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "右边指数信号的 s 平面极点与 ROC",
     domain: "e^{-at}u(t)",
     range: "1/(s+a)",
-    equation: "e^{-at}u(t) <-> 1/(s+a), ROC: Re{s}>-a",
+    equation: displayEquation(String.raw`e^{-at}u(t) \leftrightarrow \frac{1}{s+a},\quad \mathrm{ROC}:\operatorname{Re}\{s\}>-a`),
     example: "单极点一阶稳定连续系统",
     visualLabel: "s 平面：极点与 ROC",
     visualKind: "plane",
@@ -107,7 +113,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "右边指数序列的 z 平面极点与单位圆",
     domain: "a^n u[n]",
     range: "1/(1-a z^{-1})",
-    equation: "a^n u[n] <-> 1/(1-a z^{-1}), ROC: |z|>|a|",
+    equation: displayEquation(String.raw`a^n u[n] \leftrightarrow \frac{1}{1-a z^{-1}},\quad \mathrm{ROC}: |z|>|a|`),
     example: "一阶 IIR 离散系统，0<a<1",
     visualLabel: "z 平面：极点、单位圆与 ROC",
     visualKind: "plane",
@@ -121,7 +127,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "指数序列沿单位圆得到 2π 周期频谱",
     domain: "a^n u[n]",
     range: "X(e^{j omega})",
-    equation: "|X(e^{jω})|=1/sqrt(1+a^2-2a cosω)",
+    equation: displayEquation(String.raw`\left|X(e^{j\omega})\right|=\frac{1}{\sqrt{1+a^2-2a\cos\omega}}`),
     example: "右边指数序列的经典 DTFT 幅度",
     visualLabel: "连续且 2π 周期的 |X(e^{jω})|",
     visualKind: "curve",
@@ -135,7 +141,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "N 点周期方波的一周期谱线",
     domain: "周期 x[n]",
     range: "X[k]",
-    equation: "x[n]=1/N sum_{k=0}^{N-1} X[k]e^{j2πkn/N}",
+    equation: displayEquation(String.raw`x[n]=\frac{1}{N}\sum_{k=0}^{N-1}X[k]e^{j2\pi kn/N}`),
     example: "N 点周期序列：前半周期为 1，后半周期为 -1",
     visualLabel: "一周期 DFS 系数 |X[k]|/N",
     visualKind: "bars",
@@ -149,7 +155,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "有限长序列的频率采样",
     domain: "有限 x[n]",
     range: "X[k]",
-    equation: "X[k]=sum_{n=0}^{N-1} x[n]e^{-j2πkn/N}",
+    equation: displayEquation(String.raw`X[k]=\sum_{n=0}^{N-1}x[n]e^{-j2\pi kn/N}`),
     example: "N 点余弦序列，峰值落在 ±m 两个频点",
     visualLabel: "N 点 DFT 幅度谱 |X[k]|",
     visualKind: "bars",
@@ -163,7 +169,7 @@ const ALGORITHMS: readonly AlgorithmDefinition[] = [
     subtitle: "8 点 radix-2 DIT 蝶形结构",
     domain: "8 点 x[n]",
     range: "X[k]",
-    equation: "N=8: 3 stages, 12 butterflies",
+    equation: displayEquation(String.raw`N=8:\quad 3\text{ stages},\quad 12\text{ butterflies}`),
     example: "FFT 只改变 DFT 的计算流程，不改变 DFT 结果",
     visualLabel: "radix-2 DIT butterfly",
     visualKind: "butterfly",
@@ -770,7 +776,7 @@ export function SignalAlgorithmLab() {
                 <h2>{activeAlgorithm.title}</h2>
                 <p>{activeAlgorithm.subtitle}</p>
               </div>
-              <div className="wiki-algo-equation">{activeAlgorithm.equation}</div>
+              <MathMarkdown className="wiki-algo-equation" content={activeAlgorithm.equation} />
             </div>
 
             <SignalScope mode={model.renderMode} points={model.timePoints} subtitle={model.signalSubtitle} title={model.signalTitle} />
