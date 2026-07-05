@@ -46,6 +46,20 @@ type LabParams = {
   sampleCount: number;
   harmonicCount: number;
   binIndex: number;
+  pulseWidth: number;
+};
+
+type ParameterControlDefinition = {
+  key: keyof LabParams;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+};
+
+type ReadoutDefinition = {
+  label: string;
+  value: string;
 };
 
 type LabModel = {
@@ -233,23 +247,29 @@ function createSquarePartial(harmonicCount: number): PlotPoint[] {
   });
 }
 
-function createRectPulse(): PlotPoint[] {
+function createRectPulse(widthRatio: number): PlotPoint[] {
+  const halfWidth = clamp(widthRatio, 0.3, 1.6) / 4;
+  const left = 0.5 - halfWidth;
+  const right = 0.5 + halfWidth;
+
   return [
     { x: 0.08, y: 0 },
-    { x: 0.24, y: 0 },
-    { x: 0.24, y: 1 },
-    { x: 0.76, y: 1 },
-    { x: 0.76, y: 0 },
+    { x: left, y: 0 },
+    { x: left, y: 1 },
+    { x: right, y: 1 },
+    { x: right, y: 0 },
     { x: 0.92, y: 0 },
   ];
 }
 
-function createSincSpectrum(): PlotPoint[] {
+function createSincSpectrum(widthRatio: number): PlotPoint[] {
+  const pulseWidth = clamp(widthRatio, 0.3, 1.6);
+
   return Array.from({ length: 181 }, (_, index) => {
     const omega = -6 * Math.PI + (12 * Math.PI * index) / 180;
     return {
       x: index / 180,
-      y: Math.abs(sinc(omega / 2)),
+      y: Math.abs(pulseWidth * sinc((omega * pulseWidth) / 2)) / pulseWidth,
     };
   });
 }
@@ -335,6 +355,7 @@ function createDftBars(count: number, binIndex: number): BarPoint[] {
 function createLabModel(algorithmId: AlgorithmId, params: LabParams): LabModel {
   const discreteCount = Math.max(8, params.sampleCount);
   const poleA = clamp(params.poleA, 0.2, 0.9);
+  const pulseWidth = clamp(params.pulseWidth, 0.4, 1.6);
 
   if (algorithmId === "cfs") {
     return {
@@ -352,10 +373,10 @@ function createLabModel(algorithmId: AlgorithmId, params: LabParams): LabModel {
   if (algorithmId === "ctft") {
     return {
       signalTitle: "x(t): rect(t/T)",
-      signalSubtitle: "矩形脉冲宽度 T=1",
+      signalSubtitle: `矩形脉冲宽度 T=${pulseWidth.toFixed(2)}`,
       renderMode: "continuous",
-      timePoints: createRectPulse(),
-      curvePoints: createSincSpectrum(),
+      timePoints: createRectPulse(pulseWidth),
+      curvePoints: createSincSpectrum(pulseWidth),
       bars: [],
       planeMarkers: [],
       rocLabel: "",
@@ -716,17 +737,84 @@ function ParameterSlider({
   );
 }
 
+function getParameterControls(algorithmId: AlgorithmId): ParameterControlDefinition[] {
+  if (algorithmId === "cfs") {
+    return [{ key: "harmonicCount", label: "谐波上限 M", min: 3, max: 15, step: 2 }];
+  }
+
+  if (algorithmId === "ctft") {
+    return [{ key: "pulseWidth", label: "脉冲宽度 T", min: 0.4, max: 1.6, step: 0.1 }];
+  }
+
+  if (algorithmId === "s") {
+    return [{ key: "poleA", label: "衰减因子 a", min: 0.2, max: 0.9, step: 0.05 }];
+  }
+
+  if (algorithmId === "z" || algorithmId === "dtft") {
+    return [
+      { key: "poleA", label: "极点 a", min: 0.2, max: 0.9, step: 0.05 },
+      { key: "sampleCount", label: "序列长度 N", min: 8, max: 32, step: 8 },
+    ];
+  }
+
+  if (algorithmId === "dfs") {
+    return [{ key: "sampleCount", label: "周期长度 N", min: 8, max: 32, step: 8 }];
+  }
+
+  if (algorithmId === "dft") {
+    return [
+      { key: "sampleCount", label: "采样点 N", min: 8, max: 32, step: 8 },
+      { key: "binIndex", label: "频点 k", min: 1, max: 7, step: 1 },
+    ];
+  }
+
+  return [];
+}
+
+function getParameterReadouts(algorithmId: AlgorithmId, params: LabParams): ReadoutDefinition[] {
+  if (algorithmId === "ctft") {
+    const zeroLocation = (2 * Math.PI) / params.pulseWidth;
+
+    return [{ label: "第一零点", value: `±${zeroLocation.toFixed(2)}` }];
+  }
+
+  if (algorithmId === "s") {
+    return [{ label: "极点位置", value: `s=-${params.poleA.toFixed(2)}` }];
+  }
+
+  if (algorithmId === "z" || algorithmId === "dtft") {
+    return [{ label: "ROC", value: `|z|>${params.poleA.toFixed(2)}` }];
+  }
+
+  if (algorithmId === "dft") {
+    return [{ label: "共轭峰", value: `${params.binIndex} / ${params.sampleCount - params.binIndex}` }];
+  }
+
+  if (algorithmId === "fft") {
+    return [
+      { label: "点数 N", value: "8" },
+      { label: "级数", value: "3" },
+      { label: "蝶形数", value: "12" },
+    ];
+  }
+
+  return [];
+}
+
 export function SignalAlgorithmLab() {
   const [activeAlgorithmId, setActiveAlgorithmId] = useState<AlgorithmId>("ctft");
   const [params, setParams] = useState<LabParams>({
     binIndex: 2,
     harmonicCount: 9,
     poleA: 0.65,
+    pulseWidth: 1,
     sampleCount: 16,
   });
 
   const activeAlgorithm = ALGORITHM_MAP.get(activeAlgorithmId) ?? ALGORITHMS[0];
   const model = createLabModel(activeAlgorithmId, params);
+  const parameterControls = getParameterControls(activeAlgorithmId);
+  const parameterReadouts = getParameterReadouts(activeAlgorithmId, params);
 
   function updateParam<Key extends keyof LabParams>(key: Key, value: LabParams[Key]) {
     setParams((current) => ({
@@ -832,10 +920,27 @@ export function SignalAlgorithmLab() {
                 <span>CONTROL</span>
                 <h3>参数控制</h3>
               </div>
-              <ParameterSlider label="极点 a" min={0.2} max={0.9} step={0.05} value={params.poleA} onChange={(value) => updateParam("poleA", value)} />
-              <ParameterSlider label="采样点 N" min={8} max={32} step={8} value={params.sampleCount} onChange={(value) => updateParam("sampleCount", value)} />
-              <ParameterSlider label="谐波上限" min={3} max={15} step={2} value={params.harmonicCount} onChange={(value) => updateParam("harmonicCount", value)} />
-              <ParameterSlider label="DFT 频点 k" min={1} max={7} step={1} value={params.binIndex} onChange={(value) => updateParam("binIndex", value)} />
+              {parameterControls.map((control) => (
+                <ParameterSlider
+                  key={control.key}
+                  label={control.label}
+                  min={control.min}
+                  max={control.max}
+                  step={control.step}
+                  value={params[control.key]}
+                  onChange={(value) => updateParam(control.key, value)}
+                />
+              ))}
+              {parameterReadouts.length > 0 ? (
+                <div className="wiki-algo-control-readouts">
+                  {parameterReadouts.map((readout) => (
+                    <div key={readout.label}>
+                      <span>{readout.label}</span>
+                      <strong>{readout.value}</strong>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
           </aside>
         </div>
