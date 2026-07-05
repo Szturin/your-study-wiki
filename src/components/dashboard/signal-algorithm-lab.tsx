@@ -808,26 +808,28 @@ export function SignalAlgorithmLab() {
                     <strong>{params.harmonicCount}</strong>
                   </div>
                 </div>
+                <div className="wiki-algo-flow-block">
+                  <span>算法流程</span>
+                  <ol className="wiki-algo-step-list">
+                    {activeAlgorithm.steps.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
               </div>
             </div>
           </div>
 
           <aside className="wiki-algo-side">
-            <div className="wiki-algo-side-card">
-              <h3>参数控制</h3>
+            <div className="wiki-algo-parameter-console">
+              <div className="wiki-algo-console-header">
+                <span>CONTROL</span>
+                <h3>参数控制</h3>
+              </div>
               <ParameterSlider label="极点 a" min={0.2} max={0.9} step={0.05} value={params.poleA} onChange={(value) => updateParam("poleA", value)} />
               <ParameterSlider label="采样点 N" min={8} max={32} step={8} value={params.sampleCount} onChange={(value) => updateParam("sampleCount", value)} />
               <ParameterSlider label="谐波上限" min={3} max={15} step={2} value={params.harmonicCount} onChange={(value) => updateParam("harmonicCount", value)} />
               <ParameterSlider label="DFT 频点 k" min={1} max={7} step={1} value={params.binIndex} onChange={(value) => updateParam("binIndex", value)} />
-            </div>
-
-            <div className="wiki-algo-side-card">
-              <h3>算法流程</h3>
-              <ol className="wiki-algo-step-list">
-                {activeAlgorithm.steps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
             </div>
           </aside>
         </div>

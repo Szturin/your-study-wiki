@@ -2119,7 +2119,8 @@ textarea {
 
 .wiki-algo-hero h1,
 .wiki-algo-stage h2,
-.wiki-algo-side-card h3 {
+.wiki-algo-side-card h3,
+.wiki-algo-console-header h3 {
   letter-spacing: 0;
 }
 
@@ -2223,13 +2224,14 @@ textarea {
 
 .wiki-algo-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 19rem;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 23rem);
   gap: 1.25rem;
   min-width: 0;
 }
 
 .wiki-algo-stage,
-.wiki-algo-side-card {
+.wiki-algo-side-card,
+.wiki-algo-parameter-console {
   border: 1px solid color-mix(in srgb, var(--wiki-border) 86%, transparent);
   border-radius: 1.25rem;
   background: var(--wiki-panel);
@@ -2472,12 +2474,61 @@ textarea {
   gap: 1rem;
 }
 
+.wiki-algo-parameter-console {
+  position: sticky;
+  top: 1.25rem;
+  overflow: hidden;
+  padding: 1.15rem;
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.1), transparent 40%),
+    radial-gradient(circle at 92% 0%, rgba(129, 140, 248, 0.13), transparent 34%),
+    var(--wiki-panel);
+}
+
+.wiki-algo-parameter-console::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(20, 184, 166, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(20, 184, 166, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
+  opacity: 0.36;
+}
+
+.wiki-algo-console-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--wiki-border) 72%, transparent);
+  padding-bottom: 0.85rem;
+}
+
+.wiki-algo-console-header span {
+  color: #0f9f93;
+  font-size: 0.68rem;
+  font-weight: 820;
+  letter-spacing: 0;
+}
+
+.wiki-algo-console-header h3 {
+  font-size: 1.05rem;
+  font-weight: 760;
+}
+
 .wiki-algo-side-card h3 {
   font-size: 1.05rem;
   font-weight: 760;
 }
 
 .wiki-algo-control {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0.65rem 0.85rem;
@@ -2532,6 +2583,12 @@ textarea {
 
 .wiki-algo-step-list li + li {
   margin-top: 0.55rem;
+}
+
+.wiki-algo-flow-block {
+  margin-top: 1.05rem;
+  border-top: 1px solid color-mix(in srgb, var(--wiki-border) 72%, transparent);
+  padding-top: 1rem;
 }
 
 .wiki-algo-plane,
@@ -2603,7 +2660,8 @@ textarea {
 
 .wiki-dark .wiki-algo-hero,
 .wiki-dark .wiki-algo-stage,
-.wiki-dark .wiki-algo-side-card {
+.wiki-dark .wiki-algo-side-card,
+.wiki-dark .wiki-algo-parameter-console {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
     0 18px 44px rgba(0, 0, 0, 0.28);
@@ -2624,12 +2682,19 @@ textarea {
     #141d27;
 }
 
+.wiki-dark .wiki-algo-parameter-console {
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.12), transparent 42%),
+    radial-gradient(circle at 92% 0%, rgba(129, 140, 248, 0.16), transparent 34%),
+    #141d27;
+}
+
 .wiki-dark .wiki-algo-sample-dot,
 .wiki-dark .wiki-algo-butterfly-node {
   fill: #151e29;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1180px) {
   .wiki-algo-layout,
   .wiki-algo-main {
     grid-template-columns: 1fr;
@@ -2637,6 +2702,16 @@ textarea {
 
   .wiki-algo-picker {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1181px) {
+  .wiki-algo-layout {
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+  }
+
+  .wiki-algo-main {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem);
   }
 }
 
