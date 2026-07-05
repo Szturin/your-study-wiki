@@ -4,13 +4,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useStudyWallDashboard } from "@/hooks/use-study-wall-dashboard";
 import { MathMarkdown } from "@/components/ui/math-markdown";
+import { SignalAlgorithmLab } from "@/components/dashboard/signal-algorithm-lab";
 import type { MasteryState, SubjectId, SubjectWiki } from "@/types/study-wall";
 
 type StudyWallDashboardProps = {
   subjects: readonly SubjectWiki[];
 };
 
-type DashboardMode = "home" | "wrongbook" | "favorite";
+type DashboardMode = "home" | "wrongbook" | "favorite" | "algorithms";
+type CollectionDashboardMode = Extract<DashboardMode, "wrongbook" | "favorite">;
 type ThemeMode = "light" | "dark";
 type CollectionViewMode = "list" | "mindmap";
 type MindMapLayoutMode = "tree" | "framework";
@@ -75,7 +77,7 @@ type MindMapChapterNode = {
 type MindMapRootNode = {
   subjectId: SubjectId;
   subjectName: string;
-  mode: Exclude<DashboardMode, "home">;
+  mode: CollectionDashboardMode;
   chapters: MindMapChapterNode[];
 };
 
@@ -772,6 +774,17 @@ function GridIcon() {
   );
 }
 
+function WaveIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 12h2.2" />
+      <path d="M18.8 12H21" />
+      <path d="M5.2 12c1.4-7 3.2-7 4.6 0s3.2 7 4.6 0 3.2-7 4.4 0" />
+      <path d="M4 19h16" opacity="0.42" />
+    </svg>
+  );
+}
+
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1295,7 +1308,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
   }, [allQuestionRows, lastMasteredRecord, selectedSubjectId]);
 
   const collectionMindMap = useMemo<MindMapRootNode | null>(() => {
-    if (dashboardMode === "home") {
+    if (dashboardMode !== "wrongbook" && dashboardMode !== "favorite") {
       return null;
     }
 
@@ -2328,6 +2341,15 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
                   setHomeView(false);
                 }}
               />
+              <NavItem
+                active={dashboardMode === "algorithms"}
+                label="算法演示"
+                icon={<WaveIcon />}
+                onClick={() => {
+                  setDashboardMode("algorithms");
+                  setHomeView(false);
+                }}
+              />
             </div>
 
             <div className="mt-9">
@@ -2456,7 +2478,9 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
           </header>
 
           <div className="wiki-scroll-area min-h-0 flex-1 overflow-y-auto p-6 xl:p-7">
-            {dashboardMode === "home" && homeView ? (
+            {dashboardMode === "algorithms" ? (
+              <SignalAlgorithmLab />
+            ) : dashboardMode === "home" && homeView ? (
               <>
                 <section className="wiki-panel wiki-home-hero-card border-[#cddaff]">
                   <div className="flex min-h-[156px] flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
