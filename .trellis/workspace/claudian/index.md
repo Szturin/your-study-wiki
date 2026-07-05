@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 8
+- **Total Sessions**: 9
 - **Last Active**: 2026-07-05
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~291 | Active |
+| `journal-1.md` | ~323 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits |
 |---|------|-------|---------|
+| 9 | 2026-07-05 | Markdown and LaTeX rendering | `f08fe8a` |
 | 8 | 2026-07-05 | Canonical signal diagrams | `94f6bd1` |
 | 7 | 2026-07-05 | Signal algorithm lab | `411078a` |
 | 6 | 2026-07-04 | Nested framework mind map | `4d2bd14` |
