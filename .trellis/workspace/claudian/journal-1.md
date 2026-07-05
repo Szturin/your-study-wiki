@@ -257,3 +257,35 @@ Added a signal and systems algorithm demo workspace with CFS, CTFT, S, Z, DTFT, 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: Canonical signal diagrams
+
+**Date**: 2026-07-05
+**Task**: Canonical signal diagrams
+
+### Summary
+
+Reworked the signal algorithm lab from heuristic visualizations into canonical textbook examples: square-wave CFS, rect/sinc CTFT, exponential S/Z/DTFT models with ROC, periodic DFS, grid-aligned DFT, and a standard 8-point radix-2 FFT butterfly.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `94f6bd1` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
