@@ -150,6 +150,8 @@ textarea {
 
 .math-content {
   color: inherit;
+  line-height: 1.82;
+  overflow-wrap: anywhere;
 }
 
 .math-content > :first-child {
@@ -162,28 +164,167 @@ textarea {
 
 .math-content p,
 .math-content ul,
-.math-content ol {
+.math-content ol,
+.math-content blockquote,
+.math-content pre,
+.math-content .math-table-wrap {
   margin: 0.7rem 0;
 }
 
 .math-content ul,
 .math-content ol {
-  padding-left: 1.25rem;
+  padding-left: 1.35rem;
 }
 
 .math-content li + li {
   margin-top: 0.35rem;
 }
 
+.math-content h1,
+.math-content h2,
+.math-content h3,
+.math-content h4 {
+  margin: 1.15rem 0 0.55rem;
+  color: var(--wiki-text, currentColor);
+  font-weight: 760;
+  line-height: 1.32;
+  letter-spacing: 0;
+}
+
+.math-content h1 {
+  font-size: 1.45em;
+}
+
+.math-content h2 {
+  font-size: 1.28em;
+}
+
+.math-content h3 {
+  font-size: 1.14em;
+}
+
+.math-content h4 {
+  font-size: 1.04em;
+}
+
+.math-content a {
+  color: #0f9f93;
+  font-weight: 680;
+  text-decoration: underline;
+  text-decoration-color: rgba(20, 184, 166, 0.36);
+  text-underline-offset: 0.18em;
+}
+
+.math-content strong {
+  color: var(--wiki-text, currentColor);
+  font-weight: 760;
+}
+
+.math-content del {
+  color: var(--wiki-muted, #64748b);
+}
+
+.math-content blockquote {
+  border-left: 3px solid color-mix(in srgb, #14b8a6 58%, var(--wiki-border, #d9e2ec));
+  border-radius: 0 0.8rem 0.8rem 0;
+  background: color-mix(in srgb, var(--wiki-subtle, #f3f7f8) 74%, transparent);
+  padding: 0.75rem 1rem;
+  color: var(--wiki-muted, #64748b);
+}
+
+.math-content code {
+  border: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 82%, transparent);
+  border-radius: 0.42rem;
+  background: color-mix(in srgb, var(--wiki-subtle, #f3f7f8) 78%, transparent);
+  padding: 0.12rem 0.34rem;
+  color: color-mix(in srgb, var(--wiki-text, #1f2937) 84%, #0f766e);
+  font-family: var(--font-geist-mono), Consolas, "SFMono-Regular", monospace;
+  font-size: 0.92em;
+}
+
+.math-content pre {
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 86%, transparent);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.03), rgba(15, 23, 42, 0.015)),
+    color-mix(in srgb, var(--wiki-panel-2, #ffffff) 82%, var(--wiki-subtle, #f3f7f8));
+  padding: 0.95rem 1rem;
+}
+
+.math-content pre code {
+  display: block;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  line-height: 1.72;
+  white-space: pre;
+}
+
+.math-content .math-table-wrap {
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 86%, transparent);
+  border-radius: 0.9rem;
+}
+
+.math-content table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  background: color-mix(in srgb, var(--wiki-panel, #ffffff) 92%, transparent);
+}
+
+.math-content th,
+.math-content td {
+  border-bottom: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 82%, transparent);
+  padding: 0.7rem 0.82rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.math-content th {
+  background: color-mix(in srgb, var(--wiki-subtle, #f3f7f8) 78%, transparent);
+  color: var(--wiki-text, currentColor);
+  font-weight: 760;
+}
+
+.math-content tr:last-child td {
+  border-bottom: 0;
+}
+
+.math-content hr {
+  margin: 1.25rem 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 88%, transparent);
+}
+
+.math-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--wiki-border, #d9e2ec) 82%, transparent);
+}
+
+.math-content input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: #14b8a6;
+}
+
 .math-content .katex-display {
   margin: 1rem 0;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0.15rem 0.1rem;
+  padding: 0.35rem 0.2rem;
 }
 
 .math-content .katex {
   font-size: 1.02em;
+}
+
+.math-content .katex-display > .katex {
+  max-width: 100%;
 }
 
 .dashboard-nav-item {
