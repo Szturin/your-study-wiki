@@ -2133,11 +2133,33 @@ textarea {
   line-height: 1.65;
 }
 
+.wiki-algo-scope-shell {
+  margin-top: 1.1rem;
+}
+
+.wiki-algo-chart-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+  color: var(--wiki-muted);
+}
+
+.wiki-algo-chart-caption strong {
+  color: var(--wiki-text);
+  font-size: 0.95rem;
+}
+
+.wiki-algo-chart-caption span {
+  font-size: 0.82rem;
+}
+
 .wiki-algo-scope {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 1.1rem;
   overflow: visible;
   border: 1px solid color-mix(in srgb, #22d3ee 30%, var(--wiki-border));
   border-radius: 1rem;
@@ -2176,6 +2198,13 @@ textarea {
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2.1;
+}
+
+.wiki-algo-stem-line {
+  fill: none;
+  stroke: color-mix(in srgb, #14b8a6 70%, var(--wiki-border));
+  stroke-linecap: round;
+  stroke-width: 1.5;
 }
 
 .wiki-algo-sample-dot {
@@ -2240,6 +2269,26 @@ textarea {
 .wiki-algo-spectrum-bin span {
   color: var(--wiki-muted);
   font-size: 0.62rem;
+}
+
+.wiki-algo-spectrum-bar-negative {
+  background:
+    linear-gradient(180deg, rgba(45, 212, 191, 0.84), rgba(129, 140, 248, 0.78)),
+    #818cf8;
+}
+
+.wiki-algo-spectrum-bar-zero {
+  background:
+    linear-gradient(180deg, rgba(148, 163, 184, 0.5), rgba(148, 163, 184, 0.26)),
+    #94a3b8;
+}
+
+.wiki-algo-curve {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.9rem;
+  overflow: visible;
 }
 
 .wiki-algo-insight-card p {
@@ -2356,6 +2405,17 @@ textarea {
   fill: rgba(20, 184, 166, 0.05);
   stroke: color-mix(in srgb, #14b8a6 62%, var(--wiki-border));
   stroke-dasharray: 5 6;
+}
+
+.wiki-algo-roc-region {
+  fill: rgba(20, 184, 166, 0.08);
+  stroke: none;
+}
+
+.wiki-algo-roc-circle {
+  fill: rgba(20, 184, 166, 0.06);
+  stroke: color-mix(in srgb, #14b8a6 42%, transparent);
+  stroke-dasharray: 4 5;
 }
 
 .wiki-algo-plane-pole {
