@@ -225,3 +225,35 @@ Reworked framework mind map into true nested containment: subject frame, chapter
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: Signal algorithm lab
+
+**Date**: 2026-07-05
+**Task**: Signal algorithm lab
+
+### Summary
+
+Added a signal and systems algorithm demo workspace with CFS, CTFT, S, Z, DTFT, DFS, DFT, and FFT visualizations, responsive controls, and GitHub Pages export updates.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `411078a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
