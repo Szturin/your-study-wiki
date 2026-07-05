@@ -2,7 +2,7 @@
 
 ## Current Hook Strategy
 
-Hooks are used for **screen state orchestration and derived filters**, not for everything.
+Hooks are used for **screen state orchestration, local persistence, and derived filters**, not as a default abstraction for every JSX fragment.
 
 ## Rules
 
@@ -10,39 +10,45 @@ Hooks are used for **screen state orchestration and derived filters**, not for e
 
 `useStudyWallDashboard` owns:
 
-- selected track
-- selected paper
-- selected topic
+- selected subject
+- selected chapter
+- selected knowledge node
+- selected question
 - search query
-- derived visible question list
-- derived mastery summary
-
-**Example:** `src/hooks/use-study-wall-dashboard.ts`
+- mastery and favorite maps
+- last mastered record
+- derived visible question lists
+- sanitized localStorage persistence
 
 ### 2. Keep derived data in `useMemo`
 
-Filtering and summary calculation live in `useMemo`, not in render-time inline chains all over the JSX.
+Filtering, tree grouping, and selected-item lookup should live in `useMemo` or pure helpers instead of repeated inline chains in JSX.
 
-**Examples inside `src/hooks/use-study-wall-dashboard.ts`:**
-- `selectedTrack`
-- `selectedPaper`
-- `visibleQuestions`
-- `masterySummary`
+Current examples inside `src/hooks/use-study-wall-dashboard.ts`:
 
-### 3. Use `useEffect` only for dependent-state resets
+- `selectedSubject`
+- `selectedChapter`
+- `overviewQuestions`
+- `treeQuestionsByKnowledge`
 
-In this codebase, effects are mainly used to keep dependent state valid when the parent selection changes.
+### 3. Use effects only for side effects
 
-**Examples:**
-- reset paper/topic/query when track changes
-- reset topic when the current paper no longer contains it
+Valid effects in this codebase include:
 
-### 4. Server route files should not use client hooks
+- localStorage load/save
+- timers and animation cleanup
+- DOM measurement and ResizeObserver
+- keeping imperative drag/zoom refs in sync
 
-`src/app/page.tsx` stays hook-free and server-first.
+Do not use effects for pure derivation that can be computed during render.
+
+### 4. Browser APIs must stay behind client boundaries
+
+Access `window`, `localStorage`, timers, `ResizeObserver`, and DOM refs only from client components/hooks.
 
 ## Anti-patterns
 
-- Creating many tiny hooks before the screen behavior is stable
-- Using effects for pure derivation that should be `useMemo`
-- Fetching competitor research data directly inside UI hooks
+- Creating many tiny hooks before the screen behavior is stable.
+- Fetching competitor research data directly inside UI hooks.
+- Persisting unchecked localStorage payloads without schema/version handling.
+- Leaving timers or animation frames without cleanup.

@@ -2,7 +2,7 @@
 
 ## Core Principle
 
-The UI should depend on **our own domain contracts**, not on competitor field names.
+The UI should depend on **project-owned domain contracts**, not on competitor or import-source field names.
 
 ## Rules
 
@@ -10,38 +10,38 @@ The UI should depend on **our own domain contracts**, not on competitor field na
 
 `src/types/study-wall.ts` contains the canonical UI model:
 
-- `SubjectTrack`
-- `StudyPaper`
-- `StudyQuestion`
-- `KnowledgeTopic`
-- `ProductPillar`
-- `TargetSiteFinding`
+- `SubjectId`
+- `SubjectWiki`
+- `ChapterNode`
+- `KnowledgeNode`
+- `TypeGroup`
+- `QuestionEntry`
+- `LastMasteredRecord`
+- `StudyWallPersistedState`
 
 ### 2. Prefer literal unions over free-form strings
 
-Examples from `src/types/study-wall.ts`:
+Current examples:
 
-- `MasteryLevel`
-- `TrackStatus`
-- `QuestionKind`
-- `DifficultyLevel`
+- `SubjectId`
+- `TypeDifficulty`
+- `MasteryState`
 
-### 3. Type the screen boundary explicitly
+### 3. Type screen boundaries explicitly
 
-`StudyWallDashboard` accepts typed props instead of `any`.
+`StudyWallDashboard` accepts `readonly SubjectWiki[]`.
 
-**Example:** `src/components/dashboard/study-wall-dashboard.tsx`
+### 4. Validate unknown data at boundaries
 
-### 4. Keep raw research payloads outside UI types
+Treat localStorage, external JSON, OCR output, and research snapshots as `unknown` until narrowed. Sanitize persisted state by schema version, valid ids, and literal unions before using it.
 
-If we later parse target-site JSON, add an adapter layer in `src/lib/` instead of widening UI types to match every raw field.
+### 5. Keep raw research payloads outside UI types
 
-**Related files:**
-- `src/lib/mock-study-wall.ts`
-- `scripts/fetch-target-site-snapshot.mjs`
+If we parse target-site JSON or imported document output, add an adapter layer in `src/lib/` instead of widening UI types to match every raw field.
 
 ## Anti-patterns
 
-- `any`
-- `unknown` passed through several component layers without narrowing
-- UI components reading raw `/api/...` response shapes directly
+- `any`.
+- Casting localStorage or network payloads directly into UI types without validation.
+- Passing `unknown` through several component layers without narrowing.
+- UI components reading raw `/api/...` response shapes directly.

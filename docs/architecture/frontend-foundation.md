@@ -1,6 +1,6 @@
 # Study Wiki Wall 前端架构基线
 
-> 更新时间：2026-04-21
+> 更新时间：2026-07-05
 
 ## 1. 结论
 
@@ -9,7 +9,7 @@
 - **Next.js App Router**
 - **TypeScript**
 - **Tailwind CSS**
-- **react-markdown + KaTeX 数学渲染链路**
+- **react-markdown + GFM + KaTeX 数学渲染链路**
 
 暂不将 Astro 作为主架构。
 
@@ -23,7 +23,7 @@
 - 题目筛选与切换
 - 用户态交互
 - 评论 / 资源 / 统计
-- 多学科、多试卷、多题型切面
+- 章节、知识点、题型、错题本、收藏本、算法演示等切面
 
 这类产品的重点是：
 
@@ -50,12 +50,14 @@ Astro 更适合：
 
 ### 路由层
 
-- `src/app/layout.tsx`：根布局、metadata、全局样式
+- `src/app/layout.tsx`：根布局、metadata、全局样式与 PWA 注册入口
+- `src/app/manifest.ts`：Web app manifest
 - `src/app/page.tsx`：首页 server component，负责拼装页面数据与客户端入口
 
 ### 交互编排层
 
 - `src/components/dashboard/study-wall-dashboard.tsx`
+- `src/components/dashboard/signal-algorithm-lab.tsx`
 - `src/hooks/use-study-wall-dashboard.ts`
 
 说明：
@@ -63,6 +65,7 @@ Astro 更适合：
 - 复杂筛选、搜索、题目可见集计算，集中在一个屏幕级 client module 中
 - 当前默认优先进入 `signal-system`，方便继续做信号与系统内容导入
 - 单题 / 概览双视图逻辑也集中在 dashboard hook 中组织
+- 信号与系统算法演示拆为独立 dashboard domain 组件，避免继续膨胀主工作台
 
 ### 渲染增强层
 
@@ -98,11 +101,12 @@ Astro 更适合：
 
 - `src/types/study-wall.ts`
 - `src/lib/mock-study-wall.ts`
+- `src/lib/signal-system-import.ts`
 
 说明：
 
 - UI 使用的是我们自己的领域模型，而不是直接照搬目标站点字段名
-- 目前 `mock-study-wall.ts` 同时承担“前端种子数据”与“导入结构验证”的职责
+- 目前 `mock-study-wall.ts` 承担前端投影入口，`signal-system-import.ts` 承担信号与系统导入数据
 - 已经验证 `科目 -> 章节 -> 知识点 -> 题型 -> 题目` 这一层级对当前场景是可用的
 
 ### 研究层
@@ -121,7 +125,7 @@ Astro 更适合：
 3. 中间主工作台负责显示概览或单题
 4. 右侧只在选中单题时显示题目上下文
 5. 掌握状态在题目层维护，而不是挂在章节层
-6. 数学内容必须支持 LaTeX，否则信号与系统/数学题目可读性会明显下降
+6. 数学内容必须支持 LaTeX，否则信号与系统题目可读性会明显下降
 
 ## 5. clean-room 原则
 
@@ -136,14 +140,16 @@ Astro 更适合：
 
 当前已完成：
 
-- 信号与系统白皮书第 1 章例题 1.1 ~ 1.10 前端整理导入
-- 数学演示数据保留用于多科目布局验证
-- 数学公式渲染已接通
+- 信号与系统郑君里教材做题本第一章 `1.1` 到 `1.24` 已入库
+- 信号与系统郑君里教材做题本第二章 `2.1` 到 `2.25` 已入库
+- 错题 / 收藏 / 掌握 / 最近掌握记录已本地持久化
+- Markdown + GFM + LaTeX 渲染已接通
+- CFS、CTFT、Z、S、DTFT、DFS、DFT、FFT 等算法演示页已接入
 
 当前仍未完成：
 
 - 真实后端 API
-- 持久化状态
+- 跨设备学习状态同步
 - 题目原图嵌入
 - 正式 question-bank schema
 
@@ -164,7 +170,7 @@ Astro 更适合：
 ### Phase 3：业务闭环
 
 - 接入用户态
-- 接入掌握状态持久化
+- 接入后端同步与用户学习记录迁移
 - 接入后台与 AI 导入审核页
 
 ### Phase 4：外围内容层

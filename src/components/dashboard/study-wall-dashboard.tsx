@@ -1715,6 +1715,7 @@ export function StudyWallDashboard({ subjects }: StudyWallDashboardProps) {
     );
 
     if (nextScale === liveScaleRef.current) {
+      scheduleMindMapZoomSnapshotRelease();
       return;
     }
 

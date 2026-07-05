@@ -4,6 +4,7 @@
 
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
+import { useMemo } from "react";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -43,13 +44,13 @@ export function normalizeMathMarkdown(content: string) {
   return content
     .replace(/\r\n/g, "\n")
     .split(CODE_FENCE_PATTERN)
-    .map((segment) => (segment.startsWith("`") || segment.startsWith("```") || segment.startsWith("~~~") ? segment : normalizeMathSegment(segment)))
+    .map((segment) => (segment.startsWith("`") || segment.startsWith("~~~") ? segment : normalizeMathSegment(segment)))
     .join("");
 }
 
 const markdownComponents: Components = {
   a: ({ children, href }) => (
-    <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noreferrer" : undefined}>
+    <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
       {children}
     </a>
   ),
@@ -62,7 +63,7 @@ const markdownComponents: Components = {
   h3: ({ children }) => <h3>{children}</h3>,
   h4: ({ children }) => <h4>{children}</h4>,
   hr: () => <hr />,
-  img: ({ alt, src }) => <img alt={alt ?? ""} src={src ?? ""} loading="lazy" />,
+  img: ({ alt, src }) => (src ? <img alt={alt ?? ""} src={src} loading="lazy" decoding="async" /> : null),
   input: ({ checked, disabled, type }) => <input checked={checked} disabled={disabled} readOnly type={type} />,
   li: ({ children }) => <li>{children}</li>,
   ol: ({ children }) => <ol>{children}</ol>,
@@ -83,7 +84,7 @@ const markdownComponents: Components = {
 };
 
 export function MathMarkdown({ content, className = "" }: MathMarkdownProps) {
-  const normalizedContent = normalizeMathMarkdown(content);
+  const normalizedContent = useMemo(() => normalizeMathMarkdown(content), [content]);
 
   return (
     <div className={`math-content ${className}`.trim()}>

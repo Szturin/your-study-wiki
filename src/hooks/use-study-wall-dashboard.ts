@@ -20,36 +20,89 @@ export type OverviewQuestion = {
 };
 
 const STUDY_WALL_STATE_STORAGE_KEY = "study-wiki-wall.persisted-state";
+const STUDY_WALL_STATE_VERSION = 1;
+
+const EMPTY_PERSISTED_STATE: StudyWallPersistedState = {
+  version: STUDY_WALL_STATE_VERSION,
+  questionMasteryMap: {},
+  questionFavoriteMap: {},
+  lastMasteredRecord: null,
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 function isMasteryState(value: unknown): value is MasteryState {
   return value === "mastered" || value === "blurred" || value === "unknown";
 }
 
+function isValidLastMasteredRecord(
+  value: unknown,
+  validQuestionIds: ReadonlySet<string>,
+): value is LastMasteredRecord {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    value.subjectId === "signal-system" &&
+    typeof value.subjectName === "string" &&
+    typeof value.chapterId === "string" &&
+    typeof value.chapterName === "string" &&
+    typeof value.knowledgeId === "string" &&
+    typeof value.knowledgeName === "string" &&
+    typeof value.questionId === "string" &&
+    validQuestionIds.has(value.questionId) &&
+    typeof value.questionTitle === "string" &&
+    typeof value.masteredAt === "string" &&
+    !Number.isNaN(Date.parse(value.masteredAt))
+  );
+}
+
 function sanitizePersistedState(
-  payload: StudyWallPersistedState,
+  payload: unknown,
   validQuestionIds: ReadonlySet<string>,
 ): StudyWallPersistedState {
-  const questionMasteryMap = Object.fromEntries(
-    Object.entries(payload.questionMasteryMap ?? {}).filter(
-      ([questionId, mastery]) => validQuestionIds.has(questionId) && isMasteryState(mastery),
-    ),
+  if (!isRecord(payload)) {
+    return EMPTY_PERSISTED_STATE;
+  }
+
+  if (payload.version !== undefined && payload.version !== STUDY_WALL_STATE_VERSION) {
+    return EMPTY_PERSISTED_STATE;
+  }
+
+  const masterySource = isRecord(payload.questionMasteryMap) ? payload.questionMasteryMap : {};
+  const favoriteSource = isRecord(payload.questionFavoriteMap) ? payload.questionFavoriteMap : {};
+  const questionMasteryMap = Object.entries(masterySource).reduce<Record<string, MasteryState>>(
+    (accumulator, [questionId, mastery]) => {
+      if (validQuestionIds.has(questionId) && isMasteryState(mastery)) {
+        accumulator[questionId] = mastery;
+      }
+
+      return accumulator;
+    },
+    {},
   );
 
-  const questionFavoriteMap = Object.fromEntries(
-    Object.entries(payload.questionFavoriteMap ?? {}).filter(
-      ([questionId, favorite]) => validQuestionIds.has(questionId) && favorite === true,
-    ),
-  );
+  const questionFavoriteMap = Object.entries(favoriteSource).reduce<Record<string, boolean>>(
+    (accumulator, [questionId, favorite]) => {
+      if (validQuestionIds.has(questionId) && favorite === true) {
+        accumulator[questionId] = true;
+      }
 
-  const lastMasteredRecord =
-    payload.lastMasteredRecord && validQuestionIds.has(payload.lastMasteredRecord.questionId)
-      ? payload.lastMasteredRecord
-      : null;
+      return accumulator;
+    },
+    {},
+  );
 
   return {
+    version: STUDY_WALL_STATE_VERSION,
     questionMasteryMap,
     questionFavoriteMap,
-    lastMasteredRecord,
+    lastMasteredRecord: isValidLastMasteredRecord(payload.lastMasteredRecord, validQuestionIds)
+      ? payload.lastMasteredRecord
+      : null,
   };
 }
 
@@ -216,7 +269,7 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
           return;
         }
 
-        const payload = JSON.parse(rawState) as StudyWallPersistedState;
+        const payload = JSON.parse(rawState) as unknown;
         const sanitized = sanitizePersistedState(payload, validQuestionIds);
 
         setQuestionMasteryMap(sanitized.questionMasteryMap);
@@ -244,6 +297,7 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
         window.localStorage.setItem(
           STUDY_WALL_STATE_STORAGE_KEY,
           JSON.stringify({
+            version: STUDY_WALL_STATE_VERSION,
             questionMasteryMap,
             questionFavoriteMap,
             lastMasteredRecord,
@@ -260,6 +314,10 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
   }, [hasLoadedPersistedState, lastMasteredRecord, questionFavoriteMap, questionMasteryMap]);
 
   function setQuestionMastery(questionId: string, mastery: MasteryState) {
+    if (!validQuestionIds.has(questionId)) {
+      return;
+    }
+
     setQuestionMasteryMap((current) => ({
       ...current,
       [questionId]: mastery,
@@ -317,10 +375,21 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
   }
 
   function toggleQuestionFavorite(questionId: string) {
-    setQuestionFavoriteMap((current) => ({
-      ...current,
-      [questionId]: !current[questionId],
-    }));
+    if (!validQuestionIds.has(questionId)) {
+      return;
+    }
+
+    setQuestionFavoriteMap((current) => {
+      const next = { ...current };
+
+      if (next[questionId]) {
+        delete next[questionId];
+        return next;
+      }
+
+      next[questionId] = true;
+      return next;
+    });
   }
 
   function selectSubject(subjectId: SubjectId) {

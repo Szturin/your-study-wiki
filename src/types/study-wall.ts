@@ -60,6 +60,7 @@ export interface LastMasteredRecord {
 }
 
 export interface StudyWallPersistedState {
+  version: 1;
   questionMasteryMap: Record<string, MasteryState>;
   questionFavoriteMap: Record<string, boolean>;
   lastMasteredRecord: LastMasteredRecord | null;

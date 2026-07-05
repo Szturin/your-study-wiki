@@ -8,41 +8,41 @@ This project uses a **server-first shell + focused client workbench** pattern.
 
 ### 1. Route component = composition layer
 
-`src/app/page.tsx` composes the page from data + a single screen component.
+`src/app/page.tsx` composes project-owned data with the interactive dashboard.
 
 ```tsx
-<StudyWallDashboard
-  tracks={subjectTracks}
-  pillars={productPillars}
-  findings={targetSiteFindings}
-/>
+<StudyWallDashboard subjects={subjectWikis} />
 ```
 
-### 2. One client entry per screen when possible
+### 2. Keep client boundaries intentional
 
-Complex filtering, search, and local UI coordination should be centralized in one screen-level client component before splitting further.
+Use Client Components for state, event handlers, browser APIs, drag/zoom interactions, PWA registration, and localStorage. Keep route files and static composition as Server Components.
 
-**Example:** `src/components/dashboard/study-wall-dashboard.tsx`
+### 3. Split by stable product domains, not by tiny JSX fragments
 
-This avoids prop drilling across many tiny components during the early product phase.
+`StudyWallDashboard` may remain the main workbench entry, but large standalone domains should be extracted once they have their own state and rendering model.
 
-### 3. Small presentational shells stay dumb
+Current examples:
 
-`SectionCard` is a good pattern: visual wrapper, typed props, no business state.
+- `study-wall-dashboard.tsx` owns the learning workbench, wrongbook, favorite book, startup animation, and mind-map view.
+- `signal-algorithm-lab.tsx` owns the signal transform demonstration surface.
 
-**Example:** `src/components/ui/section-card.tsx`
+### 4. Small presentational shells stay dumb
 
-### 4. Props should use domain types, not loose objects
+Reusable UI helpers should have typed props and no business state.
 
-Screen components should receive typed arrays such as `readonly SubjectTrack[]` rather than `any[]` or raw API blobs.
+Current examples:
 
-**Examples:**
-- `src/components/dashboard/study-wall-dashboard.tsx`
-- `src/types/study-wall.ts`
+- `src/components/ui/section-card.tsx`
+- `src/components/ui/math-markdown.tsx`
+
+### 5. Props should use domain types, not loose objects
+
+Screen components should receive typed arrays such as `readonly SubjectWiki[]`, not `any[]` or raw API blobs.
 
 ## Anti-patterns
 
-- Adding `"use client"` to every component by default
-- Fetching or scraping inside presentational components
-- Passing untyped dictionaries like `Record<string, unknown>` when a domain interface exists
-- Copying the target site's DOM structure one-to-one
+- Adding `"use client"` to every component by default.
+- Fetching, scraping, or parsing research snapshots inside presentational components.
+- Passing untyped dictionaries when a domain interface exists.
+- Copying a target site's DOM structure, naming, or visual identity one-to-one.
