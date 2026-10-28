@@ -18,6 +18,13 @@ export interface QuestionEntry {
   note: string;
   strategy: string[];
   mastery: MasteryState;
+  paperMajor?: number;
+  paperMinor?: number | null;
+  image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  sourcePage?: number;
+  proofMarker?: string;
 }
 
 export interface TypeGroup {

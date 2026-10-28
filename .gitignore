@@ -44,3 +44,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Private 843 source material; publish only encrypted static assets.
+/843/
+/public/843/
+/public/protected/
+/src/lib/ustc843-bank.json
+/src/lib/ustc843-formulas.json

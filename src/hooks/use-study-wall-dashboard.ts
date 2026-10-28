@@ -106,7 +106,7 @@ function sanitizePersistedState(
   };
 }
 
-export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
+export function useStudyWallDashboard(subjects: readonly SubjectWiki[], storageKey = STUDY_WALL_STATE_STORAGE_KEY) {
   const preferredSubject = subjects.find((subject) => subject.id === "signal-system") ?? subjects[0];
   const preferredChapterId = preferredSubject?.chapters[0]?.id ?? "";
 
@@ -263,7 +263,7 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       try {
-        const rawState = window.localStorage.getItem(STUDY_WALL_STATE_STORAGE_KEY);
+        const rawState = window.localStorage.getItem(storageKey);
 
         if (!rawState) {
           return;
@@ -285,17 +285,16 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [validQuestionIds]);
+  }, [storageKey, validQuestionIds]);
 
   useEffect(() => {
     if (!hasLoadedPersistedState) {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
       try {
         window.localStorage.setItem(
-          STUDY_WALL_STATE_STORAGE_KEY,
+          storageKey,
           JSON.stringify({
             version: STUDY_WALL_STATE_VERSION,
             questionMasteryMap,
@@ -303,15 +302,12 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[]) {
             lastMasteredRecord,
           } satisfies StudyWallPersistedState),
         );
+        window.dispatchEvent(new Event("study-record-changed"));
       } catch {
         // Keep UI usable even if the local save fails.
       }
-    }, 180);
 
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [hasLoadedPersistedState, lastMasteredRecord, questionFavoriteMap, questionMasteryMap]);
+  }, [storageKey, hasLoadedPersistedState, lastMasteredRecord, questionFavoriteMap, questionMasteryMap]);
 
   function setQuestionMastery(questionId: string, mastery: MasteryState) {
     if (!validQuestionIds.has(questionId)) {

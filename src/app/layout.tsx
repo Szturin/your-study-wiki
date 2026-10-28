@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import { PwaRegister } from "@/components/system/pwa-register";
 import "./globals.css";
+import "./learning-workspace.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata: Metadata = {
-  title: "My 0854 WIKI墙",
+  title: "843 信号与系统真题墙",
   description:
-    "面向信号与系统的题型分类 Wiki 墙，支持章节、知识点与题目视图切换。",
+    "中科大843信号与系统1997—2026年真题，按分类复盘、按套卷训练。",
   manifest: `${basePath}/manifest.webmanifest`,
 };
 

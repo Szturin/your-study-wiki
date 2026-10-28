@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Load encrypted question bank
+        run: npm run hydrate:protected
+
       - name: Build static site
         run: npm run build
         env:
@@ -36,6 +39,12 @@ jobs:
 
       - name: Disable Jekyll
         run: touch out/.nojekyll
+
+      - name: Verify protected export
+        run: |
+          test -f out/protected/manifest.json
+          test ! -d out/843
+          test ! -f out/ustc843-bank.json
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

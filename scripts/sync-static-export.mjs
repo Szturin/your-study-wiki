@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, "..");
 const outputDirectory = path.join(projectRoot, "out");
-const mirroredDirectories = new Set(["_next", "_not-found"]);
+const mirroredDirectories = new Set(["_next", "_not-found", "protected"]);
 
 function assertInsideProject(targetPath) {
   const relativePath = path.relative(projectRoot, targetPath);
@@ -17,6 +17,10 @@ function assertInsideProject(targetPath) {
 
 if (!existsSync(outputDirectory)) {
   throw new Error("Static export folder not found. Run `NEXT_PUBLIC_BASE_PATH=/your-study-wiki npm run build` first.");
+}
+
+if (!existsSync(path.join(outputDirectory, "protected", "manifest.json"))) {
+  throw new Error("Encrypted 843 assets are missing. Run prepare-protected before building.");
 }
 
 for (const entry of readdirSync(outputDirectory, { withFileTypes: true })) {

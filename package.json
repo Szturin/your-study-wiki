@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "sync:pages": "node scripts/sync-static-export.mjs",
+    "hydrate:protected": "node scripts/hydrate-protected.mjs",
     "snapshot:target": "node scripts/fetch-target-site-snapshot.mjs"
   },
   "dependencies": {
