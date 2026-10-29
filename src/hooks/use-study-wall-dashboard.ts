@@ -13,6 +13,7 @@ import type {
   SubjectWiki,
   TypeGroup,
 } from "@/types/study-wall";
+import { trackRecordChange } from "@/lib/sync-record";
 
 export type OverviewQuestion = {
   question: QuestionEntry;
@@ -293,16 +294,18 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[], storageK
     }
 
       try {
-        window.localStorage.setItem(
-          storageKey,
-          JSON.stringify({
+        const next = JSON.stringify({
             version: STUDY_WALL_STATE_VERSION,
             questionMasteryMap,
             questionFavoriteMap,
             lastMasteredRecord,
-          } satisfies StudyWallPersistedState),
-        );
-        window.dispatchEvent(new Event("study-record-changed"));
+          } satisfies StudyWallPersistedState);
+        const previous = window.localStorage.getItem(storageKey);
+        if (previous !== next) {
+          trackRecordChange(storageKey, previous, next);
+          window.localStorage.setItem(storageKey, next);
+          window.dispatchEvent(new Event("study-record-changed"));
+        }
       } catch {
         // Keep UI usable even if the local save fails.
       }

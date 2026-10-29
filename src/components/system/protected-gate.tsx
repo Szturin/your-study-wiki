@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StudyWallDashboard } from "@/components/dashboard/study-wall-dashboard";
 import { GithubSync } from "@/components/system/github-sync";
 import { assetObjectUrl, decryptJson, unlockKey } from "@/lib/protected-content";
@@ -15,6 +15,9 @@ export function ProtectedGate() {
   const [error, setError] = useState("");
   const [unlocked, setUnlocked] = useState<{ bank: SubjectWiki; formulas: FormulaBank; key: CryptoKey } | null>(null);
   const [workspaceVersion, setWorkspaceVersion] = useState(0);
+  const [recordsReady, setRecordsReady] = useState(false);
+  const markReady = useCallback(() => setRecordsReady(true), []);
+  const restoreRecords = useCallback(() => { setRecordsReady(false); setWorkspaceVersion(value => value + 1); }, []);
   const [checkingDevice, setCheckingDevice] = useState(true);
 
   async function openWithKey(key: CryptoKey) {
@@ -63,7 +66,7 @@ export function ProtectedGate() {
     }
   }
 
-  if (unlocked) return <><GithubSync keyMaterial={unlocked.key} onRestore={() => setWorkspaceVersion(value => value + 1)} /><StudyWallDashboard key={workspaceVersion} subjects={[unlocked.bank]} formulas={unlocked.formulas} assetUrl={path => assetObjectUrl(unlocked.key, path)} /></>;
+  if (unlocked) return <><GithubSync keyMaterial={unlocked.key} recordsReady={recordsReady} onRestore={restoreRecords} /><StudyWallDashboard key={workspaceVersion} subjects={[unlocked.bank]} formulas={unlocked.formulas} assetUrl={path => assetObjectUrl(unlocked.key, path)} onReady={markReady} /></>;
   if (checkingDevice) return <main className="unlock-page"><p role="status">正在打开题库…</p></main>;
   return <main className="unlock-page"><form className="unlock-form" onSubmit={unlock}>
     <span className="unlock-kicker">中国科学技术大学 · 843</span>

@@ -43,7 +43,7 @@ function Activity({ activity, today }: { activity: Record<string, number>; today
     <div className="wall-heat-legend">少 {[0, 1, 2, 3, 4].map(n => <i key={n} data-level={n} />)} 多</div></section>;
 }
 
-export function StudyWallDashboard({ subjects, formulas, assetUrl }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; assetUrl: (path: string) => Promise<string> }) {
+export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; assetUrl: (path: string) => Promise<string>; onReady?: () => void }) {
   async function openPaper(year: string) {
     const tab = window.open("about:blank", "_blank");
     if (!tab) return;
@@ -75,6 +75,7 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl }: { subjects:
   const [paused, setPaused] = useState(false);
   const [notice, setNotice] = useState("");
   const loaded = state.hasLoadedPersistedState && learning.ready;
+  useEffect(() => { if (loaded) onReady?.(); }, [loaded, onReady]);
   const activeId = practiceIds[index];
   const active = rows.find(r => r.question.id === activeId);
   const practicing = !!active;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackRecordChange } from "@/lib/sync-record";
 
 const KEY = "study-wiki-wall.learning-journal";
 type Journal = {
@@ -52,7 +53,15 @@ export function useLearningJournal(ids: ReadonlySet<string>) {
     if (!ready) return;
     // Save after each edit so closing a practice page does not discard the final note.
     let failed = false;
-    try { localStorage.setItem(KEY, JSON.stringify(journal)); window.dispatchEvent(new Event("study-record-changed")); }
+    try {
+      const next = JSON.stringify(journal);
+      const previous = localStorage.getItem(KEY);
+      if (previous !== next) {
+        trackRecordChange(KEY, previous, next);
+        localStorage.setItem(KEY, next);
+        window.dispatchEvent(new Event("study-record-changed"));
+      }
+    }
     catch { failed = true; }
     const notification = window.setTimeout(() => setSaveError(failed), 0);
     return () => clearTimeout(notification);
