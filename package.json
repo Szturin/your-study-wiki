@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run hydrate:protected",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test:integrity": "node scripts/test-sync-record.mjs && node scripts/test-prepare-protected.mjs",
     "sync:pages": "node scripts/sync-static-export.mjs",
     "hydrate:protected": "node scripts/hydrate-protected.mjs",
     "snapshot:target": "node scripts/fetch-target-site-snapshot.mjs"

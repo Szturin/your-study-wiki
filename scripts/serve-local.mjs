@@ -8,7 +8,7 @@ const prefix = "/your-study-wiki";
 const port = Number(process.argv[2] || 3096);
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".webmanifest": "application/manifest+json", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff": "font/woff", ".woff2": "font/woff2", ".enc": "application/octet-stream" };
 
-if (!existsSync(path.join(root, "index.html")) || !existsSync(path.join(root, "protected", "manifest.json"))) {
+if (!["index.html", "protected/manifest.json", "protected/bank.enc", "protected/formulas.enc"].every(file => existsSync(path.join(root, file)))) {
   throw new Error("Local static build is missing. Run NEXT_PUBLIC_BASE_PATH=/your-study-wiki npm run build first.");
 }
 

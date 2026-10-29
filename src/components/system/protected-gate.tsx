@@ -31,20 +31,19 @@ export function ProtectedGate() {
 
   useEffect(() => {
     let active = true;
-    loadDeviceKey().then(async key => {
+    const match = ["localhost", "127.0.0.1"].includes(location.hostname) ? /^#local-key=(.+)$/.exec(location.hash) : null;
+    if (match) history.replaceState(null, "", location.pathname + location.search);
+    loadDeviceKey().catch(() => null).then(async key => {
       if (!active) return;
       if (key) {
         try { await openWithKey(key); return; }
-        catch { await clearDeviceKey(); }
+        catch { await clearDeviceKey().catch(() => {}); }
       }
-      if (!["localhost", "127.0.0.1"].includes(location.hostname)) return;
-      const match = /^#local-key=(.+)$/.exec(location.hash);
       if (!match) return;
-      history.replaceState(null, "", location.pathname + location.search);
       try {
         const localKey = await unlockKey(decodeURIComponent(match[1]));
         await openWithKey(localKey);
-        await saveDeviceKey(localKey);
+        await saveDeviceKey(localKey).catch(() => {});
       } catch { setError("本机设备授权失效，请重新配对。"); }
     }).catch(() => {}).finally(() => { if (active) setCheckingDevice(false); });
     return () => { active = false; };

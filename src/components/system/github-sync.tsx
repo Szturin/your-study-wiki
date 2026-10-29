@@ -38,7 +38,7 @@ async function request<T>(token: string, method: "GET" | "PUT", body?: object): 
   });
   if (method === "GET" && response.status === 404) return null;
   if (response.status === 409) throw new Error("同步版本冲突");
-  if (response.status === 429 || response.headers.get("X-RateLimit-Remaining") === "0") throw new Error("GitHub 请求限额已用尽，稍后自动重试");
+  if (response.status === 429 || (response.status === 403 && response.headers.get("X-RateLimit-Remaining") === "0")) throw new Error("GitHub 请求限额已用尽，稍后自动重试");
   if (!response.ok) throw new Error(`GitHub ${response.status}: ${response.status === 401 ? "令牌无效" : response.status === 403 ? "缺少 Contents 权限" : "同步失败"}`);
   return response.json() as Promise<T>;
 }

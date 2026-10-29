@@ -1,137 +1,27 @@
-# CLAUDE.md
+# 项目上下文
 
-本文件用于给后续 Claude / Codex / AI 开发会话提供 **快速项目上下文**。
+本仓库是中科大 843 信号与系统真题墙。当前功能和维护命令以 [README.md](README.md) 为准；本文件只保留给开发会话的快速入口。先读 `AGENTS.md` 和 `.trellis/spec/frontend/index.md`。
 
-详细规则以 `AGENTS.md` 与 `.trellis/spec/frontend/` 为准。
+## 当前产品
 
----
+- 1997—2026 年真题按分类和套卷浏览，题目、公式、题图由加密资源加载。
+- 做题页支持“熟悉 / 模糊 / 不会”、收藏、笔记、草稿、LaTeX 源码复制；真题掌握可按章节或年份查看。
+- 学习记录本地优先；用户连接 GitHub PAT 后，自动同步至 `study-sync` 分支的加密文件。
+- GitHub Pages 提供静态页面和密文，没有服务端登录。Windows 开始菜单入口在本机运行 `out/` 静态构建。
 
-## 1. 项目定位
+## 关键位置
 
-`study-wiki-wall` 是一个面向考研信号与系统复习的 **题型分类 Wiki 墙前端项目**。
+- `src/components/dashboard/study-wall-dashboard.tsx`：做题与浏览界面。
+- `src/components/system/protected-gate.tsx`、`src/lib/protected-content.ts`：解锁与资源解密。
+- `src/components/system/github-sync.tsx`、`src/lib/sync-record.ts`：跨端同步与记录合并。
+- `src/hooks/use-study-wall-dashboard.ts`、`src/hooks/use-learning-journal.ts`：本地学习状态。
+- `scripts/prepare-protected.mjs`、`scripts/hydrate-protected.mjs`：加密资源更新。
+- `scripts/serve-local.mjs`、`scripts/launch-local.ps1`：Windows 本地入口。
+- `scripts/sync-static-export.mjs`：GitHub Pages 静态镜像。
 
-当前定位：
+## 维护约束
 
-- 做题库浏览、题型组织、错题本、收藏本和算法演示的前端工作台
-- 验证 `科目 -> 章节 -> 知识点 -> 题型 -> 题目` 的产品模型
-- 让远程访问 GitHub Pages 的每个用户把学习状态保存在自己的浏览器本地
-- 为后续 AI 导入教材 / 真题 / 习题册 / 讲义做前后端规则准备
-
----
-
-## 2. 当前技术栈
-
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Markdown + GFM
-- KaTeX 数学渲染
-- GitHub Pages 静态托管
-
----
-
-## 3. 当前核心文件
-
-### 页面与交互
-
-- `src/app/page.tsx`
-- `src/app/layout.tsx`
-- `src/components/dashboard/study-wall-dashboard.tsx`
-- `src/components/dashboard/signal-algorithm-lab.tsx`
-- `src/hooks/use-study-wall-dashboard.ts`
-
-### 领域模型与数据
-
-- `src/types/study-wall.ts`
-- `src/lib/mock-study-wall.ts`
-- `src/lib/signal-system-import.ts`
-
-### Markdown / LaTeX / PWA
-
-- `src/components/ui/math-markdown.tsx`
-- `src/components/system/pwa-register.tsx`
-- `src/app/manifest.ts`
-- `src/app/globals.css`
-
-### 构建与发布
-
-- `next.config.ts`
-- `scripts/sync-static-export.mjs`
-
----
-
-## 4. 当前已完成的主要内容
-
-- 信号与系统学习工作台
-- 左侧章节/知识点可展开目录
-- 首页、题目工作台、错题本、收藏本
-- 错题本 / 收藏本列表视图与导图视图
-- 导图拖拽、缩放、全屏、树形布局、分组框架布局
-- 掌握 / 错题 / 收藏状态切换
-- 收藏取消确认和“本日内不再提醒”
-- 题目答案 / 解析向下展开
-- Markdown + LaTeX 渲染
-- 信号与系统算法演示页：CFS、CTFT、Z、S、DTFT、DFS、DFT、FFT 等
-- 入场示波器风格加载动画与像素显现过渡
-- 本地浏览器持久化：掌握状态、错题、收藏、最近掌握记录
-
----
-
-## 5. 当前默认行为
-
-- 页面默认优先打开 `signal-system`
-- 当前只保留信号与系统科目
-- 学习状态保存在访问者自己的浏览器 localStorage 中，不写入 GitHub Pages 服务器
-- 静态部署路径使用 `/your-study-wiki`
-
----
-
-## 6. 当前重要文档
-
-- `README.md`
-- `docs/project-status.md`
-- `docs/architecture/frontend-foundation.md`
-- `docs/architecture/fullstack-and-hosting-plan.md`
-- `docs/TODO.md`
-- `docs/ai-ocr-import-rules.md`
-- `docs/question-bank-data-rules.md`
-- `docs/research/zhentiqiang-open-front-end-analysis.md`
-- `.trellis/spec/frontend/index.md`
-
----
-
-## 7. 约束与注意事项
-
-1. 当前题库数据仍是前端 seed/import 数据，不是正式后端数据库
-2. 不要把竞品原始接口字段直接引入 UI 类型
-3. 保持 clean-room 原则
-4. 文档默认写中文，Trellis spec 默认写英文
-5. 无正式后端前，不要把前端结构和未来数据库结构硬绑定
-6. 用户学习状态是 local-first，不要写入静态源文件或生成产物
-7. localStorage 结构已带 schema version，破坏性变更前要写迁移或清洗策略
-8. App Router 相关改动前先读 `node_modules/next/dist/docs/` 对应指南
-
----
-
-## 8. 发布流程
-
-GitHub Pages 当前从仓库根目录提供静态文件。发布前执行：
-
-```bash
-NEXT_PUBLIC_BASE_PATH=/your-study-wiki npm run build
-npm run sync:pages
-```
-
-然后再提交源文件和同步后的静态导出产物。
-
----
-
-## 9. 当前待办方向
-
-- 正式题库类型：`src/types/question-bank.ts`
-- AI 导入 schema
-- 题图/原图嵌入
-- 真实 API 接入
-- 用户登录后的跨设备学习状态同步
-- Cloudflare 或其他托管方案落地
+- 不提交 `src/lib/ustc843-*.json`、`public/843/`、配对密钥、GitHub PAT 或浏览器资料。
+- 更新密文时保留现有 `protected/manifest.json` 盐值，除非同步迁移设备授权和云端记录。
+- 发布前运行 `npm run lint`、`npm run typecheck`、`npm run test:integrity`、带 `/your-study-wiki` base path 的构建，并检查静态镜像中没有明文题库。
+- `docs/project-status.md` 记录当前工程状态；早期 `docs/TODO.md` 和架构研究文档为历史规划。

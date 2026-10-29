@@ -19,7 +19,7 @@ if (!existsSync(outputDirectory)) {
   throw new Error("Static export folder not found. Run `NEXT_PUBLIC_BASE_PATH=/your-study-wiki npm run build` first.");
 }
 
-if (!existsSync(path.join(outputDirectory, "protected", "manifest.json"))) {
+if (!["manifest.json", "bank.enc", "formulas.enc"].every(file => existsSync(path.join(outputDirectory, "protected", file)))) {
   throw new Error("Encrypted 843 assets are missing. Run prepare-protected before building.");
 }
 
