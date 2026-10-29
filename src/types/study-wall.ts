@@ -15,6 +15,7 @@ export interface QuestionEntry {
   source: string;
   knowledgePoint: string;
   prompt: string;
+  latex?: string;
   note: string;
   strategy: string[];
   mastery: MasteryState;

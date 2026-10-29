@@ -1,12 +1,13 @@
+﻿param([int]$Port = 3096)
 $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
-$port = 3096
+$port = $Port
 $logDirectory = Join-Path $env:LOCALAPPDATA 'StudyWikiWall'
 New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
 
 function Test-Wall($candidate) {
   try {
-    $response = Invoke-WebRequest -Uri "http://127.0.0.1:$candidate/" -TimeoutSec 2 -UseBasicParsing
+    $response = Invoke-WebRequest -Uri "http://127.0.0.1:$candidate/your-study-wiki/" -TimeoutSec 2 -UseBasicParsing
     return $response.StatusCode -eq 200 -and $response.Content -match '843.*真题墙'
   } catch { return $false }
 }
@@ -16,9 +17,9 @@ try {
     while (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) { $port++ }
     $node = 'D:\node\New Folder\node.exe'
     if (-not (Test-Path $node)) { $node = (Get-Command node -ErrorAction Stop).Source }
-    $next = Join-Path $project 'node_modules\next\dist\bin\next'
-    if (-not (Test-Path $next)) { throw '请先在真题墙项目目录运行 npm install。' }
-    $process = Start-Process -FilePath $node -ArgumentList @("`"$next`"", 'dev', '-p', "$port") -WorkingDirectory $project -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $logDirectory 'server.log') -RedirectStandardError (Join-Path $logDirectory 'server-error.log')
+    $server = Join-Path $project 'scripts\serve-local.mjs'
+    if (-not (Test-Path (Join-Path $project 'out\protected\manifest.json'))) { throw '本地静态网页缺失，请先构建项目。' }
+    $process = Start-Process -FilePath $node -ArgumentList @("`"$server`"", "$port") -WorkingDirectory $project -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $logDirectory 'server.log') -RedirectStandardError (Join-Path $logDirectory 'server-error.log')
     for ($attempt = 0; $attempt -lt 60; $attempt++) {
       Start-Sleep -Milliseconds 500
       if (Test-Wall $port) { break }
@@ -28,7 +29,7 @@ try {
   }
 
   $keyFile = Join-Path $logDirectory 'device-key.dpapi'
-  $url = "http://localhost:$port/"
+  $url = "http://localhost:$port/your-study-wiki/"
   if (Test-Path $keyFile) {
     $secureKey = Get-Content -LiteralPath $keyFile -Raw | ConvertTo-SecureString
     $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureKey)

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { applySnapshot, localSnapshot, mergeRecords, sameSnapshot, type CloudState } from "@/lib/sync-record";
 
 const endpoint = "https://api.github.com/repos/Szturin/your-study-wiki/contents/sync/843-state.enc";
+const syncBranch = "study-sync";
 const tokenKey = "study-wiki-wall.github-token.enc";
 type GithubFile = { content: string; sha: string };
 type GithubPut = { content: { sha: string } };
@@ -29,7 +30,7 @@ async function decrypt(key: CryptoKey, encoded: string) {
   return new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, key, bytes.slice(12)));
 }
 async function request<T>(token: string, method: "GET" | "PUT", body?: object): Promise<T | null> {
-  const response = await fetch(endpoint, {
+  const response = await fetch(method === "GET" ? `${endpoint}?ref=${syncBranch}` : endpoint, {
     method,
     headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
@@ -37,6 +38,7 @@ async function request<T>(token: string, method: "GET" | "PUT", body?: object): 
   });
   if (method === "GET" && response.status === 404) return null;
   if (response.status === 409) throw new Error("同步版本冲突");
+  if (response.status === 429 || response.headers.get("X-RateLimit-Remaining") === "0") throw new Error("GitHub 请求限额已用尽，稍后自动重试");
   if (!response.ok) throw new Error(`GitHub ${response.status}: ${response.status === 401 ? "令牌无效" : response.status === 403 ? "缺少 Contents 权限" : "同步失败"}`);
   return response.json() as Promise<T>;
 }
@@ -59,6 +61,10 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
   const pending = useRef(false);
   const queued = useRef(false);
   const timer = useRef<number | null>(null);
+  const retryTimer = useRef<number | null>(null);
+  const failures = useRef(0);
+  const lastAttempt = useRef(0);
+  const nextAttempt = useRef(0);
   const local = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
   const busy = status === "connecting" || status === "syncing";
 
@@ -71,6 +77,9 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
   const sync = useCallback(async (credential: string) => {
     if (!navigator.onLine) return;
     if (pending.current) { queued.current = true; return; }
+    if (Date.now() < nextAttempt.current) return;
+    if (retryTimer.current !== null) { window.clearTimeout(retryTimer.current); retryTimer.current = null; }
+    lastAttempt.current = Date.now();
     pending.current = true;
     setStatus("syncing"); setMessage("正在同步学习记录");
     try {
@@ -80,15 +89,19 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
         const merged = mergeRecords(localState, cloud.state);
         if (!sameSnapshot(localState, merged)) { applySnapshot(merged); onRestore(); }
         if (cloud.state && sameSnapshot(merged, cloud.state)) {
+          failures.current = 0;
+          nextAttempt.current = 0;
           setStatus("success"); setMessage("学习记录已是最新");
           return;
         }
         try {
           const content = await encrypt(keyMaterial, new TextEncoder().encode(JSON.stringify(merged)));
           const result = await request<GithubPut>(credential, "PUT", {
-            message: "Sync encrypted 843 learning record", content, ...(cloud.sha ? { sha: cloud.sha } : {}),
+            message: "Sync encrypted 843 learning record", content, branch: syncBranch, ...(cloud.sha ? { sha: cloud.sha } : {}),
           });
           if (!result?.content?.sha) throw new Error("GitHub 未返回文件版本");
+          failures.current = 0;
+          nextAttempt.current = 0;
           setStatus("success");
           setMessage(`同步成功 ${new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`);
           return;
@@ -99,6 +112,13 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
       }
     } catch (error) {
       setStatus("error"); setMessage(error instanceof Error ? error.message : "同步失败");
+      const authFailure = error instanceof Error && /401|403|令牌无效|权限/.test(error.message);
+      if (!authFailure) {
+        failures.current += 1;
+        const delay = Math.min(300000, 5000 * 2 ** Math.min(failures.current - 1, 6));
+        nextAttempt.current = Date.now() + delay;
+        retryTimer.current = window.setTimeout(() => window.dispatchEvent(new Event("study-sync-requested")), delay);
+      }
     } finally {
       pending.current = false;
       if (queued.current) { queued.current = false; window.dispatchEvent(new Event("study-sync-requested")); }
@@ -124,7 +144,8 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
     if (!token || !recordsReady || !online) return;
     const schedule = (delay: number) => {
       if (timer.current !== null) window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => { void sync(token); }, delay);
+      const wait = Math.max(delay, 15000 - (Date.now() - lastAttempt.current), nextAttempt.current - Date.now());
+      timer.current = window.setTimeout(() => { void sync(token); }, Math.max(0, wait));
     };
     schedule(0);
     const changed = () => schedule(2500);
@@ -136,6 +157,7 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
     document.addEventListener("visibilitychange", visible);
     return () => {
       if (timer.current !== null) window.clearTimeout(timer.current);
+      if (retryTimer.current !== null) window.clearTimeout(retryTimer.current);
       window.clearInterval(poll);
       window.removeEventListener("study-record-changed", changed);
       window.removeEventListener("study-sync-requested", changed);
@@ -145,6 +167,8 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
   }, [token, recordsReady, online, sync]);
 
   function disconnect() {
+    if (retryTimer.current !== null) window.clearTimeout(retryTimer.current);
+    nextAttempt.current = 0;
     setToken(""); setStatus("local"); setMessage(""); localStorage.removeItem(tokenKey);
   }
 

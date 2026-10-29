@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useMemo, useState } from "react";
 import { useStudyWallDashboard } from "@/hooks/use-study-wall-dashboard";
 import { localDay, useLearningJournal } from "@/hooks/use-learning-journal";
@@ -8,12 +7,13 @@ import { FormulaLibrary, type FormulaBank } from "@/components/dashboard/formula
 import { MasteryOverview } from "@/components/dashboard/mastery-overview";
 import { MathMarkdown } from "@/components/ui/math-markdown";
 import { ProtectedImage } from "@/components/system/protected-image";
+import { Copy } from "lucide-react";
 import type { MasteryState, QuestionEntry, SubjectWiki } from "@/types/study-wall";
 
 type View = "home" | "browse" | "favorite" | "review" | "notes" | "map" | "formulas";
 type Filter = "all" | "unseen" | MasteryState;
 type Row = { question: QuestionEntry; chapterId: string; chapterName: string; groupId: string; groupName: string };
-const statusLabels = { unseen: "未作答", mastered: "已掌握", blurred: "不确定", unknown: "不会做" };
+const statusLabels = { unseen: "未作答", mastered: "熟悉", blurred: "模糊", unknown: "不会" };
 
 function Icon({ name, size = 20 }: { name: string; size?: number }) {
   const paths: Record<string, string> = {
@@ -121,6 +121,13 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
   function rate(mastery: MasteryState) {
     state.setQuestionMastery(activeId, mastery); learning.recordReview(); setNotice(`已标记：${statusLabels[mastery]}`);
   }
+  async function copyQuestion() {
+    if (!active?.question.latex) { setNotice("本题暂无可复制的排版源码"); return; }
+    try {
+      await navigator.clipboard.writeText(`${active.question.source}\n\n${active.question.latex}`);
+      setNotice("已复制题目 LaTeX 源码");
+    } catch { setNotice("复制失败，请检查浏览器剪贴板权限"); }
+  }
   const title = { home: "学习首页", browse: tab === "papers" ? "历年套卷" : "分类题库", favorite: "收藏本", review: "错题复测", notes: "题目笔记", map: "真题掌握", formulas: "公式与知识点" }[view];
   const chooseChapter = (id: string) => { setChapter(id); setGroup(""); setYear(""); setView("browse"); setExpanded(id); setSidebar(false); start(rows.filter(r => r.chapterId === id)); };
 
@@ -131,16 +138,16 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
       <div className="wall-actions"><button className="wall-quiet" onClick={() => setPaused(!paused)} aria-label={paused ? "继续计时" : "暂停计时"}><Icon name="clock" />{String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}{paused ? " · 已暂停" : ""}</button><button className="wall-quiet" onClick={() => setPanel(panel === "scratch" ? null : "scratch")} aria-pressed={panel === "scratch"}>草稿</button><button className="wall-icon" aria-label="练习设置" aria-pressed={settings} onClick={() => setSettings(!settings)}><Icon name="settings" /></button></div></header>
     {settings && <section className="wall-settings wall-panel"><label>题面大小<input type="range" min="15" max="24" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /></label><button onClick={() => setSettings(false)}>完成</button></section>}
     <div className="wall-practice-body"><div className="wall-question-top"><label>题目 <select aria-label="切换题目" value={index} onChange={e => move(Number(e.target.value))}>{practiceIds.map((id, i) => <option key={id} value={i}>{i + 1} · {rows.find(r => r.question.id === id)?.question.source}</option>)}</select></label><span>{index + 1} / {practiceIds.length}</span></div>
-      <div className="wall-between wall-question-meta"><span className="wall-source">{active.question.source}</span><button className={`wall-icon ${state.questionFavoriteMap[activeId] ? "is-favorite" : ""}`} aria-label={state.questionFavoriteMap[activeId] ? "取消收藏" : "收藏题目"} aria-pressed={!!state.questionFavoriteMap[activeId]} onClick={() => state.toggleQuestionFavorite(activeId)}><Icon name="star" /></button></div>
+      <div className="wall-between wall-question-meta"><span className="wall-source">{active.question.source}</span><div className="wall-question-tools"><button className="wall-icon" aria-label="复制题目 LaTeX 源码" title="复制题目 LaTeX 源码" disabled={!active.question.latex} onClick={() => void copyQuestion()}><Copy size={19} strokeWidth={1.9} /></button><button className={`wall-icon ${state.questionFavoriteMap[activeId] ? "is-favorite" : ""}`} aria-label={state.questionFavoriteMap[activeId] ? "取消收藏" : "收藏题目"} aria-pressed={!!state.questionFavoriteMap[activeId]} onClick={() => state.toggleQuestionFavorite(activeId)}><Icon name="star" /></button></div></div>
       <article className="wall-question" aria-label={active.question.source}>
-        {active.question.image ? <ProtectedImage className="wall-question-image" path={active.question.image} assetUrl={assetUrl} width={active.question.imageWidth} height={active.question.imageHeight} alt={`${active.question.source}题面（含公式与配图，资料缺损以题内标注为准）`} style={{ width: `${fontSize / 18 * 100}%`, minWidth: `${fontSize / 18 * 640}px`, maxWidth: "none" }} /> : <MathMarkdown content={active.question.prompt} />}
+        {active.question.image ? <ProtectedImage className="wall-question-image" path={active.question.image} assetUrl={assetUrl} width={active.question.imageWidth} height={active.question.imageHeight} alt={`${active.question.source}题面（含公式与配图，资料缺损以题内标注为准）`} style={{ width: `${fontSize / 18 * 100}%`, maxWidth: "none" }} /> : <MathMarkdown content={active.question.prompt} />}
       </article>
       <details className="wall-knowledge"><summary>相关题型 <span>{active.groupName}</span>{active.question.proofMarker && <b>{active.question.proofMarker}</b>}</summary><p>{active.chapterName} / {active.groupName}</p><button onClick={() => { setPracticeIds([]); setTab("classified"); setView("browse"); setChapter(active.chapterId); setGroup(active.groupId); setYear(""); setFilter("all"); setSearch(""); }}>查看同类题</button></details>
       {active.question.note && !active.question.image && <div className="wall-source-note"><MathMarkdown content={active.question.note} /></div>}
       {panel && <section className="wall-panel wall-editor"><div className="wall-between"><h2>{panel === "notes" ? "本题笔记" : panel === "scratch" ? "本题草稿" : "题源说明"}</h2><button className="wall-icon" aria-label="关闭面板" onClick={() => setPanel(null)}><Icon name="close" /></button></div>{panel === "source" ? <><p>题面来自已整理的1997—2026年843真题分类册，第{active.question.sourcePage}页。保留原有公式、配图和资料疑点标注。</p><p>当前未导入正式答案与解析。</p><button className="wall-quiet" onClick={() => openPaper(active.question.year)}>打开{active.question.year}年套卷 ↗</button></> : <><textarea aria-label={panel === "notes" ? "本题笔记" : "本题草稿"} placeholder={panel === "notes" ? "记录错因、关键条件与下次解题的切入点……" : "在这里记录演算思路……"} value={(panel === "notes" ? journal.notes : journal.scratch)[activeId] || ""} onChange={e => learning.setText(panel === "notes" ? "notes" : "scratch", activeId, e.target.value)} /><small>{learning.saveError ? "本地存储不可用，请复制保存。" : "自动保存在当前浏览器"}</small></>}</section>}
       <div className="wall-question-pagination"><button className="wall-page-arrow wall-page-prev" aria-label="上一题" title="上一题" disabled={index === 0} onClick={() => move(index - 1)}><Icon name="back" size={25} /></button><span className={`wall-status ${status(activeId)}`}>{statusLabels[status(activeId)]}</span><button className="wall-page-arrow wall-page-next" aria-label="下一题" title="下一题" disabled={index === practiceIds.length - 1} onClick={() => move(index + 1)}><Icon name="arrow" size={25} /></button></div>
     </div>
-    <footer className="wall-practice-footer"><div className="wall-actions"><button onClick={() => setPanel(panel === "source" ? null : "source")} aria-pressed={panel === "source"}>题源说明</button><button onClick={() => setPanel(panel === "notes" ? null : "notes")} aria-pressed={panel === "notes"}><Icon name="note" />笔记{journal.notes[activeId]?.trim() ? " ·" : ""}</button></div><span role="status" className="wall-save-notice">{notice}</span><div className="wall-ratings"><button className="blurred" aria-pressed={status(activeId) === "blurred"} onClick={() => rate("blurred")}>! 不确定</button><button className="unknown" aria-pressed={status(activeId) === "unknown"} onClick={() => rate("unknown")}>× 不会做</button><button className="mastered" aria-pressed={status(activeId) === "mastered"} onClick={() => rate("mastered")}>✓ 已掌握</button></div></footer>
+    <footer className="wall-practice-footer"><div className="wall-actions"><button onClick={() => setPanel(panel === "source" ? null : "source")} aria-pressed={panel === "source"}>题源说明</button><button onClick={() => setPanel(panel === "notes" ? null : "notes")} aria-pressed={panel === "notes"}><Icon name="note" />笔记{journal.notes[activeId]?.trim() ? " ·" : ""}</button></div><div className="wall-ratings" aria-label="标记掌握程度"><button className="mastered" aria-pressed={status(activeId) === "mastered"} onClick={() => rate("mastered")}>✓ 熟悉</button><button className="blurred" aria-pressed={status(activeId) === "blurred"} onClick={() => rate("blurred")}>! 模糊</button><button className="unknown" aria-pressed={status(activeId) === "unknown"} onClick={() => rate("unknown")}>× 不会</button></div><span role="status" className="wall-save-notice">{notice}</span></footer>
   </div> : null;
 
   return <>{practiceView}<div style={{ display: practicing ? "none" : undefined }}><div className={`wall-app wall-shell ${standalone ? "wall-map-shell" : ""}`}>

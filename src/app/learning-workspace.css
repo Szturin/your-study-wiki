@@ -292,6 +292,43 @@ body::before, body::after { display: none; }
 .formula-card-body p { margin: 12px 0; }
 .formula-card-body .katex-display { overflow-x: auto; overflow-y: hidden; padding: 12px 8px; background: #f7f9fc; border-radius: 8px; }
 .formula-card-body footer, .formula-provenance { font-size: 12px; color: #66758b; margin-top: 22px; }
+
+/* Practice layout keeps the judgment controls in one predictable place. */
+.wall-practice { background: #f5f7fa; }
+.wall-practice-body { max-width: 1060px; padding-top: 30px; }
+.wall-question-top { margin-bottom: 30px; color: #687890; font-size: 14px; }
+.wall-question-top select { border: 1px solid #dce4ed; border-radius: 6px; min-height: 38px; padding: 5px 10px; color: #3d526e; background: #fff; }
+.wall-question-meta { margin-bottom: 15px; }
+.wall-source { color: #405f89; background: #e9f0fa; padding: 7px 12px; font-size: 13px; font-weight: 650; }
+.wall-question-tools { display: flex; align-items: center; gap: 6px; }
+.wall-question-tools .wall-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 6px; color: #667992; }
+.wall-question-tools .wall-icon:hover { background: #e9eff7; color: #27599e; }
+.wall-question { border: 1px solid #e9eef5; border-radius: 7px; padding: 24px 28px; color: #202c3b; line-height: 1.9; box-shadow: 0 1px 3px #172a4210; }
+.wall-question .math-content { max-width: 100%; }
+.wall-knowledge { margin-top: 25px; color: #667890; font-size: 13px; }
+.wall-knowledge summary span { color: #425d82; }
+.wall-practice-footer { display: grid; grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr); min-height: 80px; padding: 12px 28px; gap: 15px; }
+.wall-practice-footer .wall-actions { justify-self: start; }
+.wall-ratings { justify-self: center; display: grid; grid-template-columns: repeat(3, minmax(94px, 112px)); gap: 10px; }
+.wall-ratings button { min-height: 45px; padding: 8px 14px; border-radius: 6px; font-size: 15px; font-weight: 650; white-space: nowrap; }
+.wall-ratings .mastered { color: #26724f; background: #e8f4ed; }
+.wall-ratings .blurred { color: #9a641b; background: #fcf2dd; }
+.wall-ratings .unknown { color: #a84755; background: #fae9ec; }
+.wall-ratings button:hover { filter: brightness(.97); }
+.wall-ratings button[aria-pressed="true"] { border-color: currentColor; box-shadow: inset 0 0 0 1px currentColor; }
+.wall-practice-footer .wall-save-notice { justify-self: end; text-align: right; min-width: 0; }
+@media (max-width: 760px) {
+  .wall-practice-body { padding-top: 20px; padding-bottom: 190px; }
+  .wall-question-top { margin-bottom: 22px; }
+  .wall-question-meta { align-items: flex-start; }
+  .wall-source { max-width: calc(100% - 94px); line-height: 1.45; }
+  .wall-question { padding: 18px 16px; }
+  .wall-practice-footer { grid-template-columns: 1fr auto; gap: 8px 12px; padding: 9px 14px max(10px, env(safe-area-inset-bottom)); }
+  .wall-practice-footer .wall-actions { grid-column: 1; gap: 14px; }
+  .wall-practice-footer .wall-save-notice { grid-column: 2; grid-row: 1; font-size: 11px; }
+  .wall-ratings { grid-column: 1 / -1; grid-row: 2; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .wall-ratings button { min-height: 43px; padding: 7px 4px; font-size: 14px; }
+}
 .formula-provenance { padding: 14px; }
 .formula-provenance summary { cursor: pointer; }
 .formula-provenance p { margin-top: 10px; line-height: 1.8; }
