@@ -50,6 +50,14 @@ export function useLearningJournal(ids: ReadonlySet<string>) {
     return () => { clearTimeout(timer); clearInterval(midnight); };
   }, [ids]);
   useEffect(() => {
+    const restored = () => {
+      try { setJournal(sanitize(JSON.parse(localStorage.getItem(KEY) || "null"), ids)); }
+      catch { /* Keep the current journal if restored data is malformed. */ }
+    };
+    window.addEventListener("study-record-restored", restored);
+    return () => window.removeEventListener("study-record-restored", restored);
+  }, [ids]);
+  useEffect(() => {
     if (!ready) return;
     // Save after each edit so closing a practice page does not discard the final note.
     let failed = false;

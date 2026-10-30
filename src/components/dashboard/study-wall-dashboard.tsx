@@ -7,7 +7,7 @@ import { FormulaLibrary, type FormulaBank } from "@/components/dashboard/formula
 import { MasteryOverview } from "@/components/dashboard/mastery-overview";
 import { MathMarkdown } from "@/components/ui/math-markdown";
 import { ProtectedImage } from "@/components/system/protected-image";
-import { Copy } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Copy, ListTree, X, ZoomIn } from "lucide-react";
 import type { MasteryState, QuestionEntry, SubjectWiki } from "@/types/study-wall";
 
 type View = "home" | "browse" | "favorite" | "review" | "notes" | "map" | "formulas";
@@ -43,7 +43,7 @@ function Activity({ activity, today }: { activity: Record<string, number>; today
     <div className="wall-heat-legend">少 {[0, 1, 2, 3, 4].map(n => <i key={n} data-level={n} />)} 多</div></section>;
 }
 
-export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; assetUrl: (path: string) => Promise<string>; onReady?: () => void }) {
+export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady, onExit }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; assetUrl: (path: string) => Promise<string>; onReady?: () => void; onExit?: () => void }) {
   async function openPaper(year: string) {
     const tab = window.open("about:blank", "_blank");
     if (!tab) return;
@@ -67,10 +67,31 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
   const [sidebar, setSidebar] = useState(false);
   const [listMode, setListMode] = useState(false);
   const [practiceIds, setPracticeIds] = useState<string[]>([]);
+  const [practiceDirectory, setPracticeDirectory] = useState(false);
+  const [directoryTab, setDirectoryTab] = useState<"classified" | "papers">("classified");
+  const [directorySection, setDirectorySection] = useState("");
   const [index, setIndex] = useState(0);
   const [panel, setPanel] = useState<"notes" | "scratch" | "source" | null>(null);
   const [settings, setSettings] = useState(false);
   const [fontSize, setFontSize] = useState(18);
+  const [imageOpen, setImageOpen] = useState(false);
+  useEffect(() => {
+    if (!imageOpen) return;
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setImageOpen(false); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [imageOpen]);
+  useEffect(() => {
+    const restore = () => {
+      try {
+        const size = Number(JSON.parse(localStorage.getItem("english-reading-preferences-v1") || "{}")?.size);
+        setFontSize(Number.isFinite(size) && size >= 15 && size <= 23 ? size + 1 : 18);
+      } catch { setFontSize(18); }
+    };
+    restore();
+    window.addEventListener("study-record-restored", restore);
+    return () => window.removeEventListener("study-record-restored", restore);
+  }, []);
   const [elapsed, setElapsed] = useState(0);
   const [paused, setPaused] = useState(false);
   const [notice, setNotice] = useState("");
@@ -104,14 +125,27 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
   const progress = rows.length ? Math.round(mastered / rows.length * 100) : 0;
   const countdown = journal.examDate && today ? Math.ceil((Date.parse(`${journal.examDate}T00:00:00`) - Date.parse(`${today}T00:00:00`)) / 86400000) : null;
 
+  function jumpFromDirectory(list: Row[], id: string, mode: "classified" | "papers") {
+    setTab(mode);
+    setChapter("");
+    setGroup("");
+    setYear("");
+    setView("browse");
+    setPracticeDirectory(false);
+    startWithMode(list, id, mode);
+  }
+
   function navigate(next: View) {
     setView(next); setPracticeIds([]); setChapter(""); setGroup(""); setYear(""); setFilter("all"); setSearch(""); setSidebar(false); setSettings(false);
   }
   function start(list: Row[], id?: string) {
+    startWithMode(list, id, tab);
+  }
+  function startWithMode(list: Row[], id: string | undefined, mode: "classified" | "papers") {
     if (!loaded || !list.length) return;
-    const ordered = tab === "papers" ? [...list].sort((a, b) => Number(b.question.year) - Number(a.question.year) || (a.question.paperMajor || 0) - (b.question.paperMajor || 0) || (a.question.paperMinor || 0) - (b.question.paperMinor || 0)) : list;
+    const ordered = mode === "papers" ? [...list].sort((a, b) => Number(b.question.year) - Number(a.question.year) || (a.question.paperMajor || 0) - (b.question.paperMajor || 0) || (a.question.paperMinor || 0) - (b.question.paperMinor || 0)) : list;
     const next = Math.max(0, ordered.findIndex(r => r.question.id === id));
-    setPracticeIds(ordered.map(r => r.question.id)); setIndex(next); setPanel(null); setSettings(false); setElapsed(0); setPaused(false); setNotice("");
+    setPracticeIds(ordered.map(r => r.question.id)); setIndex(next); setPanel(null); setSettings(false); setImageOpen(false); setElapsed(0); setPaused(false); setNotice("");
     learning.update({ lastQuestionId: ordered[next].question.id }); window.scrollTo(0, 0);
   }
   function move(next: number) {
@@ -134,14 +168,35 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
   const searchField = <label className="wall-search"><Icon name="search" /><input aria-label={view === "formulas" ? "搜索公式知识点" : "搜索真题"} placeholder={view === "formulas" ? "搜索公式、性质、知识点…" : "搜索年份、题干、题型…"} value={search} onChange={e => { setSearch(e.target.value); if (view === "home") setView("browse"); }} />{search && <button className="wall-icon" aria-label="清除搜索" onClick={() => setSearch("")}><Icon name="close" size={16} /></button>}</label>;
 
   const practiceView = practicing ? <div className="wall-app wall-practice" style={{ "--question-size": `${fontSize}px` } as React.CSSProperties}>
-    <header className="wall-practice-header"><button className="wall-quiet" onClick={() => { setPracticeIds([]); setSettings(false); }}><Icon name="back" />返回{title}</button><span className="wall-practice-collection">843 信号与系统 <span>/ {tab === "papers" ? `${active.question.year}年套卷` : active.chapterName}</span></span>
-      <div className="wall-actions"><button className="wall-quiet" onClick={() => setPaused(!paused)} aria-label={paused ? "继续计时" : "暂停计时"}><Icon name="clock" />{String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}{paused ? " · 已暂停" : ""}</button><button className="wall-quiet" onClick={() => setPanel(panel === "scratch" ? null : "scratch")} aria-pressed={panel === "scratch"}>草稿</button><button className="wall-icon" aria-label="练习设置" aria-pressed={settings} onClick={() => setSettings(!settings)}><Icon name="settings" /></button></div></header>
-    {settings && <section className="wall-settings wall-panel"><label>题面大小<input type="range" min="15" max="24" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /></label><button onClick={() => setSettings(false)}>完成</button></section>}
+    <header className="wall-practice-header"><button className="wall-quiet" onClick={() => { setPracticeIds([]); setSettings(false); }}><Icon name="back" />返回{title}</button><button className="wall-practice-directory-trigger" aria-label="打开练习目录" aria-expanded={practiceDirectory} onClick={() => { setDirectoryTab(tab); setDirectorySection(tab === "papers" ? active.question.year : active.chapterId); setPracticeDirectory(true); }}><ListTree size={18} /><span>目录</span></button><span className="wall-practice-collection">843 信号与系统 <span>/ {tab === "papers" ? `${active.question.year}年套卷` : active.chapterName}</span></span>
+      <div className="wall-actions"><button className="wall-quiet" onClick={() => setPaused(!paused)} aria-label={paused ? "继续计时" : "暂停计时"}><Icon name="clock" />{String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}{paused ? " · 已暂停" : ""}</button><button className="wall-quiet" onClick={() => setPanel(panel === "scratch" ? null : "scratch")} aria-pressed={panel === "scratch"}>草稿</button></div></header>
+    {practiceDirectory && <>
+      <button className="wall-directory-backdrop" aria-label="关闭练习目录" onClick={() => setPracticeDirectory(false)} />
+      <aside className="wall-practice-directory" aria-label="练习目录">
+        <div className="wall-directory-head"><div><strong>843 练习目录</strong><span>已标记 {rows.filter(r => !!state.questionMasteryMap[r.question.id]).length} / {rows.length}</span></div><button aria-label="关闭练习目录" onClick={() => setPracticeDirectory(false)}><X size={20} /></button></div>
+        <div className="wall-directory-tabs" role="tablist" aria-label="目录方式"><button role="tab" aria-selected={directoryTab === "classified"} onClick={() => { setDirectoryTab("classified"); setDirectorySection(active.chapterId); }}><ListTree size={16} />分类</button><button role="tab" aria-selected={directoryTab === "papers"} onClick={() => { setDirectoryTab("papers"); setDirectorySection(active.question.year); }}><BookOpen size={16} />套卷</button></div>
+        <div className="wall-directory-scroll">
+          {directoryTab === "classified" ? chapters.map((item, i) => {
+            const sectionRows = rows.filter(r => r.chapterId === item.id);
+            const marked = sectionRows.filter(r => !!state.questionMasteryMap[r.question.id]).length;
+            return <section key={item.id} className="wall-directory-section"><button className="wall-directory-section-toggle" aria-expanded={directorySection === item.id} onClick={() => setDirectorySection(directorySection === item.id ? "" : item.id)}>{directorySection === item.id ? <ChevronDown size={17} /> : <ChevronRight size={17} />}<span>{String(i + 1).padStart(2, "0")} · {item.name}</span><small>{marked} / {sectionRows.length}</small></button>{directorySection === item.id && item.typeGroups.map(groupItem => {
+              const groupRows = sectionRows.filter(r => r.groupId === groupItem.id);
+              return <div className="wall-directory-group" key={groupItem.id}><span>{groupItem.name}</span><div>{groupRows.map(r => <button key={r.question.id} className={activeId === r.question.id ? "is-current" : ""} onClick={() => jumpFromDirectory(groupRows, r.question.id, "classified")}><i className={`wall-status-dot ${status(r.question.id)}`} />{r.question.source}</button>)}</div></div>;
+            })}</section>;
+          }) : years.map(item => {
+            const sectionRows = rows.filter(r => r.question.year === item).sort((a, b) => (a.question.paperMajor || 0) - (b.question.paperMajor || 0) || (a.question.paperMinor || 0) - (b.question.paperMinor || 0));
+            const marked = sectionRows.filter(r => !!state.questionMasteryMap[r.question.id]).length;
+            return <section key={item} className="wall-directory-section"><button className="wall-directory-section-toggle" aria-expanded={directorySection === item} onClick={() => setDirectorySection(directorySection === item ? "" : item)}>{directorySection === item ? <ChevronDown size={17} /> : <ChevronRight size={17} />}<span>{item} 年真题</span><small>{marked} / {sectionRows.length}</small></button>{directorySection === item && <div className="wall-directory-group"><div>{sectionRows.map(r => <button key={r.question.id} className={activeId === r.question.id ? "is-current" : ""} onClick={() => jumpFromDirectory(sectionRows, r.question.id, "papers")}><i className={`wall-status-dot ${status(r.question.id)}`} />{r.question.source}</button>)}</div></div>}</section>;
+          })}
+        </div>
+      </aside>
+    </>}
     <div className="wall-practice-body"><div className="wall-question-top"><label>题目 <select aria-label="切换题目" value={index} onChange={e => move(Number(e.target.value))}>{practiceIds.map((id, i) => <option key={id} value={i}>{i + 1} · {rows.find(r => r.question.id === id)?.question.source}</option>)}</select></label><span>{index + 1} / {practiceIds.length}</span></div>
       <div className="wall-between wall-question-meta"><span className="wall-source">{active.question.source}</span><div className="wall-question-tools"><button className="wall-icon" aria-label="复制题目 LaTeX 源码" title="复制题目 LaTeX 源码" disabled={!active.question.latex} onClick={() => void copyQuestion()}><Copy size={19} strokeWidth={1.9} /></button><button className={`wall-icon ${state.questionFavoriteMap[activeId] ? "is-favorite" : ""}`} aria-label={state.questionFavoriteMap[activeId] ? "取消收藏" : "收藏题目"} aria-pressed={!!state.questionFavoriteMap[activeId]} onClick={() => state.toggleQuestionFavorite(activeId)}><Icon name="star" /></button></div></div>
       <article className="wall-question" aria-label={active.question.source}>
-        {active.question.image ? <ProtectedImage className="wall-question-image" path={active.question.image} assetUrl={assetUrl} width={active.question.imageWidth} height={active.question.imageHeight} alt={`${active.question.source}题面（含公式与配图，资料缺损以题内标注为准）`} style={{ width: `${fontSize / 18 * 100}%`, maxWidth: "none" }} /> : <MathMarkdown content={active.question.prompt} />}
+        {active.question.image ? <button className="wall-image-zoom-trigger" aria-label="放大题图" onClick={() => setImageOpen(true)}><ProtectedImage className="wall-question-image" path={active.question.image} assetUrl={assetUrl} width={active.question.imageWidth} height={active.question.imageHeight} alt={`${active.question.source}题面（含公式与配图，资料缺损以题内标注为准）`} /><ZoomIn size={18} aria-hidden="true" /></button> : <MathMarkdown content={active.question.prompt} />}
       </article>
+      {imageOpen && active.question.image && <div className="wall-image-viewer" role="dialog" aria-modal="true" aria-label={`${active.question.source}题图`}><button className="wall-image-viewer-close" aria-label="关闭题图" onClick={() => setImageOpen(false)}><X size={22} /></button><div className="wall-image-viewer-scroll"><ProtectedImage path={active.question.image} assetUrl={assetUrl} alt={`${active.question.source}放大题图`} /></div></div>}
       <details className="wall-knowledge"><summary>相关题型 <span>{active.groupName}</span>{active.question.proofMarker && <b>{active.question.proofMarker}</b>}</summary><p>{active.chapterName} / {active.groupName}</p><button onClick={() => { setPracticeIds([]); setTab("classified"); setView("browse"); setChapter(active.chapterId); setGroup(active.groupId); setYear(""); setFilter("all"); setSearch(""); }}>查看同类题</button></details>
       {active.question.note && !active.question.image && <div className="wall-source-note"><MathMarkdown content={active.question.note} /></div>}
       {panel && <section className="wall-panel wall-editor"><div className="wall-between"><h2>{panel === "notes" ? "本题笔记" : panel === "scratch" ? "本题草稿" : "题源说明"}</h2><button className="wall-icon" aria-label="关闭面板" onClick={() => setPanel(null)}><Icon name="close" /></button></div>{panel === "source" ? <><p>题面来自已整理的1997—2026年843真题分类册，第{active.question.sourcePage}页。保留原有公式、配图和资料疑点标注。</p><p>当前未导入正式答案与解析。</p><button className="wall-quiet" onClick={() => openPaper(active.question.year)}>打开{active.question.year}年套卷 ↗</button></> : <><textarea aria-label={panel === "notes" ? "本题笔记" : "本题草稿"} placeholder={panel === "notes" ? "记录错因、关键条件与下次解题的切入点……" : "在这里记录演算思路……"} value={(panel === "notes" ? journal.notes : journal.scratch)[activeId] || ""} onChange={e => learning.setText(panel === "notes" ? "notes" : "scratch", activeId, e.target.value)} /><small>{learning.saveError ? "本地存储不可用，请复制保存。" : "自动保存在当前浏览器"}</small></>}</section>}
@@ -153,6 +208,7 @@ export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady }: { 
   return <>{practiceView}<div style={{ display: practicing ? "none" : undefined }}><div className={`wall-app wall-shell ${standalone ? "wall-map-shell" : ""}`}>
     {!standalone && <><button className="wall-mobile-nav wall-icon" aria-label="打开章节目录" aria-expanded={sidebar} onClick={() => setSidebar(!sidebar)}><Icon name="menu" /></button>{sidebar && <button className="wall-sidebar-backdrop" aria-label="关闭章节目录" onClick={() => setSidebar(false)} />}
       <aside className={`wall-sidebar ${sidebar ? "is-open" : ""}`}><button className="wall-brand" onClick={() => { navigate("home"); }}><span className="wall-brand-mark"><Icon name="book" size={25} /></span><strong>843 <small>信号与系统</small></strong></button>
+        {onExit && <button className="wall-portal-return" onClick={onExit}><Icon name="back" size={16} /> 学科入口</button>}
         <nav aria-label="学习导航">{([ ["home", "home", "首页"], ["favorite", "star", "收藏本"], ["review", "review", "错题复测"], ["formulas", "book", "公式与知识点"] ] as const).map(([id, icon, label]) => <button key={id} className={view === id ? "is-active" : ""} onClick={() => navigate(id)}><Icon name={icon} />{label}{id === "review" && reviewRows.length > 0 && <small>{reviewRows.length}</small>}</button>)}<button onClick={() => setMore(!more)} aria-expanded={more}><Icon name="more" />更多功能<span className="wall-nav-chevron">{more ? "⌄" : "›"}</span></button>{more && <div className="wall-more">{([ ["map", "grid", "真题掌握"], ["notes", "note", "题目笔记"] ] as const).map(([id, icon, label]) => <button key={id} className={view === id ? "is-active" : ""} onClick={() => navigate(id)}><Icon name={icon} />{label}</button>)}</div>}</nav>
         <div className="wall-sidebar-divider" /><nav aria-label="真题目录入口"><button className={tab === "classified" && view === "browse" ? "is-active" : ""} aria-pressed={tab === "classified"} onClick={() => { setTab("classified"); navigate("browse"); }}><Icon name="grid" />分类<span className="wall-nav-chevron">{tab === "classified" ? "⌄" : "›"}</span></button><button className={tab === "papers" && view === "browse" ? "is-active" : ""} aria-pressed={tab === "papers"} onClick={() => { setTab("papers"); navigate("browse"); }}><Icon name="book" />套卷<span className="wall-nav-chevron">{tab === "papers" ? "⌄" : "›"}</span></button></nav><div className="wall-sidebar-label">{tab === "classified" ? "题型目录" : "年份目录"} <span>1997—2026</span></div>
         <div className="wall-tree">{tab === "classified" ? chapters.map((c, i) => <div className="wall-tree-item" key={c.id}><button className={`wall-tree-chapter ${chapter === c.id ? "is-selected" : ""}`} onClick={() => chooseChapter(c.id)}><span className="wall-chapter-number">{String(i + 1).padStart(2, "0")}</span><span>{c.name}</span></button><button className="wall-tree-expand" aria-label={`展开${c.name}题型`} aria-expanded={expanded === c.id} onClick={() => setExpanded(expanded === c.id ? "" : c.id)}>{expanded === c.id ? "⌄" : "›"}</button>{expanded === c.id && <div className="wall-tree-groups">{c.typeGroups.map(g => <button key={g.id} className={group === g.id ? "is-selected" : ""} onClick={() => { setChapter(c.id); setGroup(g.id); setView("browse"); setSidebar(false); start(rows.filter(r => r.groupId === g.id)); }}>{g.name}{g.questions.some(q => q.proofMarker) && <small>含证明</small>}</button>)}</div>}</div>) : years.map(y => <button key={y} className={`wall-tree-chapter ${year === y ? "is-selected" : ""}`} onClick={() => { setYear(y); setChapter(""); setGroup(""); setView("browse"); setSidebar(false); start(rows.filter(r => r.question.year === y)); }}><Icon name="book" size={17} />{y}年真题</button>)}</div>

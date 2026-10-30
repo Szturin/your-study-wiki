@@ -4,6 +4,8 @@ import "katex/dist/katex.min.css";
 import { PwaRegister } from "@/components/system/pwa-register";
 import "./globals.css";
 import "./learning-workspace.css";
+import "./study-portal.css";
+import "./english-workspace.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -289,6 +289,20 @@ export function useStudyWallDashboard(subjects: readonly SubjectWiki[], storageK
   }, [storageKey, validQuestionIds]);
 
   useEffect(() => {
+    const restored = () => {
+      try {
+        const payload = JSON.parse(window.localStorage.getItem(storageKey) || "null") as unknown;
+        const next = sanitizePersistedState(payload, validQuestionIds);
+        setQuestionMasteryMap(next.questionMasteryMap);
+        setQuestionFavoriteMap(next.questionFavoriteMap);
+        setLastMasteredRecord(next.lastMasteredRecord);
+      } catch { /* Keep the current state if restored data is malformed. */ }
+    };
+    window.addEventListener("study-record-restored", restored);
+    return () => window.removeEventListener("study-record-restored", restored);
+  }, [storageKey, validQuestionIds]);
+
+  useEffect(() => {
     if (!hasLoadedPersistedState) {
       return;
     }

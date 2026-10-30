@@ -1,4 +1,9 @@
-export const stateKeys = ["study-wiki-wall.persisted-state.ustc843", "study-wiki-wall.learning-journal"] as const;
+export const stateKeys = [
+  "study-wiki-wall.persisted-state.ustc843", "study-wiki-wall.learning-journal",
+  "english-reading-answers-v1", "lab-mastered", "reading-lab-fsrs-v1",
+  "english-writing-draft-v1", "english-reading-preferences-v1", "english-daily-cache-v1",
+  "english-writing-model-v1", "study-wiki-wall.sync-display-v1",
+] as const;
 export const clockKey = "study-wiki-wall.sync-clocks.v1";
 
 export type ClockMap = Record<string, number>;
@@ -6,16 +11,21 @@ export type CloudState = { version: 1; updatedAt: string; values: Record<string,
 
 type JsonObject = Record<string, unknown>;
 const object = (value: unknown): value is JsonObject => typeof value === "object" && value !== null && !Array.isArray(value);
-const parse = (value: string | null): JsonObject => {
-  try { const parsed: unknown = JSON.parse(value || "null"); return object(parsed) ? parsed : {}; }
-  catch { return {}; }
+const parse = (value: string | null): unknown => {
+  try { return JSON.parse(value || "null") as unknown; }
+  catch { return null; }
 };
 
-function fields(value: JsonObject): Record<string, unknown> {
+function fields(value: unknown, storageKey: string): Record<string, unknown> {
   const result: Record<string, unknown> = {};
+  if (storageKey === "lab-mastered") {
+    if (Array.isArray(value)) for (const word of value) if (typeof word === "string") result[`mastered:${word}`] = true;
+    return result;
+  }
+  if (!object(value)) return value === null ? result : { value };
   for (const [name, content] of Object.entries(value)) {
     if (name === "version") continue;
-    if (object(content) && ["questionMasteryMap", "questionFavoriteMap", "notes", "scratch", "activity"].includes(name)) {
+    if (object(content) && ["questionMasteryMap", "questionFavoriteMap", "notes", "scratch", "activity", "cards", "daily"].includes(name)) {
       for (const [id, item] of Object.entries(content)) result[`${name}:${id}`] = item;
     } else result[name] = content;
   }
@@ -24,9 +34,9 @@ function fields(value: JsonObject): Record<string, unknown> {
 
 export function trackRecordChange(storageKey: string, previous: string | null, next: string) {
   if (previous === null) return;
-  const before = fields(parse(previous));
-  const after = fields(parse(next));
-  const clocks = parse(localStorage.getItem(clockKey)) as ClockMap;
+  const before = fields(parse(previous), storageKey);
+  const after = fields(parse(next), storageKey);
+  const clocks = (parse(localStorage.getItem(clockKey)) || {}) as ClockMap;
   const timestamp = Date.now();
   for (const name of new Set([...Object.keys(before), ...Object.keys(after)])) {
     if (JSON.stringify(before[name]) !== JSON.stringify(after[name])) clocks[`${storageKey}/${name}`] = timestamp;
@@ -38,7 +48,7 @@ export function localSnapshot(): CloudState {
   return {
     version: 1, updatedAt: new Date().toISOString(),
     values: Object.fromEntries(stateKeys.map(key => [key, localStorage.getItem(key) || ""])),
-    clocks: parse(localStorage.getItem(clockKey)) as ClockMap,
+    clocks: (parse(localStorage.getItem(clockKey)) || {}) as ClockMap,
   };
 }
 
@@ -47,10 +57,8 @@ export function mergeRecords(local: CloudState, remote: CloudState | null): Clou
   const values: Record<string, string> = {};
   const clocks: ClockMap = { ...remote.clocks, ...local.clocks };
   for (const key of stateKeys) {
-    const localObject = parse(local.values[key]);
-    const remoteObject = parse(remote.values[key]);
-    const localFields = fields(localObject);
-    const remoteFields = fields(remoteObject);
+    const localFields = fields(parse(local.values[key]), key);
+    const remoteFields = fields(parse(remote.values[key]), key);
     const merged: JsonObject = { version: 1 };
     for (const name of new Set([...Object.keys(localFields), ...Object.keys(remoteFields)])) {
       const localClock = local.clocks?.[`${key}/${name}`] || 0;
@@ -66,6 +74,7 @@ export function mergeRecords(local: CloudState, remote: CloudState | null): Clou
       if (chosen === undefined) continue;
       const separator = name.indexOf(":");
       if (separator < 0) merged[name] = chosen;
+      else if (key === "lab-mastered") merged[name] = chosen;
       else {
         const group = name.slice(0, separator);
         const id = name.slice(separator + 1);
@@ -74,7 +83,8 @@ export function mergeRecords(local: CloudState, remote: CloudState | null): Clou
         merged[group] = map;
       }
     }
-    values[key] = Object.keys(merged).length > 1 ? JSON.stringify(merged) : "";
+    values[key] = key === "lab-mastered" ? JSON.stringify(Object.keys(merged).filter(name => name.startsWith("mastered:") && merged[name]).map(name => name.slice(9))) :
+      Object.hasOwn(merged, "value") ? JSON.stringify(merged.value) : Object.keys(merged).length > 1 ? JSON.stringify(merged) : "";
   }
   return { version: 1, updatedAt: new Date().toISOString(), values, clocks };
 }

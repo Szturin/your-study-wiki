@@ -1,0 +1,24 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { Workbook, SpreadsheetFile } from "@oai/artifact-tool";
+
+const folder = "S:/0_Obsidian/my_study_library/考研/1-843信号与系统/附件/墨墨记忆卡";
+const stem = "中科大843信号与系统_真题校订与方法补强版_20261027";
+const rows = JSON.parse(await fs.readFile(path.join(folder, `${stem}.json`), "utf8"));
+const workbook = Workbook.create();
+const sheet = workbook.worksheets.add("数据列表");
+sheet.showGridLines = false;
+sheet.getRange(`A1:C${rows.length}`).values = rows;
+sheet.getRange("A:A").format.columnWidthPx = 220;
+sheet.getRange("B:B").format.columnWidthPx = 280;
+sheet.getRange("C:C").format.columnWidthPx = 650;
+sheet.getRange("A1:C1").format.rowHeightPx = 32;
+sheet.getRange("A1:C1").format.fill = "#EAF1FA";
+sheet.getRange("A1:C1").format.font.bold = true;
+sheet.freezePanes.freezeRows(1);
+const output = await SpreadsheetFile.exportXlsx(workbook);
+const destination = path.join(folder, `${stem}.xlsx`);
+await output.save(destination);
+const preview = await workbook.render({ sheetName: "数据列表", range: "A1:C4", scale: 1, format: "png" });
+await fs.writeFile(path.join(process.env.TEMP || ".", "843-momo-workbook-preview.png"), new Uint8Array(await preview.arrayBuffer()));
+console.log(`Exported ${rows.length - 1} cards: ${destination}`);

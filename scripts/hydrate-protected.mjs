@@ -4,7 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const source = path.join(root, "protected");
 const target = path.join(root, "public", "protected");
-for (const file of ["manifest.json", "bank.enc", "formulas.enc"]) {
+for (const file of ["manifest.json", "bank.enc", "formulas.enc", "english.enc"]) {
   if (!existsSync(path.join(source, file))) throw new Error(`Encrypted 843 resource is missing: ${file}`);
 }
 rmSync(target, { recursive: true, force: true });

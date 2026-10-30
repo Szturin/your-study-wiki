@@ -3,9 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { StudyWallDashboard } from "@/components/dashboard/study-wall-dashboard";
 import { GithubSync } from "@/components/system/github-sync";
+import { GlobalSettings } from "@/components/system/global-settings";
+import { EnglishPortal, EnglishWorkspace, StudyPortal, type EnglishSection } from "@/components/system/study-portal";
 import { assetObjectUrl, decryptJson, unlockKey } from "@/lib/protected-content";
 import { clearDeviceKey, loadDeviceKey, saveDeviceKey } from "@/lib/device-key";
 import type { SubjectWiki } from "@/types/study-wall";
+import type { EnglishBank } from "@/types/english";
 
 type FormulaBank = { source: string; sheet: string; cards: { id: string; title: string; chapter: string; content: string; sourceRow: number }[] };
 
@@ -14,10 +17,12 @@ export function ProtectedGate() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [unlocked, setUnlocked] = useState<{ bank: SubjectWiki; formulas: FormulaBank; key: CryptoKey } | null>(null);
-  const [workspaceVersion, setWorkspaceVersion] = useState(0);
+  const [area, setArea] = useState<"portal" | "843" | "english">("portal");
+  const [englishSection, setEnglishSection] = useState<EnglishSection | null>(null);
+  const [englishBank, setEnglishBank] = useState<EnglishBank | null>(null);
+  const [englishError, setEnglishError] = useState("");
   const [recordsReady, setRecordsReady] = useState(false);
   const markReady = useCallback(() => setRecordsReady(true), []);
-  const restoreRecords = useCallback(() => { setRecordsReady(false); setWorkspaceVersion(value => value + 1); }, []);
   const [checkingDevice, setCheckingDevice] = useState(true);
 
   async function openWithKey(key: CryptoKey) {
@@ -65,7 +70,25 @@ export function ProtectedGate() {
     }
   }
 
-  if (unlocked) return <><GithubSync keyMaterial={unlocked.key} recordsReady={recordsReady} onRestore={restoreRecords} /><StudyWallDashboard key={workspaceVersion} subjects={[unlocked.bank]} formulas={unlocked.formulas} assetUrl={path => assetObjectUrl(unlocked.key, path)} onReady={markReady} /></>;
+  useEffect(() => {
+    if (area !== "english" || !unlocked || englishBank || englishError) return;
+    let active = true;
+    decryptJson<EnglishBank>(unlocked.key, "/protected/english.enc")
+      .then(data => { if (active) setEnglishBank(data); })
+      .catch(() => { if (active) setEnglishError("英语资料读取失败，请检查本地构建或重新打开页面。"); });
+    return () => { active = false; };
+  }, [area, unlocked, englishBank, englishError]);
+
+  if (unlocked) return <>
+    <GithubSync keyMaterial={unlocked.key} recordsReady={recordsReady} />
+    <GlobalSettings />
+    {area === "portal" && <StudyPortal onSignal={() => setArea("843")} onEnglish={() => setArea("english")} />}
+    {area === "english" && (englishSection ?
+      englishError ? <main className="english-loading" role="alert">{englishError}</main> :
+      <EnglishWorkspace section={englishSection} onBack={() => setEnglishSection(null)} bank={englishBank} /> :
+      <EnglishPortal onBack={() => setArea("portal")} onOpen={setEnglishSection} />)}
+    <div hidden={area !== "843"}><StudyWallDashboard subjects={[unlocked.bank]} formulas={unlocked.formulas} assetUrl={path => assetObjectUrl(unlocked.key, path)} onReady={markReady} onExit={() => setArea("portal")} /></div>
+  </>;
   if (checkingDevice) return <main className="unlock-page"><p role="status">正在打开题库…</p></main>;
   return <main className="unlock-page"><form className="unlock-form" onSubmit={unlock}>
     <span className="unlock-kicker">中国科学技术大学 · 843</span>

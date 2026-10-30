@@ -37,4 +37,33 @@ trackRecordChange(journalKey, null, before);
 assert.equal(storage.get(clockKey), undefined);
 trackRecordChange(journalKey, before, after);
 assert.ok(JSON.parse(storage.get(clockKey))[`${journalKey}/notes:q1`] > 0);
+const [, , answersKey, masteredKey, reviewKey, draftKey, preferencesKey, dailyKey, modelKey, syncDisplayKey] = stateKeys;
+const englishLocal = { version: 1, updatedAt: "", values: {
+  [answersKey]: JSON.stringify({ "2000-T1-Q11": { choice: "A" } }),
+  [masteredKey]: JSON.stringify(["signal", "system"]),
+  [reviewKey]: JSON.stringify({ cards: { signal: { reps: 2 } }, logs: [] }),
+  [draftKey]: JSON.stringify("本机作文"),
+  [preferencesKey]: JSON.stringify({ theme: "dark", size: 18 }),
+  [dailyKey]: JSON.stringify({ "2026-10-30": { title: "今日阅读" } }),
+  [modelKey]: JSON.stringify("codex:gpt-6-sol"),
+  [syncDisplayKey]: JSON.stringify("compact"),
+}, clocks: { [`${masteredKey}/mastered:signal`]: 20, [`${draftKey}/value`]: 20, [`${modelKey}/value`]: 20, [`${syncDisplayKey}/value`]: 20 } };
+const englishRemote = { version: 1, updatedAt: "", values: {
+  [answersKey]: JSON.stringify({ "2001-T1-Q21": { choice: "C" } }),
+  [masteredKey]: JSON.stringify(["signal", "fourier"]),
+  [reviewKey]: JSON.stringify({ cards: { fourier: { reps: 3 } }, logs: [] }),
+  [draftKey]: JSON.stringify("云端旧作文"),
+  [preferencesKey]: JSON.stringify({ theme: "light", size: 19 }),
+  [dailyKey]: JSON.stringify({ "2026-10-29": { title: "昨日阅读" } }),
+  [modelKey]: JSON.stringify("codex:gpt-5.4"),
+  [syncDisplayKey]: JSON.stringify("full"),
+}, clocks: { [`${masteredKey}/mastered:fourier`]: 30, [`${draftKey}/value`]: 10 } };
+const englishMerged = mergeRecords(englishLocal, englishRemote);
+assert.deepEqual(new Set(JSON.parse(englishMerged.values[masteredKey])), new Set(["signal", "system", "fourier"]));
+assert.equal(JSON.parse(englishMerged.values[answersKey])["2001-T1-Q21"].choice, "C");
+assert.equal(JSON.parse(englishMerged.values[reviewKey]).cards.fourier.reps, 3);
+assert.equal(JSON.parse(englishMerged.values[draftKey]), "本机作文");
+assert.equal(JSON.parse(englishMerged.values[dailyKey])["2026-10-29"].title, "昨日阅读");
+assert.equal(JSON.parse(englishMerged.values[modelKey]), "codex:gpt-6-sol");
+assert.equal(JSON.parse(englishMerged.values[syncDisplayKey]), "compact");
 console.log("Sync merge, legacy records, tombstones and change clocks passed.");

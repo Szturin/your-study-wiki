@@ -9,6 +9,7 @@ const tokenKey = "study-wiki-wall.github-token.enc";
 type GithubFile = { content: string; sha: string };
 type GithubPut = { content: { sha: string } };
 type Status = "local" | "connecting" | "syncing" | "success" | "error";
+type SyncDisplay = "full" | "compact" | "hidden";
 
 function base64(bytes: Uint8Array) {
   let result = "";
@@ -51,13 +52,14 @@ async function readCloud(key: CryptoKey, token: string) {
   return { sha: file.sha, state };
 }
 
-export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMaterial: CryptoKey; recordsReady: boolean; onRestore: () => void }) {
+export function GithubSync({ keyMaterial, recordsReady }: { keyMaterial: CryptoKey; recordsReady: boolean }) {
   const [token, setToken] = useState("");
   const [entry, setEntry] = useState("");
   const [status, setStatus] = useState<Status>("local");
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [online, setOnline] = useState(true);
+  const [display, setDisplay] = useState<SyncDisplay>("full");
   const pending = useRef(false);
   const queued = useRef(false);
   const timer = useRef<number | null>(null);
@@ -73,6 +75,17 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
     update(); window.addEventListener("online", update); window.addEventListener("offline", update);
     return () => { window.removeEventListener("online", update); window.removeEventListener("offline", update); };
   }, []);
+  useEffect(() => {
+    const restore = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem("study-wiki-wall.sync-display-v1") || '"full"');
+        setDisplay(saved === "compact" || saved === "hidden" ? saved : "full");
+      } catch { setDisplay("full"); }
+    };
+    restore();
+    window.addEventListener("study-record-restored", restore);
+    return () => window.removeEventListener("study-record-restored", restore);
+  }, []);
 
   const sync = useCallback(async (credential: string) => {
     if (!navigator.onLine) return;
@@ -87,7 +100,10 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
         const cloud = await readCloud(keyMaterial, credential);
         const localState = localSnapshot();
         const merged = mergeRecords(localState, cloud.state);
-        if (!sameSnapshot(localState, merged)) { applySnapshot(merged); onRestore(); }
+        if (!sameSnapshot(localState, merged)) {
+          applySnapshot(merged);
+          window.dispatchEvent(new Event("study-record-restored"));
+        }
         if (cloud.state && sameSnapshot(merged, cloud.state)) {
           failures.current = 0;
           nextAttempt.current = 0;
@@ -123,7 +139,7 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
       pending.current = false;
       if (queued.current) { queued.current = false; window.dispatchEvent(new Event("study-sync-requested")); }
     }
-  }, [keyMaterial, onRestore]);
+  }, [keyMaterial]);
 
   const connect = useCallback(async (credential: string) => {
     if (!credential || !navigator.onLine) return;
@@ -177,9 +193,10 @@ export function GithubSync({ keyMaterial, recordsReady, onRestore }: { keyMateri
     effective === "connecting" ? "正在连接" : effective === "syncing" ? "正在同步" : effective === "success" ? "同步成功" : "同步失败";
   const toastText = effective === "offline" ? "网络已断开，学习记录保存在本机" : message ||
     (local ? "本地题库已就绪，学习记录保存在本机" : "网页题库已就绪，学习记录保存在当前浏览器");
-  return <div className="sync-widget" data-status={effective}>
-    <button type="button" className="sync-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label={`同步状态：${label}`}><span className="sync-dot" aria-hidden="true" />{label}</button>
-    <div key={toastText} className="sync-toast" role="status">{toastText}</div>
+  const visible = display !== "hidden" || effective === "error" || effective === "offline";
+  return <div className="sync-widget" data-status={effective} data-display={display} hidden={!visible}>
+    <button type="button" className="sync-trigger" onClick={() => setOpen(value => !value)} aria-expanded={open} aria-label={`同步状态：${label}`} title={display === "compact" ? label : undefined}><span className="sync-dot" aria-hidden="true" /><span className="sync-label">{label}</span></button>
+    {(display === "full" || effective === "error" || effective === "offline") && <div key={toastText} className="sync-toast" role="status">{toastText}</div>}
     {open && <div className="sync-popover">
       <div className="sync-popover-heading"><strong>{local ? "本地真题墙" : "网页真题墙"}</strong><button type="button" aria-label="关闭同步面板" onClick={() => setOpen(false)}>×</button></div>
       <p>{!online ? "网络不可用，学习记录保存在本机。" : token ? "学习记录已开启自动同步。" : "学习记录保存在当前浏览器。连接 GitHub 后自动同步。"}</p>
