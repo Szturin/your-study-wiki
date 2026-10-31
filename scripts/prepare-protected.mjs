@@ -34,6 +34,8 @@ const inputs = [
   [path.join(root, "src", "lib", "ustc843-bank.json"), path.join(output, "bank.enc")],
   [path.join(root, "src", "lib", "ustc843-formulas.json"), path.join(output, "formulas.enc")],
 ];
+const canvasNotes = path.join(root, "src", "lib", "ustc843-canvas-notes.json");
+if (existsSync(canvasNotes)) inputs.push([canvasNotes, path.join(output, "canvas-notes.enc")]);
 
 function walk(directory, relative = "") {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {

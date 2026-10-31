@@ -11,6 +11,7 @@
 - 2025 年第一大题第 7、8 小题缺失，第 4 小题选项不全。尚未导入正式答案或解析；345 是已收录单元数，不代表原卷无缺损。
 - 明文题库和原始 PDF 只留在本机的 `src/lib/ustc843-*.json`、`public/843/`，均被 Git 忽略；网页发布 `protected/` 中的 AES-GCM 密文。
 - 英语原始 HTML 不进入静态目录。`protected/english.enc` 保存提取后的加密内容，使用同一配对密钥解锁。
+- 24 个有 Canvas 一刷笔记的年份（1997—2001、2006—2024）已关联 253 道题的原批注和 1 份 2023 年整卷批注，含 402 张手写或补充图。Canvas 未明确标出逐题掌握等级，历史错因只作复盘线索，不覆盖当前的熟悉、模糊、不会标记。
 
 ## 运行与发布
 
@@ -45,6 +46,12 @@ npm run sync:pages
 准备脚本会验证现有密文与密钥，沿用盐值，并只重加密内容变化的文件。错误密钥会在写入前失败。不要删除或手动轮换 `protected/manifest.json`；如确需轮换，必须同时迁移所有设备授权与云端记录。`npm run test:integrity` 包含独立的加密准备与同步合并测试，不使用真实题库或密钥。
 
 英语来源 HTML 更新后，在设置 `WALL_PASSPHRASE` 的同一终端运行 `node scripts/prepare-english.mjs`，再构建。默认从 Vault 的 `2-英语/` 读取；其他位置可设置 `ENGLISH_VAULT_ROOT`。英语原 HTML 的 `file://` 学习记录不会自动迁移到网站来源。站内英语答题、词汇掌握、FSRS、写作草稿、每日阅读缓存与阅读偏好复用现有加密 GitHub 自动同步。
+
+## Canvas 一刷批注
+
+批注来自 Vault 的 `Marginnote/843真题套卷.canvas`，通过原题截图 OCR、同年份题库题干及人工核对建立题号对应。重新整理时，先在本机安装 `rapidocr-onnxruntime`、`Pillow`、`CairoSVG`，依次运行 `python scripts/import-canvas-annotations.py` 和 `python scripts/emit-canvas-annotations.py`。人工校对的题号映射在 `scripts/canvas-annotation-overrides.json`；再次导入前应复核 `tmp/canvas-import/audit.json` 和 `tmp/canvas-import/skipped.json`。生成的明文 JSON、图片与 OCR 审核缓存均被 Git 忽略，随后使用现有配对密钥运行 `node scripts/prepare-protected.mjs` 加密，再构建发布。
+
+题页可查看一刷原批注、错因标签与手写图；真题掌握页可按历史错因筛题。分类和套卷引用同一题号。新做题标记和个人笔记仍按原有加密 GitHub 同步；Canvas 导入内容是只读的题库资料，不随浏览器学习记录重复写入。
 
 ## 学习记录同步
 

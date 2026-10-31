@@ -50,3 +50,5 @@ next-env.d.ts
 /public/protected/
 /src/lib/ustc843-bank.json
 /src/lib/ustc843-formulas.json
+/src/lib/ustc843-canvas-notes.json
+__pycache__/

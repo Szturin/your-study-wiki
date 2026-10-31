@@ -9,6 +9,7 @@ import { assetObjectUrl, decryptJson, unlockKey } from "@/lib/protected-content"
 import { clearDeviceKey, loadDeviceKey, saveDeviceKey } from "@/lib/device-key";
 import type { SubjectWiki } from "@/types/study-wall";
 import type { EnglishBank } from "@/types/english";
+import type { CanvasAnnotationBank } from "@/types/canvas-annotations";
 
 type FormulaBank = { source: string; sheet: string; cards: { id: string; title: string; chapter: string; content: string; sourceRow: number }[] };
 
@@ -16,7 +17,7 @@ export function ProtectedGate() {
   const [passphrase, setPassphrase] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [unlocked, setUnlocked] = useState<{ bank: SubjectWiki; formulas: FormulaBank; key: CryptoKey } | null>(null);
+  const [unlocked, setUnlocked] = useState<{ bank: SubjectWiki; formulas: FormulaBank; canvasNotes: CanvasAnnotationBank | null; key: CryptoKey } | null>(null);
   const [area, setArea] = useState<"portal" | "843" | "english">("portal");
   const [englishSection, setEnglishSection] = useState<EnglishSection | null>(null);
   const [englishBank, setEnglishBank] = useState<EnglishBank | null>(null);
@@ -26,12 +27,13 @@ export function ProtectedGate() {
   const [checkingDevice, setCheckingDevice] = useState(true);
 
   async function openWithKey(key: CryptoKey) {
-    const [bank, formulas] = await Promise.all([
+    const [bank, formulas, canvasNotes] = await Promise.all([
       decryptJson<SubjectWiki>(key, "/protected/bank.enc"),
       decryptJson<FormulaBank>(key, "/protected/formulas.enc"),
+      decryptJson<CanvasAnnotationBank>(key, "/protected/canvas-notes.enc").catch(() => null),
     ]);
     if (!bank.chapters?.length || !formulas.cards?.length) throw new Error("题库内容不完整");
-    setUnlocked({ bank, formulas, key });
+    setUnlocked({ bank, formulas, canvasNotes: canvasNotes?.version === 1 ? canvasNotes : null, key });
   }
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export function ProtectedGate() {
       englishError ? <main className="english-loading" role="alert">{englishError}</main> :
       <EnglishWorkspace section={englishSection} onBack={() => setEnglishSection(null)} bank={englishBank} /> :
       <EnglishPortal onBack={() => setArea("portal")} onOpen={setEnglishSection} />)}
-    <div hidden={area !== "843"}><StudyWallDashboard subjects={[unlocked.bank]} formulas={unlocked.formulas} assetUrl={path => assetObjectUrl(unlocked.key, path)} onReady={markReady} onExit={() => setArea("portal")} /></div>
+    <div hidden={area !== "843"}><StudyWallDashboard subjects={[unlocked.bank]} formulas={unlocked.formulas} canvasNotes={unlocked.canvasNotes} assetUrl={path => assetObjectUrl(unlocked.key, path)} onReady={markReady} onExit={() => setArea("portal")} /></div>
   </>;
   if (checkingDevice) return <main className="unlock-page"><p role="status">正在打开题库…</p></main>;
   return <main className="unlock-page"><form className="unlock-form" onSubmit={unlock}>
