@@ -7,10 +7,8 @@ import { FormulaLibrary, type FormulaBank } from "@/components/dashboard/formula
 import { MasteryOverview } from "@/components/dashboard/mastery-overview";
 import { MathMarkdown } from "@/components/ui/math-markdown";
 import { ProtectedImage } from "@/components/system/protected-image";
-import { CanvasAnnotationsPanel } from "@/components/dashboard/canvas-annotations-panel";
 import { BookOpen, ChevronDown, ChevronRight, Copy, ListTree, X, ZoomIn } from "lucide-react";
 import type { MasteryState, QuestionEntry, SubjectWiki } from "@/types/study-wall";
-import type { CanvasAnnotationBank } from "@/types/canvas-annotations";
 
 type View = "home" | "browse" | "favorite" | "review" | "notes" | "map" | "formulas";
 type Filter = "all" | "unseen" | MasteryState;
@@ -45,7 +43,7 @@ function Activity({ activity, today }: { activity: Record<string, number>; today
     <div className="wall-heat-legend">少 {[0, 1, 2, 3, 4].map(n => <i key={n} data-level={n} />)} 多</div></section>;
 }
 
-export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, onReady, onExit }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; canvasNotes: CanvasAnnotationBank | null; assetUrl: (path: string) => Promise<string>; onReady?: () => void; onExit?: () => void }) {
+export function StudyWallDashboard({ subjects, formulas, assetUrl, onReady, onExit }: { subjects: readonly SubjectWiki[]; formulas: FormulaBank; assetUrl: (path: string) => Promise<string>; onReady?: () => void; onExit?: () => void }) {
   async function openPaper(year: string) {
     const tab = window.open("about:blank", "_blank");
     if (!tab) return;
@@ -73,7 +71,7 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
   const [directoryTab, setDirectoryTab] = useState<"classified" | "papers">("classified");
   const [directorySection, setDirectorySection] = useState("");
   const [index, setIndex] = useState(0);
-  const [panel, setPanel] = useState<"notes" | "scratch" | "source" | "canvas" | null>(null);
+  const [panel, setPanel] = useState<"notes" | "scratch" | "source" | null>(null);
   const [settings, setSettings] = useState(false);
   const [fontSize, setFontSize] = useState(18);
   const [imageOpen, setImageOpen] = useState(false);
@@ -101,16 +99,6 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
   useEffect(() => { if (loaded) onReady?.(); }, [loaded, onReady]);
   const activeId = practiceIds[index];
   const active = rows.find(r => r.question.id === activeId);
-  const canvasEntries = canvasNotes?.records[activeId] || [];
-  const yearCanvasEntries = canvasNotes?.yearNotes?.[active?.question.year || ""] || [];
-  const canvasTags = useMemo(() => Object.fromEntries(Object.entries(canvasNotes?.records || {}).map(([id, entries]) => [id, [...new Set(entries.flatMap(entry => entry.tags))]])) as Record<string, string[]>, [canvasNotes]);
-  const notePresence = useMemo(() => {
-    const result = { ...journal.notes };
-    for (const [id, entries] of Object.entries(canvasNotes?.records || {})) {
-      if (entries.length && !result[id]?.trim()) result[id] = entries.map(entry => entry.title).join("、") || "一刷批注";
-    }
-    return result;
-  }, [canvasNotes, journal.notes]);
   const practicing = !!active;
   const standalone = ["map", "formulas", "favorite"].includes(view);
   useEffect(() => {
@@ -126,11 +114,11 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
     if (chapter && r.chapterId !== chapter || group && r.groupId !== group || year && q.year !== year) return false;
     if (view === "favorite" && !state.questionFavoriteMap[q.id]) return false;
     if (view === "review" && !["blurred", "unknown"].includes(state.questionMasteryMap[q.id])) return false;
-    if (view === "notes" && !notePresence[q.id]?.trim()) return false;
+    if (view === "notes" && !journal.notes[q.id]?.trim()) return false;
     if (filter !== "all" && (state.questionMasteryMap[q.id] || "unseen") !== filter) return false;
-    const text = `${q.source} ${q.prompt} ${r.chapterName} ${r.groupName} ${journal.notes[q.id] || ""} ${(canvasNotes?.records[q.id] || []).map(entry => `${entry.title} ${entry.text} ${entry.tags.join(" ")}`).join(" ")}`.toLowerCase();
+    const text = `${q.source} ${q.prompt} ${r.chapterName} ${r.groupName} ${journal.notes[q.id] || ""}`.toLowerCase();
     return text.includes(search.trim().toLowerCase());
-  }), [rows, chapter, group, year, view, state.questionFavoriteMap, state.questionMasteryMap, journal.notes, notePresence, canvasNotes, filter, search]);
+  }), [rows, chapter, group, year, view, state.questionFavoriteMap, state.questionMasteryMap, journal.notes, filter, search]);
   const years = useMemo(() => [...new Set(rows.map(r => r.question.year))].sort().reverse(), [rows]);
   const last = rows.find(r => r.question.id === (journal.lastQuestionId || state.lastMasteredRecord?.questionId));
   const chapters = subjects[0]?.chapters || [];
@@ -210,12 +198,11 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
       </article>
       {imageOpen && active.question.image && <div className="wall-image-viewer" role="dialog" aria-modal="true" aria-label={`${active.question.source}题图`}><button className="wall-image-viewer-close" aria-label="关闭题图" onClick={() => setImageOpen(false)}><X size={22} /></button><div className="wall-image-viewer-scroll"><ProtectedImage path={active.question.image} assetUrl={assetUrl} alt={`${active.question.source}放大题图`} /></div></div>}
       <details className="wall-knowledge"><summary>相关题型 <span>{active.groupName}</span>{active.question.proofMarker && <b>{active.question.proofMarker}</b>}</summary><p>{active.chapterName} / {active.groupName}</p><button onClick={() => { setPracticeIds([]); setTab("classified"); setView("browse"); setChapter(active.chapterId); setGroup(active.groupId); setYear(""); setFilter("all"); setSearch(""); }}>查看同类题</button></details>
-      {!!canvasTags[activeId]?.length && <div className="wall-canvas-review-hint"><strong>一刷错因</strong><span>{canvasTags[activeId].join(" · ")}</span><button onClick={() => setPanel("canvas")}>查看原批注 →</button></div>}
       {active.question.note && !active.question.image && <div className="wall-source-note"><MathMarkdown content={active.question.note} /></div>}
-      {panel && <section className="wall-panel wall-editor"><div className="wall-between"><h2>{panel === "notes" ? "本题笔记" : panel === "scratch" ? "本题草稿" : panel === "canvas" ? "套卷一刷批注" : "题源说明"}</h2><button className="wall-icon" aria-label="关闭面板" onClick={() => setPanel(null)}><Icon name="close" /></button></div>{panel === "source" ? <><p>题面来自已整理的1997—2026年843真题分类册，第{active.question.sourcePage}页。保留原有公式、配图和资料疑点标注。</p><p>当前未导入正式答案与解析。</p><button className="wall-quiet" onClick={() => openPaper(active.question.year)}>打开{active.question.year}年套卷 ↗</button></> : panel === "canvas" ? <CanvasAnnotationsPanel entries={canvasEntries} yearEntries={yearCanvasEntries} assetUrl={assetUrl} /> : <><textarea aria-label={panel === "notes" ? "本题笔记" : "本题草稿"} placeholder={panel === "notes" ? "记录错因、关键条件与下次解题的切入点……" : "在这里记录演算思路……"} value={(panel === "notes" ? journal.notes : journal.scratch)[activeId] || ""} onChange={e => learning.setText(panel === "notes" ? "notes" : "scratch", activeId, e.target.value)} /><small>{learning.saveError ? "本地存储不可用，请复制保存。" : "自动保存在当前浏览器"}</small></>}</section>}
+      {panel && <section className="wall-panel wall-editor"><div className="wall-between"><h2>{panel === "notes" ? "本题笔记" : panel === "scratch" ? "本题草稿" : "题源说明"}</h2><button className="wall-icon" aria-label="关闭面板" onClick={() => setPanel(null)}><Icon name="close" /></button></div>{panel === "source" ? <><p>题面来自已整理的1997—2026年843真题分类册，第{active.question.sourcePage}页。保留原有公式、配图和资料疑点标注。</p><p>当前未导入正式答案与解析。</p><button className="wall-quiet" onClick={() => openPaper(active.question.year)}>打开{active.question.year}年套卷 ↗</button></> : <><textarea aria-label={panel === "notes" ? "本题笔记" : "本题草稿"} placeholder={panel === "notes" ? "记录错因、关键条件与下次解题的切入点……" : "在这里记录演算思路……"} value={(panel === "notes" ? journal.notes : journal.scratch)[activeId] || ""} onChange={e => learning.setText(panel === "notes" ? "notes" : "scratch", activeId, e.target.value)} /><small>{learning.saveError ? "本地存储不可用，请复制保存。" : "自动保存在当前浏览器"}</small></>}</section>}
       <div className="wall-question-pagination"><button className="wall-page-arrow wall-page-prev" aria-label="上一题" title="上一题" disabled={index === 0} onClick={() => move(index - 1)}><Icon name="back" size={25} /></button><span className={`wall-status ${status(activeId)}`}>{statusLabels[status(activeId)]}</span><button className="wall-page-arrow wall-page-next" aria-label="下一题" title="下一题" disabled={index === practiceIds.length - 1} onClick={() => move(index + 1)}><Icon name="arrow" size={25} /></button></div>
     </div>
-    <footer className="wall-practice-footer"><div className="wall-actions"><button onClick={() => setPanel(panel === "source" ? null : "source")} aria-pressed={panel === "source"}>题源说明</button>{canvasEntries.length + yearCanvasEntries.length > 0 && <button onClick={() => setPanel(panel === "canvas" ? null : "canvas")} aria-pressed={panel === "canvas"}>一刷批注 · {canvasEntries.length + yearCanvasEntries.length}</button>}<button onClick={() => setPanel(panel === "notes" ? null : "notes")} aria-pressed={panel === "notes"}><Icon name="note" />笔记{journal.notes[activeId]?.trim() ? " ·" : ""}</button></div><div className="wall-ratings" aria-label="标记掌握程度"><button className="mastered" aria-pressed={status(activeId) === "mastered"} onClick={() => rate("mastered")}>✓ 熟悉</button><button className="blurred" aria-pressed={status(activeId) === "blurred"} onClick={() => rate("blurred")}>! 模糊</button><button className="unknown" aria-pressed={status(activeId) === "unknown"} onClick={() => rate("unknown")}>× 不会</button></div><span role="status" className="wall-save-notice">{notice}</span></footer>
+    <footer className="wall-practice-footer"><div className="wall-actions"><button onClick={() => setPanel(panel === "source" ? null : "source")} aria-pressed={panel === "source"}>题源说明</button><button onClick={() => setPanel(panel === "notes" ? null : "notes")} aria-pressed={panel === "notes"}><Icon name="note" />笔记{journal.notes[activeId]?.trim() ? " ·" : ""}</button></div><div className="wall-ratings" aria-label="标记掌握程度"><button className="mastered" aria-pressed={status(activeId) === "mastered"} onClick={() => rate("mastered")}>✓ 熟悉</button><button className="blurred" aria-pressed={status(activeId) === "blurred"} onClick={() => rate("blurred")}>! 模糊</button><button className="unknown" aria-pressed={status(activeId) === "unknown"} onClick={() => rate("unknown")}>× 不会</button></div><span role="status" className="wall-save-notice">{notice}</span></footer>
   </div> : null;
 
   return <>{practiceView}<div style={{ display: practicing ? "none" : undefined }}><div className={`wall-app wall-shell ${standalone ? "wall-map-shell" : ""}`}>
@@ -235,8 +222,8 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
           <section className="wall-panel wall-review-card"><div className="wall-between"><span className="wall-eyebrow">待复测</span><button className="wall-quiet" onClick={() => navigate("review")}>查看错题 <Icon name="arrow" size={16} /></button></div><div className="wall-review-number">{reviewRows.length}<span>题待复测</span></div><p>{reviewRows.length ? "再做一次，检查不确定的条件与步骤。" : "标记“不确定”或“不会做”的题目会收录在这里。"}</p><button className="wall-button-primary" disabled={!reviewRows.length} onClick={() => { setView("review"); start(reviewRows); }}>开始复测<Icon name="arrow" size={16} /></button></section></div>
           <Activity activity={journal.activity} today={today} />
           <section className="wall-panel wall-progress-card"><div><h2>掌握情况</h2><p>已掌握 {mastered} / {rows.length} 题</p></div><div className="wall-progress-track"><span style={{ width: `${progress}%` }} /></div><strong>{progress}%</strong><button className="wall-quiet" onClick={() => navigate("map")}>查看真题掌握<Icon name="arrow" size={16} /></button></section>
-          <div className="wall-data-note">资料说明：已整理30个年份；2025年选择题第7、8题缺失，第4题选项不全。尚未导入正式答案。{canvasNotes && `已关联 ${Object.keys(canvasNotes.records).length} 道题的一刷批注，原批注不代表当前掌握度。`}</div>
-        </> : view === "formulas" ? <FormulaLibrary search={search} bank={formulas} /> : view === "map" ? <MasteryOverview key={tab} rows={rows} byYear={tab === "papers"} mastery={state.questionMasteryMap} favorites={state.questionFavoriteMap} notes={notePresence} canvasTags={canvasTags} onPractice={start} /> : <>
+          <div className="wall-data-note">资料说明：已整理30个年份；2025年选择题第7、8题缺失，第4题选项不全。尚未导入正式答案。</div>
+        </> : view === "formulas" ? <FormulaLibrary search={search} bank={formulas} /> : view === "map" ? <MasteryOverview key={tab} rows={rows} byYear={tab === "papers"} mastery={state.questionMasteryMap} favorites={state.questionFavoriteMap} notes={journal.notes} onPractice={start} /> : <>
           <div className="wall-page-heading"><div><span className="wall-eyebrow">843 信号与系统 · {tab === "classified" ? "按题型复盘" : "按年份训练"}</span><h1>{title}</h1><p>{filtered.length} 个题目单元{chapter ? ` · ${chapters.find(c => c.id === chapter)?.name}` : ""}{group ? ` / ${rows.find(r => r.groupId === group)?.groupName}` : ""}</p></div><button className="wall-button-primary" disabled={!filtered.length} onClick={() => start(filtered)}>开始练习<Icon name="arrow" size={17} /></button></div>
           <section className="wall-panel wall-bank-panel"><div className="wall-filterbar"><label>{tab === "papers" ? "年份" : "章节"}<select aria-label={tab === "papers" ? "筛选年份" : "筛选章节"} value={tab === "papers" ? year : chapter} onChange={e => { if (tab === "papers") setYear(e.target.value); else { setChapter(e.target.value); setGroup(""); } }}><option value="">全部{tab === "papers" ? "年份" : "章节"}</option>{tab === "papers" ? years.map(y => <option key={y} value={y}>{y}年</option>) : chapters.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>掌握状态<select aria-label="筛选掌握状态" value={filter} onChange={e => setFilter(e.target.value as Filter)}><option value="all">全部状态</option>{Object.entries(statusLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>{group && <button className="wall-quiet" onClick={() => setGroup("")}>清除题型筛选 ×</button>}<div className="wall-view-switch"><button aria-pressed={!listMode} onClick={() => setListMode(false)}><Icon name="grid" size={16} />地图</button><button aria-pressed={listMode} onClick={() => setListMode(true)}><Icon name="note" size={16} />列表</button></div></div>
           <div className="wall-legend">{Object.entries(statusLabels).map(([key, label]) => <span key={key}><i className={`wall-status-dot ${key}`} />{label}</span>)}</div>
@@ -245,7 +232,7 @@ export function StudyWallDashboard({ subjects, formulas, canvasNotes, assetUrl, 
             if (!sectionRows.length) return null;
             const sorted = tab === "papers" ? [...sectionRows].sort((a, b) => (a.question.paperMajor || 0) - (b.question.paperMajor || 0) || (a.question.paperMinor || 0) - (b.question.paperMinor || 0)) : sectionRows;
             return <section className="wall-question-group" key={key}><div className="wall-between"><h2>{tab === "papers" ? `${key}年真题` : sectionRows[0].chapterName}<span>{sectionRows.length}题</span></h2>{tab === "papers" && <button className="wall-quiet" onClick={() => openPaper(key)}>原排版PDF ↗</button>}</div>{key === "2025" && <p className="wall-gap-note">选择题第7、8题缺失，第4题选项不全，按现有来源保留。</p>}
-              {listMode ? <div className="wall-question-list">{sorted.map(r => <button key={r.question.id} onClick={() => start(filtered, r.question.id)}><span className={`wall-status-dot ${status(r.question.id)}`} /><span><strong>{r.question.source}{r.question.proofMarker && <em>{r.question.proofMarker}</em>}</strong><small>{r.groupName}</small>{view === "notes" && <p>{notePresence[r.question.id]}</p>}</span>{state.questionFavoriteMap[r.question.id] && <span className="is-favorite">★</span>}<Icon name="arrow" size={16} /></button>)}</div> : <div className="wall-question-grid">{sorted.map(r => <button key={r.question.id} className={`wall-tile ${status(r.question.id)}`} aria-label={`${r.question.source}，${r.groupName}，${statusLabels[status(r.question.id)]}`} onClick={() => start(filtered, r.question.id)}><span>{r.question.year}</span><strong>{r.question.paperMajor}{r.question.paperMinor ? `（${r.question.paperMinor}）` : ""}</strong><small>{status(r.question.id) === "mastered" ? "✓" : status(r.question.id) === "blurred" ? "!" : status(r.question.id) === "unknown" ? "×" : "·"}</small>{state.questionFavoriteMap[r.question.id] && <span className="is-favorite">★</span>}{notePresence[r.question.id]?.trim() && <b className="wall-tile-note" aria-label="有笔记" />}</button>)}</div>}</section>;
+              {listMode ? <div className="wall-question-list">{sorted.map(r => <button key={r.question.id} onClick={() => start(filtered, r.question.id)}><span className={`wall-status-dot ${status(r.question.id)}`} /><span><strong>{r.question.source}{r.question.proofMarker && <em>{r.question.proofMarker}</em>}</strong><small>{r.groupName}</small>{view === "notes" && <p>{journal.notes[r.question.id]}</p>}</span>{state.questionFavoriteMap[r.question.id] && <span className="is-favorite">★</span>}<Icon name="arrow" size={16} /></button>)}</div> : <div className="wall-question-grid">{sorted.map(r => <button key={r.question.id} className={`wall-tile ${status(r.question.id)}`} aria-label={`${r.question.source}，${r.groupName}，${statusLabels[status(r.question.id)]}`} onClick={() => start(filtered, r.question.id)}><span>{r.question.year}</span><strong>{r.question.paperMajor}{r.question.paperMinor ? `（${r.question.paperMinor}）` : ""}</strong><small>{status(r.question.id) === "mastered" ? "✓" : status(r.question.id) === "blurred" ? "!" : status(r.question.id) === "unknown" ? "×" : "·"}</small>{state.questionFavoriteMap[r.question.id] && <i>★</i>}{journal.notes[r.question.id]?.trim() && <b className="wall-tile-note" aria-label="有笔记" />}</button>)}</div>}</section>;
           })}</section>
         </>}
         {learning.saveError && <p role="alert">浏览器本地存储不可用，请复制保存笔记。</p>}

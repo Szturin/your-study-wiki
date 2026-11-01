@@ -220,26 +220,6 @@ html[data-study-theme="dark"] .wall-image-zoom-trigger > svg { background:#34435
 .wall-editor small { color: #95a1b5; font-size: 11px; }
 .wall-editor p { color: #8290a6; font-size: 13px; margin: 10px 0; }
 .wall-editor a { color: #2963e9; font-size: 13px; }
-.wall-canvas-annotations { display: grid; gap: 14px; margin-top: 13px; }
-.wall-canvas-group-title { color: #667792; font-size: 12px; font-weight: 700; margin: 0 0 8px; }
-.wall-canvas-context { margin: 0 !important; padding: 10px 13px; border-radius: 8px; background: #f4f7fc; color: #64738c !important; line-height: 1.65; }
-.wall-canvas-entry { padding: 16px; border: 1px solid #e7ebf2; border-radius: 8px; background: #fff; }
-.wall-canvas-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
-.wall-canvas-entry-head strong { color: #253650; font-size: 15px; line-height: 1.55; }
-.wall-canvas-entry-head a { white-space: nowrap; text-decoration: none; }
-.wall-canvas-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
-.wall-canvas-tags span { padding: 3px 8px; color: #9a543b; background: #fff3ed; border-radius: 5px; font-size: 11px; }
-.wall-canvas-review-hint { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 13px; padding: 11px 14px; margin: 14px 0; border: 1px solid #f3dccd; border-radius: 8px; background: #fffaf6; color: #9a543b; font-size: 12px; }
-.wall-canvas-review-hint button { margin-left: auto; border: 0; background: transparent; color: #a45836; font-weight: 700; cursor: pointer; }
-.wall-canvas-entry .math-content { margin-top: 12px; line-height: 1.78; overflow-x: auto; }
-.wall-canvas-entry .math-content p { color: #40516a; font-size: 14px; }
-.wall-canvas-entry figure { margin: 15px 0 0; }
-.wall-canvas-entry figure img { max-width: 100%; height: auto; border: 1px solid #edf0f5; border-radius: 8px; background: white; }
-.wall-canvas-entry figcaption { margin-top: 5px; color: #8290a6; font-size: 11px; }
-html[data-study-theme="dark"] .wall-canvas-context { background: #293448; color: #b8c6da !important; }
-html[data-study-theme="dark"] .wall-canvas-review-hint { background: #332d2a; border-color: #604637; color: #f1bfaa; }
-html[data-study-theme="dark"] .wall-canvas-entry { background: #202939; border-color: #354258; }
-html[data-study-theme="dark"] .wall-canvas-entry-head strong,html[data-study-theme="dark"] .wall-canvas-entry .math-content p { color: #e9eef8; }
 .wall-question-pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 35px; }
 .wall-question-pagination button { display: flex; align-items: center; gap: 8px; border: 0; background: none; color: #7f8ca3; font-size: 12px; padding: 10px 0; }
 .wall-status { font-size: 11px; color: #a0aabc; }
